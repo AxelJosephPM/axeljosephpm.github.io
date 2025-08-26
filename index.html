@@ -1,62 +1,64 @@
----
-title: blog
----
-
+<!doctype html>
 <html>
-<head>
-    <title>Gregory Gundersen</title>
-    <meta charset='UTF-8'>
-    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <head>
+    <title>Axel Joseph Patiño Mongelós</title>
+    <meta name='description' content='Andrew Ye is an undergraduate researcher at Case Western Reserve University.'>
+    <script type="application/ld+json">
+    {
+      "@context" : "https://schema.org",
+      "@type" : "WebSite",
+      "name" : "Axel Joseph",
+      "url" : "https://axeljosephpm.github.io/"
+    }
+</script>
+    <meta charset="utf-8">
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+<!-- A decent browser will parse this fine:
+        https://webmasters.stackexchange.com/questions/92744. -->
+<meta name='keywords' content='
+    machine learning,
+    computational statistics,
+    deep learning,
+    computer science,
+    quantitative finance,
+    algorithms
+'>
+<meta name='author' content='Andrew Ye'>
 
-    <meta name='description' content='Gregory Gundersen is a PhD candidate at Princeton.'>
-    <!-- A decent browser will parse this fine:
-         https://webmasters.stackexchange.com/questions/92744. -->
-    <meta name='keywords' content='
-        machine learning,
-        statistical machine learning,
-        bayesian inference,
-        statistics,
-        computational statistics,
-        linear algebra,
-        numerical linear algebra,
-        statistical software,
-        deep learning,
-        computer science
-    '>
-    <meta name='author' content='Gregory Gundersen'>
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<link rel="icon" href="/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+<link rel="manifest" href="/favicon/site.webmanifest">
+<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#333333">
+<meta name="msapplication-TileColor" content="#333333">
+<meta name="theme-color" content="#fdfdfd">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+     <script src="assets/js/blackjack.js"></script> 
+  </head>
+  <body>
+    <div  class="float-child" >
+      <h2>Axel Joseph Patiño Mongelós</h2>
+      <div class="content">
+      <p><a href="publications">Publications</a> <br />
+<a href="about">About Me</a> <br />
+<a href="blog">Blog</a></p>
 
-    <link rel='shortcut icon' href='/favicon.png?v=e' />
-    <link href='/css/blog.css' rel='stylesheet'/>
 
-    {% include mathjax.html %}
-</head>
-<body>
-    {% include nav.html %}
-    <div id='blog' class='wrap'>
-        <div id='intro'>
-            <div class='quote'>
-                <p>I learned very early the difference between knowing the name of something and knowing something.</p>
-                <a href='https://en.wikiquote.org/wiki/Richard_Feynman' target='_blank'>Richard Feynman</a>
-            </div>
-        </div>
-        <div id='posts' class='section'>
-            {% for post in site.posts %}
-                <div class='post-row'>
-                    <p class='post-title'>
-                        <a href="{{ post.url }}">
-                            {{ post.title }}
-                        </a>
-                    </p>
-                    <p class='post-date'>
-                        {{ post.date | date_to_long_string }}
-                    </p>
-                </div>
-                <p class='post-subtitle'>
-                    {{ post.subtitle }}
-                </p>
-                <span class='hidden'>{{ forloop.index }}</span>
-            {% endfor %}
-        </div>
+      </div>
+      <div class="links">
+          <ul> 
+            <li id="email">axeljoseph[at]hotmail[dot]edu</li> 
+            <li> <i class="fa fa-github"></i> 
+              <a href="https://github.com/andrewlye" id="github" target=”_blank>
+              andrewlye
+              </a>
+            </li>
+          </ul>
+      </div>
     </div>
-</body>
+
+    
+  </body>
 </html>
