@@ -9,9 +9,8 @@ published: true
 
 Here are some words. And this is some math:
 
-
 $$
-e = mc^2. \tag{1}
+\int_{-\infty}^\infty e^{-x^2} dx = \sqrt{\pi}
 $$
 
 
