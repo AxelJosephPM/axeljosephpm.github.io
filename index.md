@@ -2,6 +2,10 @@
 layout: inicio
 title: Axel Joseph Patiño Mongelós
 ---
-[Publications](publications) \
-[About Me](about) \
-[Blog](blog)
+[Blog](blog) \
+[Proyectos](proyectos) \
+[Code](https://github.com/AxelJosephPM)
+
+<span style="font-family: monospace;">
+ axel.patino@example.com
+</span>
