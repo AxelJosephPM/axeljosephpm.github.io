@@ -6,6 +6,6 @@ title: Axel Joseph Patiño Mongelós
 [Proyectos](proyectos) \
 [Code](https://github.com/AxelJosephPM)
 
-<span style="font-family: monospace;">
- axel.patino@example.com
+<span style="font-family: monospace; 0.9em;">
+ axeljoseph@hotmail.com
 </span>
