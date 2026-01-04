@@ -5,6 +5,7 @@ date: 2026-01-04
 tags: [embedded, rtos, c]
 series: "Embedded"
 series_index: 1
+published: true
 ---
 
 A short “series” post to validate the series box and navigation.
