@@ -3,10 +3,8 @@ permalink: /blog/:year/:month/:day/:title/
 environment: prod
 url: "https://axeljosephpm.github.io"  # Sitemap base URL.
 plugins:
-  - jekyll-scholar
   - jekyll-sitemap
   - jekyll-feed
-  - jekyll-katex
 katex:
   js_path: "assets"  # Path used to search for katex.min.js
   rendering_options:
