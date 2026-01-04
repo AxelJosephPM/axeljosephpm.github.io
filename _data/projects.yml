@@ -1,0 +1,12 @@
+- title: "Test Project"
+  slug: "test"
+  status: "ACTIVE"
+  year: 2026
+  category: "LAB"
+  role: "Owner"
+  summary: "If you can see this card, data loading works."
+  tags: ["Jekyll", "YAML"]
+  featured: true
+  links:
+    - label: "Home"
+      url: "/"
