@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title }} — {{ site.title }}</title>
+
+    <link rel="stylesheet" href="/css/blog.css" />
+
+    {% include mathjax.html %}
+  </head>
+
+  <body class="post-page">
+    {% include nav.html %}
+
+    <main class="post-wrap">
+      <header class="post-hero">
+        <div class="hero-kicker">BLOG POST</div>
+        <h1 class="hero-title">{{ page.title }}</h1>
+
+        {%- assign words = content | strip_html | number_of_words -%}
+        {%- assign minutes = words | divided_by: 220 -%}
+        {%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
+
+        <div class="post-meta">
+          <span class="meta-text">{{ page.date | date: "%Y-%m-%d" }}</span>
+          <span class="dot">•</span>
+          <span class="meta-text">{{ minutes }} min</span>
+
+          {% if page.series %}
+            <span class="dot">•</span>
+            <span class="meta-text">Series: {{ page.series }}</span>
+          {% endif %}
+        </div>
+
+        {% if page.tags %}
+          <div class="chips">
+            {% for t in page.tags %}
+              <a class="chip chip-link" href="/blog/#tag-{{ t | slugify }}">{{ t }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if page.series %}
+          {% include series_box.html %}
+        {% endif %}
+
+        <div class="hero-actions">
+          <a class="hero-action" href="/blog/">← Back to Blog</a>
+          <a class="hero-action" href="/rss.xml">RSS</a>
+        </div>
+
+        <div class="hero-rule"></div>
+      </header>
+
+      <article class="post-content">
+        {{ content }}
+      </article>
+
+      <nav class="post-nav">
+        <div class="post-nav-col">
+          {% if page.previous %}
+            <div class="post-nav-label">Previous</div>
+            <a class="post-nav-link" href="{{ page.previous.url }}">{{ page.previous.title }}</a>
+          {% endif %}
+        </div>
+        <div class="post-nav-col post-nav-right">
+          {% if page.next %}
+            <div class="post-nav-label">Next</div>
+            <a class="post-nav-link" href="{{ page.next.url }}">{{ page.next.title }}</a>
+          {% endif %}
+        </div>
+      </nav>
+
+      <footer class="post-footer">
+        <div class="footer-rule"></div>
+        <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
+      </footer>
+    </main>
+  </body>
+</html>

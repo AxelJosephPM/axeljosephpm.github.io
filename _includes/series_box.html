@@ -1,0 +1,25 @@
+{% assign s = page.series %}
+{% assign series_posts = site.posts | where: "series", s | sort: "series_index" %}
+
+<div class="series-box">
+  <div class="series-head">
+    <div class="series-title">Series</div>
+    <div class="series-name">{{ s }}</div>
+  </div>
+
+  <div class="series-list">
+    {% for p in series_posts %}
+      {% if p.url == page.url %}
+        <div class="series-item is-current">
+          <span class="series-index">#{{ p.series_index }}</span>
+          <span class="series-text">{{ p.title }}</span>
+        </div>
+      {% else %}
+        <a class="series-item" href="{{ p.url }}">
+          <span class="series-index">#{{ p.series_index }}</span>
+          <span class="series-text">{{ p.title }}</span>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

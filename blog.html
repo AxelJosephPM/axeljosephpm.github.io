@@ -1,69 +1,227 @@
----
-title: blog
----
-
+<!doctype html>
 <html>
-<head>
-    <title>Axel Joseph</title>
-    <meta charset='UTF-8'>
-    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title | default: "Blog" }} — {{ site.title }}</title>
 
-    <meta name='description' content=''>
-    <!-- A decent browser will parse this fine:
-         https://webmasters.stackexchange.com/questions/92744. -->
-    <meta name='keywords' content='
-        machine learning,
-        estadística,
-        álgebra lineal,
-        análisis funcional,
-        teoría espectral,
-        ecuaciones diferenciales,
-        mecánica,
-        mecánica teórica,
-        statistical machine learning,
-        bayesian inference,
-        statistics,
-        computational statistics,
-        linear algebra,
-        numerical linear algebra,
-        statistical software,
-        deep learning,
-        computer science
-    '>
-    <meta name='author' content='Axel Joseph Patiño Mongelós'>
-
-    <link rel='shortcut icon' href='/favicon.png?v=e' />
-    <link href='/css/blog.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="/css/blog.css" />
 
     {% include mathjax.html %}
-</head>
-<body>
+  </head>
+
+  <body class="blog-page">
     {% include nav.html %}
-    <div id='blog' class='wrap'>
-        <div id='intro'>
-            <div class='quote'>
-                <p>I learned very early the difference between knowing the name of something and knowing something.</p>
-                <a href='https://en.wikiquote.org/wiki/Richard_Feynman' target='_blank'>Richard Feynman</a>
-            </div>
+
+    <main class="blog-wrap">
+      <header class="blog-hero">
+        <div class="hero-kicker">NOTES</div>
+        <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
+        <p class="hero-subtitle">
+          Short notes, long writeups, and project logs. Minimal, searchable by tags (no fluff).
+        </p>
+
+        <div class="hero-actions">
+          <a class="hero-action" href="#tags">Tags</a>
+          <a class="hero-action" href="#posts">Posts</a>
+          <a class="hero-action" href="/rss.xml">RSS</a>
         </div>
-        <div id='posts' class='section'>
-            {% for post in site.posts %}
-                <div class='post-row'>
-                    <p class='post-title'>
-                        <a href="{{ post.url }}">
-                            {{ post.title }}
-                        </a>
-                    </p>
-                    <p class='post-date'>
-                        {{ post.date | date_to_long_string }}
-                    </p>
+
+        <div class="hero-rule"></div>
+      </header>
+
+      {% assign posts_sorted = site.posts %}
+
+      {%- comment -%}
+      Tags come from site.tags (map: tag -> [posts]).
+      {%- endcomment -%}
+      <section id="tags" class="blog-section">
+        <div class="section-head">
+          <div class="section-title">Tags</div>
+          <div class="section-meta">
+            <span id="filterCount">{{ posts_sorted | size }}</span>/<span id="totalCount">{{ posts_sorted | size }}</span>
+          </div>
+        </div>
+
+        <div class="tag-cloud" id="tagCloud">
+          <button class="tag-pill tag-pill-clear" id="clearTag" type="button" aria-pressed="false" hidden>
+            Clear
+          </button>
+
+          {% assign tags_sorted = site.tags | sort %}
+          {% for tag in tags_sorted %}
+            {% assign tag_name = tag[0] %}
+            {% assign tag_posts = tag[1] %}
+            <button
+              class="tag-pill tag-filter"
+              type="button"
+              data-tag="{{ tag_name | slugify }}"
+              aria-pressed="false"
+              title="{{ tag_posts | size }} posts"
+            >
+              {{ tag_name }}
+            </button>
+          {% endfor %}
+        </div>
+
+        <div class="filter-hint" id="filterHint" hidden>
+          Filtering by: <span class="filter-name" id="filterName"></span>
+        </div>
+      </section>
+
+      <section id="posts" class="blog-section">
+        <div class="section-head">
+          <div class="section-title">Posts</div>
+          <div class="section-meta">{{ posts_sorted | size }}</div>
+        </div>
+
+        {% if posts_sorted == nil or posts_sorted.size == 0 %}
+          <div class="empty-state">
+            <p>No posts yet.</p>
+          </div>
+        {% else %}
+          <div class="post-list" id="postsList">
+            {% for post in posts_sorted %}
+              {%- assign tags_attr = "" -%}
+              {%- if post.tags -%}
+                {%- for tt in post.tags -%}
+                  {%- assign tags_attr = tags_attr | append: tt | slugify | append: " " -%}
+                {%- endfor -%}
+              {%- endif -%}
+
+              {%- assign words = post.content | strip_html | number_of_words -%}
+              {%- assign minutes = words | divided_by: 220 -%}
+              {%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
+
+              <article class="post-card" data-tags="{{ tags_attr | strip }}">
+                <div class="post-meta">
+                  <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
+                  <span class="dot">•</span>
+                  <span class="meta-text">{{ minutes }} min</span>
+
+                  {% if post.series %}
+                    <span class="dot">•</span>
+                    <span class="meta-text">Series: {{ post.series }}</span>
+                  {% endif %}
                 </div>
-                <p class='post-subtitle'>
-                    {{ post.subtitle }}
+
+                <h2 class="post-title">
+                  <a href="{{ post.url }}">{{ post.title }}</a>
+                </h2>
+
+                <p class="post-excerpt">
+                  {{ post.excerpt | strip_html | replace: "\n", " " | truncate: 180 }}
                 </p>
-                <span class='hidden'>{{ forloop.index }}</span>
+
+                {% if post.tags %}
+                  <div class="chips">
+                    {% for t in post.tags %}
+                      <a class="chip chip-link tag-jump" href="#tag-{{ t | slugify }}" data-tag="{{ t | slugify }}">{{ t }}</a>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <div class="post-links">
+                  <a class="link" href="{{ post.url }}">Read</a>
+                </div>
+              </article>
             {% endfor %}
-        </div>
-    </div>
-</body>
+          </div>
+        {% endif %}
+      </section>
+
+      <footer class="blog-footer">
+        <div class="footer-rule"></div>
+        <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
+      </footer>
+    </main>
+
+    <script>
+      (function () {
+        const list = document.getElementById("postsList");
+        const tagCloud = document.getElementById("tagCloud");
+        if (!list || !tagCloud) return;
+
+        const cards = Array.from(list.querySelectorAll(".post-card"));
+        const tagButtons = Array.from(tagCloud.querySelectorAll(".tag-filter"));
+        const clearBtn = document.getElementById("clearTag");
+        const filterCount = document.getElementById("filterCount");
+        const filterHint = document.getElementById("filterHint");
+        const filterName = document.getElementById("filterName");
+
+        function setHash(tag) {
+          if (!tag) {
+            history.replaceState(null, "", location.pathname + location.search);
+            return;
+          }
+          history.replaceState(null, "", "#tag-" + tag);
+        }
+
+        function getHashTag() {
+          const h = (location.hash || "").trim();
+          if (!h.startsWith("#tag-")) return "";
+          return h.replace("#tag-", "").trim();
+        }
+
+        function updateUI(activeTag) {
+          tagButtons.forEach(btn => {
+            const isActive = btn.dataset.tag === activeTag;
+            btn.classList.toggle("is-active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+          });
+
+          const hasFilter = !!activeTag;
+          clearBtn.hidden = !hasFilter;
+          clearBtn.setAttribute("aria-pressed", hasFilter ? "true" : "false");
+          filterHint.hidden = !hasFilter;
+          if (hasFilter) filterName.textContent = activeTag;
+
+          let visible = 0;
+          cards.forEach(card => {
+            if (!activeTag) {
+              card.hidden = false;
+              visible++;
+              return;
+            }
+            const tags = (card.dataset.tags || "").split(/\s+/).filter(Boolean);
+            const ok = tags.includes(activeTag);
+            card.hidden = !ok;
+            if (ok) visible++;
+          });
+
+          filterCount.textContent = String(visible);
+        }
+
+        function applyTag(tag) {
+          const active = tag || "";
+          setHash(active);
+          updateUI(active);
+          const posts = document.getElementById("posts");
+          if (posts) posts.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        tagButtons.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const tag = btn.dataset.tag;
+            const current = getHashTag();
+            applyTag(current === tag ? "" : tag);
+          });
+        });
+
+        clearBtn.addEventListener("click", () => applyTag(""));
+
+        document.querySelectorAll(".tag-jump").forEach(a => {
+          a.addEventListener("click", (e) => {
+            const tag = a.dataset.tag;
+            if (!tag) return;
+            e.preventDefault();
+            applyTag(tag);
+          });
+        });
+
+        updateUI(getHashTag());
+        window.addEventListener("hashchange", () => updateUI(getHashTag()));
+      })();
+    </script>
+  </body>
 </html>

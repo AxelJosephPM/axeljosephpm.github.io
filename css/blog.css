@@ -216,3 +216,279 @@ hr {
   margin-top: 300px; /* ajusta este valor según prefieras */
   /*text-align: left;*/
 }
+
+/* ---------------------------
+   BLOG INDEX + POST READING
+---------------------------- */
+
+.blog-wrap, .post-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 46px 20px 80px;
+}
+
+.blog-hero .hero-kicker, .post-hero .hero-kicker {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.blog-hero .hero-title, .post-hero .hero-title {
+  font-size: 44px;
+  line-height: 1.05;
+  margin: 10px 0 10px;
+}
+
+.blog-hero .hero-subtitle {
+  max-width: 72ch;
+  opacity: 0.72;
+  margin: 0 0 14px;
+}
+
+.post-meta, .post-card .post-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  opacity: 0.65;
+  font-size: 12px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.dot { opacity: 0.55; }
+
+.hero-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-action {
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 2px;
+}
+
+.hero-action:hover {
+  border-bottom-color: rgba(0, 63, 135, 0.75);
+  color: rgba(0, 63, 135, 0.95);
+}
+
+.hero-rule, .footer-rule {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.12);
+  margin-top: 18px;
+}
+
+.blog-section { margin-top: 22px; }
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.section-meta {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+/* Tag pills (buttons) */
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.tag-pill {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.35);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tag-pill:hover { border-color: rgba(0, 63, 135, 0.35); }
+
+.tag-pill.is-active {
+  border-color: rgba(0, 63, 135, 0.70);
+  background: rgba(0, 63, 135, 0.06);
+  color: rgba(0, 63, 135, 0.95);
+}
+
+.tag-pill-clear { margin-right: 10px; border-color: rgba(0,0,0,0.20); }
+
+.filter-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.65;
+  letter-spacing: 0.08em;
+}
+
+.filter-name {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* Post list cards */
+.post-list { display: grid; gap: 12px; }
+
+.post-card {
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.35);
+}
+
+.post-title { margin: 8px 0 6px; font-size: 20px; line-height: 1.2; }
+.post-title a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18); }
+.post-title a:hover { color: rgba(0, 63, 135, 0.95); border-bottom-color: rgba(0, 63, 135, 0.55); }
+
+.post-excerpt { margin: 0 0 10px; opacity: 0.78; max-width: 80ch; }
+
+.post-links .link,
+.card-links .link {
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 2px;
+  margin-right: 12px;
+}
+
+/* Reading UX */
+.post-content {
+  max-width: 72ch;
+  margin: 22px auto 0;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 18px 18px;
+  background: rgba(255,255,255,0.35);
+}
+
+.post-content p { line-height: 1.72; margin: 0 0 12px; }
+.post-content h2 { margin-top: 26px; }
+.post-content h3 { margin-top: 18px; }
+.post-content code { font-size: 0.95em; }
+.post-content pre {
+  overflow: auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.30);
+}
+
+/* Callouts: use Markdown blockquote */
+.post-content blockquote {
+  margin: 14px 0;
+  padding: 10px 12px;
+  border-left: 3px solid rgba(0, 63, 135, 0.75);
+  background: rgba(0, 63, 135, 0.05);
+  border-radius: 12px;
+}
+
+/* Series box */
+.series-box {
+  margin-top: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.35);
+}
+
+.series-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.series-title {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.series-name { opacity: 0.8; font-size: 12px; letter-spacing: 0.10em; }
+
+.series-list { display: grid; gap: 8px; }
+.series-item {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 10px;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.25);
+}
+
+.series-item:hover { border-color: rgba(0, 63, 135, 0.35); color: rgba(0, 63, 135, 0.95); }
+.series-item.is-current { border-color: rgba(0, 63, 135, 0.55); background: rgba(0, 63, 135, 0.05); }
+
+.series-index {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.series-text { opacity: 0.9; }
+
+/* Prev/Next */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0 0;
+  max-width: 72ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-nav-col {
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.35);
+}
+
+.post-nav-right { text-align: right; }
+
+.post-nav-label {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-bottom: 6px;
+}
+
+.post-nav-link { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18); }
+.post-nav-link:hover { color: rgba(0, 63, 135, 0.95); border-bottom-color: rgba(0, 63, 135, 0.55); }
+
+.blog-footer .footer-text, .post-footer .footer-text {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
