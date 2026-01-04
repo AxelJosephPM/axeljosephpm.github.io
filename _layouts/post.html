@@ -10,22 +10,16 @@
     {% include mathjax.html %}
   </head>
 
-  <body class="post-page">
+  <body class="post-page post-white">
     {% include nav.html %}
 
-    <main class="post-wrap">
-      <header class="post-hero">
+    <main class="post-wrap post-wrap-min">
+      <header class="post-hero post-hero-min">
         <div class="hero-kicker">BLOG POST</div>
-        <h1 class="hero-title">{{ page.title }}</h1>
+        <h1 class="hero-title post-title-min">{{ page.title }}</h1>
 
-        {%- assign words = content | strip_html | number_of_words -%}
-        {%- assign minutes = words | divided_by: 220 -%}
-        {%- if minutes < 1 -%}{%- assign minutes = 1 -%}{%- endif -%}
-
-        <div class="post-meta">
-          <span class="meta-text">{{ page.date | date: "%Y-%m-%d" }}</span>
-          <span class="dot">•</span>
-          <span class="meta-text">{{ minutes }} min</span>
+        <div class="post-meta post-meta-min">
+          <span class="meta-text">{{ page.date | date: "%d %B %Y" }}</span>
 
           {% if page.series %}
             <span class="dot">•</span>
@@ -34,45 +28,32 @@
         </div>
 
         {% if page.tags %}
-          <div class="chips">
+          <div class="chips chips-min">
             {% for t in page.tags %}
-              <a class="chip chip-link" href="/blog/#tag-{{ t | slugify }}">{{ t }}</a>
+              <a class="chip chip-link" href="/blog/#tag={{ t | slugify }}">{{ t }}</a>
             {% endfor %}
           </div>
         {% endif %}
 
         {% if page.series %}
-          {% include series_box.html %}
+          <div class="series-mini">
+            {% include series_box.html %}
+          </div>
         {% endif %}
 
-        <div class="hero-actions">
+        <div class="hero-actions hero-actions-min">
           <a class="hero-action" href="/blog/">← Back to Blog</a>
           <a class="hero-action" href="/rss.xml">RSS</a>
         </div>
 
-        <div class="hero-rule"></div>
+        <div class="hero-rule hero-rule-min"></div>
       </header>
 
-      <article class="post-content">
+      <article class="post-content post-content-min">
         {{ content }}
       </article>
 
-      <nav class="post-nav">
-        <div class="post-nav-col">
-          {% if page.previous %}
-            <div class="post-nav-label">Previous</div>
-            <a class="post-nav-link" href="{{ page.previous.url }}">{{ page.previous.title }}</a>
-          {% endif %}
-        </div>
-        <div class="post-nav-col post-nav-right">
-          {% if page.next %}
-            <div class="post-nav-label">Next</div>
-            <a class="post-nav-link" href="{{ page.next.url }}">{{ page.next.title }}</a>
-          {% endif %}
-        </div>
-      </nav>
-
-      <footer class="post-footer">
+      <footer class="post-footer post-footer-min">
         <div class="footer-rule"></div>
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>

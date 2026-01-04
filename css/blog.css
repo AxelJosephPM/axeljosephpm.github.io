@@ -1,500 +1,130 @@
-html {
-  font-family: -apple-system, Helvetica, arial, sans-serif;
-  color: rgba(0, 0, 0, 0.8);
-  line-height: 1.5em;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
+/* =========================
+   POST PAGE — white, minimal
+   ========================= */
+
+body.post-white {
+  background: #ffffff;
 }
-body {
-  margin: 0;
-}
-body .content {
-  margin-bottom: 120px;
-}
-a {
-  color: rgba(0, 0, 0, 0.8);
-}
-a:hover {
-  text-decoration: none;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: -apple-system, Helvetica, arial, sans-serif;
-}
-h1 {
-  line-height: 1.2em;
-}
-.clear {
-  clear: both;
-}
-.hidden {
-  display: none;
-}
-.wrap {
-  max-width: 700px;
+
+/* keep wrap narrower (paper feel) */
+.post-wrap-min {
+  max-width: 760px;
   margin: 0 auto;
+  padding: 64px 20px 64px;
 }
-.mono {
-  font-family: monospace;
-}
-.nav {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-.nav a {
-  color: rgba(0, 0, 0, 0.6);
-  text-decoration: none;
-  border-bottom: none;
-  font-size: 12px;
-}
-.nav a:hover {
-  font-weight: bold;
-}
-.nav ul {
-  list-style-type: none;
-  padding: 0;
-}
-.nav ul li {
-  display: inline;
-  margin-right: 10px;
-}
-.front-matter {
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-.front-matter h4 {
-  font-family: -apple-system, Helvetica, arial, sans-serif;
-}
-.front-matter .bylines .byline {
-  margin-right: 20px;
-  float: left;
-}
-.front-matter .bylines .byline h3,
-.front-matter .bylines .byline p {
-  margin: 0;
-  font-family: -apple-system, Helvetica, arial, sans-serif;
-}
-.front-matter .bylines .byline h3 {
-  font-size: 9px;
+
+/* make header more editorial */
+.post-hero-min .hero-kicker {
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.5);
-}
-.front-matter .bylines .byline p {
-  font-size: 10px;
-  line-height: 1.6em;
-}
-.article {
-  font-size: 15px;
-  line-height: 1.6em;
-  color: rgba(0, 0, 0, 0.8);
-  margin-top: 50px;
-  margin-bottom: 50px;
-}
-.article blockquote {
-  margin: 0;
-  padding: 0 1em;
-  color: #777;
-  border-left: 0.25em solid #ddd;
-}
-.article h2 {
-  font-size: 26px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 1rem;
-  padding-top: 1em;
-}
-.article .figure {
-  border-top: 1px solid hsla(0, 0%, 0%, 0.2);
-  border-bottom: 1px solid hsla(0, 0%, 0%, 0.2);
-  padding: 20px 0;
-}
-.article .figure .caption {
-  padding-top: 15px;
-  display: inline-block;
-  font-size: 13px;
-  line-heigh: 1.2em;
-}
-.article .figure .caption-label {
-  font-weight: bold;
-}
-.article .footnote {
-  line-height: 0;
-}
-.article div.highlight {
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  font-size: 13px;
-  line-height: 1.3em;
-}
-.article ul {
-  padding: 0 15px;
-}
-.article hr {
-  border-bottom: none;
-  border-top: 1px solid rgba(0, 0, 0, 0.7);
-  margin: 33px auto;
-  width: 70px;
-}
-#bibliography {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-#bibliography ol.bibliography {
-  padding-left: 15px;
-  padding-top: 30px;
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
-}
-#blog {
-  margin-top: 80px;
-  margin-bottom: 100px;
-}
-#blog #intro {
-  font-size: 14px;
-  font-style: italic;
-  line-height: 1.4em;
-  margin-bottom: 40px;
-}
-#blog .quote {
-  margin-bottom: 30px;
-}
-#blog .quote p {
-  margin-bottom: 5px;
-}
-#blog .post-date {
-  text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 12px;
-  font-weight: bold;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-#blog .post-title {
-  display: inline-block;
-  font-weight: bold;
-  margin-bottom: 0;
-}
-#blog .post-title a {
-  font-size: 18px;
-  text-decoration: none;
-}
-#blog .post-title a:hover {
-  text-decoration: underline;
-}
-#blog .post-subtitle {
-  font-size: 14px;
-  margin-top: 0;
-  margin-bottom: 25px;
-  line-height: 1.5em;
-}
-#blog .year {
-  font-size: 18px;
-  position: relative;
-  right: 100px;
-  color: rgba(0, 0, 0, 0.5);
-  width: 100px;
-  margin-bottom: -24px;
-}
-#blog #y2017.year,
-#blog #y2018.year {
-  margin-top: 0px;
-}
-hr {
-  border-top: #ccc;
-}
-@media screen and (max-width: 700px) {
-  body {
-    margin: 0 7px;
-  }
-}
-
-.hero {
-  margin-top: 300px; /* ajusta este valor según prefieras */
-  /*text-align: left;*/
-}
-
-/* ---------------------------
-   BLOG INDEX + POST READING
----------------------------- */
-
-.blog-wrap, .post-wrap {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 46px 20px 80px;
-}
-
-.blog-hero .hero-kicker, .post-hero .hero-kicker {
   font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
   opacity: 0.55;
+  margin-bottom: 10px;
 }
 
-.blog-hero .hero-title, .post-hero .hero-title {
+.post-title-min {
   font-size: 44px;
   line-height: 1.05;
-  margin: 10px 0 10px;
-}
-
-.blog-hero .hero-subtitle {
-  max-width: 72ch;
-  opacity: 0.72;
+  letter-spacing: -0.02em;
   margin: 0 0 14px;
 }
 
-.post-meta, .post-card .post-meta {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
+.post-meta-min {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   opacity: 0.65;
-  font-size: 12px;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
-.dot { opacity: 0.55; }
-
-.hero-actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.hero-action {
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  padding-bottom: 2px;
-}
-
-.hero-action:hover {
-  border-bottom-color: rgba(0, 63, 135, 0.75);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-.hero-rule, .footer-rule {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.12);
-  margin-top: 18px;
-}
-
-.blog-section { margin-top: 22px; }
-
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 10px;
-}
-
-.section-title {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-.section-meta {
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.45;
-}
-
-/* Tag pills (buttons) */
-.tag-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-
-.tag-pill {
-  appearance: none;
-  border: 1px solid rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.35);
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 11px;
-  letter-spacing: 0.20em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.tag-pill:hover { border-color: rgba(0, 63, 135, 0.35); }
-
-.tag-pill.is-active {
-  border-color: rgba(0, 63, 135, 0.70);
-  background: rgba(0, 63, 135, 0.06);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-.tag-pill-clear { margin-right: 10px; border-color: rgba(0,0,0,0.20); }
-
-.filter-hint {
+.hero-actions-min {
   margin-top: 10px;
-  font-size: 12px;
-  opacity: 0.65;
-  letter-spacing: 0.08em;
+  gap: 14px;
 }
 
-.filter-name {
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.85;
+.hero-rule-min {
+  margin-top: 22px;
+  opacity: 0.35;
 }
 
-/* Post list cards */
-.post-list { display: grid; gap: 12px; }
+/* smaller chips on post page */
+.chips-min .chip {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
 
-.post-card {
+/* remove heavy boxes: post content becomes clean paper */
+.post-content-min {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 24px;
+
+  /* readable long-form */
+  max-width: 68ch;
+}
+
+/* better typography for long posts */
+.post-content-min p {
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+.post-content-min h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.post-content-min h3 {
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+/* images & figures: centered, clean */
+.post-content-min img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+}
+
+/* code blocks: keep clean, not boxy */
+.post-content-min pre {
   border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 16px;
-  padding: 14px 16px;
-  background: rgba(255,255,255,0.35);
-}
-
-.post-title { margin: 8px 0 6px; font-size: 20px; line-height: 1.2; }
-.post-title a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18); }
-.post-title a:hover { color: rgba(0, 63, 135, 0.95); border-bottom-color: rgba(0, 63, 135, 0.55); }
-
-.post-excerpt { margin: 0 0 10px; opacity: 0.78; max-width: 80ch; }
-
-.post-links .link,
-.card-links .link {
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  padding-bottom: 2px;
-  margin-right: 12px;
-}
-
-/* Reading UX */
-.post-content {
-  max-width: 72ch;
-  margin: 22px auto 0;
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 16px;
-  padding: 18px 18px;
-  background: rgba(255,255,255,0.35);
-}
-
-.post-content p { line-height: 1.72; margin: 0 0 12px; }
-.post-content h2 { margin-top: 26px; }
-.post-content h3 { margin-top: 18px; }
-.post-content code { font-size: 0.95em; }
-.post-content pre {
-  overflow: auto;
+  border-radius: 12px;
   padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.10);
-  background: rgba(255,255,255,0.30);
+  overflow: auto;
+  background: #fbfbfb;
 }
 
-/* Callouts: use Markdown blockquote */
-.post-content blockquote {
-  margin: 14px 0;
-  padding: 10px 12px;
-  border-left: 3px solid rgba(0, 63, 135, 0.75);
-  background: rgba(0, 63, 135, 0.05);
+/* blockquotes like subtle callouts */
+.post-content-min blockquote {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border-left: 3px solid rgba(0,0,0,0.28);
+  background: #fafafa;
   border-radius: 12px;
 }
 
-/* Series box */
-.series-box {
+/* series box: smaller + subtler */
+.series-mini .series-box {
   margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 16px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.35);
+  background: #ffffff;
 }
 
-.series-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 10px;
-}
-
-.series-title {
-  font-size: 12px;
+.series-mini .series-box .series-head {
+  font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.65;
+  opacity: 0.60;
 }
 
-.series-name { opacity: 0.8; font-size: 12px; letter-spacing: 0.10em; }
-
-.series-list { display: grid; gap: 8px; }
-.series-item {
-  display: grid;
-  grid-template-columns: 54px 1fr;
-  gap: 10px;
-  text-decoration: none;
-  padding: 8px 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.25);
-}
-
-.series-item:hover { border-color: rgba(0, 63, 135, 0.35); color: rgba(0, 63, 135, 0.95); }
-.series-item.is-current { border-color: rgba(0, 63, 135, 0.55); background: rgba(0, 63, 135, 0.05); }
-
-.series-index {
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.65;
-}
-
-.series-text { opacity: 0.9; }
-
-/* Prev/Next */
-.post-nav {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 18px 0 0;
-  max-width: 72ch;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.post-nav-col {
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 16px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.35);
-}
-
-.post-nav-right { text-align: right; }
-
-.post-nav-label {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.55;
-  margin-bottom: 6px;
-}
-
-.post-nav-link { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.18); }
-.post-nav-link:hover { color: rgba(0, 63, 135, 0.95); border-bottom-color: rgba(0, 63, 135, 0.55); }
-
-.blog-footer .footer-text, .post-footer .footer-text {
-  margin-top: 10px;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
-/* Soft cream background like Projects */
-body.blog-page,
-body.post-page {
-  background: #fbf8f2; /* crema suave */
+.series-mini .series-box a {
+  font-size: 13px;
 }
