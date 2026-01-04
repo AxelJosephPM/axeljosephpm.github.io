@@ -492,3 +492,9 @@ hr {
   text-transform: uppercase;
   opacity: 0.55;
 }
+
+/* Soft cream background like Projects */
+body.blog-page,
+body.post-page {
+  background: #fbf8f2; /* crema suave */
+}
