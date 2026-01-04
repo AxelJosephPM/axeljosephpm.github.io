@@ -211,3 +211,44 @@ html { scroll-behavior: smooth; }
   text-transform: uppercase;
   opacity: 0.55;
 }
+
+/* Tag filter pills as buttons */
+.tag-pill {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.35);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 11px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tag-pill:hover {
+  border-color: rgba(0, 63, 135, 0.35);
+}
+
+.tag-pill.is-active {
+  border-color: rgba(0, 63, 135, 0.70);
+  background: rgba(0, 63, 135, 0.06);
+  color: rgba(0, 63, 135, 0.95);
+}
+
+.tag-pill-clear {
+  margin-right: 10px;
+  border-color: rgba(0,0,0,0.20);
+}
+
+.filter-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.65;
+  letter-spacing: 0.08em;
+}
+
+.filter-name {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}

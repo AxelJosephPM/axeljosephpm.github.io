@@ -1,27 +1,16 @@
 {% assign s = page.series %}
 {% assign series_posts = site.posts | where: "series", s | sort: "series_index" %}
-{% assign total = series_posts | size %}
 
-<div class="series-box" aria-label="Series navigation">
+<div class="series-box">
   <div class="series-head">
-    <div class="series-left">
-      <span class="series-kicker">SERIES</span>
-      <span class="series-dot">•</span>
-      <span class="series-name">{{ s }}</span>
-    </div>
-    <div class="series-right">
-      {% if page.series_index %}
-        <span class="series-count">#{{ page.series_index }} / {{ total }}</span>
-      {% else %}
-        <span class="series-count">{{ total }} posts</span>
-      {% endif %}
-    </div>
+    <div class="series-title">Series</div>
+    <div class="series-name">{{ s }}</div>
   </div>
 
   <div class="series-list">
     {% for p in series_posts %}
       {% if p.url == page.url %}
-        <div class="series-item is-current" aria-current="page">
+        <div class="series-item is-current">
           <span class="series-index">#{{ p.series_index }}</span>
           <span class="series-text">{{ p.title }}</span>
         </div>

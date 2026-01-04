@@ -1,0 +1,171 @@
+/* =========================
+   HOME — match Projects/Blog style
+   ========================= */
+
+:root{
+  --home-cream: var(--cream, var(--bg, #f7f3eb));
+  --ink: rgba(0,0,0,0.86);
+  --muted: rgba(0,0,0,0.60);
+  --hairline: rgba(0,0,0,0.12);
+  --card: #ffffff;
+  --radius: 16px;
+}
+
+body.home-page{
+  background: var(--home-cream);
+  color: var(--ink);
+}
+
+.home-wrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 72px 22px 70px;
+}
+
+/* Hero */
+.home-hero .hero-kicker{
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.55;
+  margin-bottom: 10px;
+}
+
+.home-hero .hero-title{
+  font-size: 56px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+}
+
+.home-hero .hero-subtitle{
+  margin: 0 0 16px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 72ch;
+}
+
+.home-hero .hero-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.home-hero .hero-action{
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--hairline);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.65);
+  text-decoration: none;
+  background: rgba(255,255,255,0.4);
+}
+
+.home-hero .hero-action:hover{
+  background: rgba(0,0,0,0.03);
+}
+
+.home-hero .hero-rule{
+  height: 1px;
+  background: rgba(0,0,0,0.10);
+  margin-top: 18px;
+}
+
+/* Sections */
+.home-section{
+  margin-top: 28px;
+}
+
+.section-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 18px 0 14px;
+}
+
+.section-title{
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+.section-meta{
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.40;
+}
+
+/* Cards */
+.home-card{
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.home-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 900px){
+  .home-grid{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Small tweaks to reuse Projects cards */
+.home-project-card .card-title,
+.home-post-card .card-title{
+  margin: 8px 0 6px;
+}
+
+.home-post-link{
+  color: rgba(0,0,0,0.86);
+  text-decoration: none;
+}
+
+.home-post-link:hover{
+  text-decoration: underline;
+}
+
+.bullets{
+  margin: 0;
+  padding-left: 18px;
+}
+
+.bullets li{
+  margin: 8px 0;
+  color: rgba(0,0,0,0.70);
+  line-height: 1.55;
+}
+
+.home-more{
+  margin-top: 12px;
+}
+
+.muted{
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Contact */
+.home-contact{
+  display: grid;
+  gap: 10px;
+}
+
+.contact-row{
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: baseline;
+  gap: 10p
+}
