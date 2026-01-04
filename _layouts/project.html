@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page.title }} — {{ site.title }}</title>
+
+    <link rel="stylesheet" href="/css/blog.css" />
+    <link rel="stylesheet" href="/css/projects.css" />
+    <link rel="stylesheet" href="/css/project.css" />
+
+    {% include mathjax.html %}
+  </head>
+
+  <body class="project-page">
+    {% include nav.html %}
+
+    <main class="project-wrap">
+      <header class="project-hero">
+        <div class="hero-kicker">PROJECT BRIEF</div>
+        <h1 class="hero-title">{{ page.title }}</h1>
+
+        {% if page.summary %}
+          <p class="hero-subtitle">{{ page.summary }}</p>
+        {% endif %}
+
+        <div class="hero-meta">
+          {% if page.status %}<span class="pill">{{ page.status }}</span>{% endif %}
+          {% if page.year %}<span class="dot">•</span><span class="meta-text">{{ page.year }}</span>{% endif %}
+          {% if page.category %}<span class="dot">•</span><span class="meta-text">{{ page.category }}</span>{% endif %}
+          {% if page.role %}<span class="dot">•</span><span class="meta-text">{{ page.role }}</span>{% endif %}
+        </div>
+
+        {% if page.tags %}
+          <div class="chips">
+            {% for t in page.tags %}
+              <a class="chip chip-link" href="/proyectos/#tag-{{ t | slugify }}">{{ t }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="hero-actions">
+          <a class="hero-action" href="/proyectos/">← Back to Projects</a>
+          {% if page.repo_url %}
+            <a class="hero-action" href="{{ page.repo_url }}">GitHub</a>
+          {% endif %}
+          {% if page.demo_url %}
+            <a class="hero-action" href="{{ page.demo_url }}">Demo</a>
+          {% endif %}
+          {% if page.paper_url %}
+            <a class="hero-action" href="{{ page.paper_url }}">Paper</a>
+          {% endif %}
+        </div>
+
+        <div class="hero-rule"></div>
+      </header>
+
+      {% if page.cover %}
+        <section class="project-section">
+          <div class="cover">
+            <img src="{{ page.cover }}" alt="{{ page.title }} cover" loading="lazy" />
+          </div>
+        </section>
+      {% endif %}
+
+      <section class="project-section">
+        <div class="section-head">
+          <div class="section-title">Overview</div>
+          <div class="section-meta">context</div>
+        </div>
+
+        <div class="project-content">
+          {{ content }}
+        </div>
+      </section>
+
+      {% if page.highlights %}
+      <section class="project-section">
+        <div class="section-head">
+          <div class="section-title">Highlights</div>
+          <div class="section-meta">key points</div>
+        </div>
+
+        <ul class="bullets">
+          {% for h in page.highlights %}
+            <li>{{ h }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+
+      {% if page.stack %}
+      <section class="project-section">
+        <div class="section-head">
+          <div class="section-title">Stack</div>
+          <div class="section-meta">tools</div>
+        </div>
+
+        <div class="stack-grid">
+          {% for s in page.stack %}
+            <div class="stack-item">{{ s }}</div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if page.timeline %}
+      <section class="project-section">
+        <div class="section-head">
+          <div class="section-title">Timeline</div>
+          <div class="section-meta">milestones</div>
+        </div>
+
+        <div class="timeline">
+          {% for item in page.timeline %}
+            <div class="tl-row">
+              <div class="tl-date">{{ item.date }}</div>
+              <div class="tl-body">
+                <div class="tl-title">{{ item.title }}</div>
+                {% if item.note %}<div class="tl-note">{{ item.note }}</div>{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      {% if page.links %}
+      <section class="project-section">
+        <div class="section-head">
+          <div class="section-title">Links</div>
+          <div class="section-meta">resources</div>
+        </div>
+
+        <div class="links-grid">
+          {% for l in page.links %}
+            <a class="link-card" href="{{ l.url }}">
+              <div class="link-card-title">{{ l.label }}</div>
+              <div class="link-card-url">{{ l.url }}</div>
+            </a>
+          {% endfor %}
+        </div>
+      </section>
+      {% endif %}
+
+      <footer class="project-footer">
+        <div class="footer-rule"></div>
+        <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
+      </footer>
+    </main>
+  </body>
+</html>
