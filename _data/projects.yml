@@ -1,12 +1,51 @@
-- title: "Test Project"
-  slug: "test"
+- title: "S-ART — Student Astronomical Radio Telescope"
+  slug: "s-art"
   status: "ACTIVE"
   year: 2026
-  category: "LAB"
-  role: "Owner"
-  summary: "If you can see this card, data loading works."
-  tags: ["Jekyll", "YAML"]
+  category: "CUBESAT"
+  role: "Systems / EPS / OBC"
+  summary: "Student CubeSat mission concept focused on solar radio observations and hands-on satellite engineering."
+  tags: ["CubeSat", "EPS", "OBC", "Systems", "Python"]
   featured: true
   links:
-    - label: "Home"
-      url: "/"
+    - label: "Read"
+      url: "/blog"
+    - label: "GitHub"
+      url: "https://github.com/AxelJosephPM"
+
+- title: "Black Hole Ray Tracing (Python)"
+  slug: "bh-raytracing"
+  status: "BUILDING"
+  year: 2025
+  category: "SIMULATION"
+  role: "Author"
+  summary: "Ray-tracing based renderer to visualize black holes (Luminet-style) with a clean pipeline for exports."
+  tags: ["Python", "GR", "Rendering", "Numerics"]
+  featured: true
+  links:
+    - label: "GitHub"
+      url: "https://github.com/AxelJosephPM"
+
+- title: "CFD / Aerodynamics Tooling"
+  slug: "cfd-tooling"
+  status: "MAINTAINED"
+  year: 2025
+  category: "CFD"
+  role: "Author / Contributor"
+  summary: "Collection of scripts and workflows for airfoil analysis, meshing experiments, and post-processing."
+  tags: ["CFD", "Mesh", "Python", "XFOIL", "SU2"]
+  links:
+    - label: "Read"
+      url: "/blog"
+
+- title: "Embedded Systems Notes + Examples"
+  slug: "embedded-notes"
+  status: "ONGOING"
+  year: 2025
+  category: "EMBEDDED"
+  role: "Author"
+  summary: "Notes and small code examples around RTOS concepts, C patterns, and low-level debugging."
+  tags: ["C", "RTOS", "Embedded"]
+  links:
+    - label: "Read"
+      url: "/blog"

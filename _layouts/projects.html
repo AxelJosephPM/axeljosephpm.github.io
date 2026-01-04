@@ -21,12 +21,48 @@
         <p class="hero-subtitle">
           A curated list of missions, simulations, and tools. Minimal, documented, and continuously improved.
         </p>
+
+        <div class="hero-actions">
+          <a class="hero-action" href="#featured">Featured</a>
+          <a class="hero-action" href="#all">All</a>
+          <a class="hero-action" href="#tags">Tags</a>
+        </div>
+
         <div class="hero-rule"></div>
       </header>
 
-      {% assign featured = site.data.projects | where: "featured", true %}
+      {% assign projects = site.data.projects %}
+      {% if projects == nil %}
+        {% assign projects = "" | split: "" %}
+      {% endif %}
+
+      {% assign projects_sorted = projects | sort: "year" | reverse %}
+      {% assign featured = projects_sorted | where: "featured", true %}
+
+      {%- comment -%}
+      Build a unique tag list (Liquid has no "unique" filter for arrays-of-arrays nicely, so we do a string join trick).
+      {%- endcomment -%}
+      {% assign tag_string = "" %}
+      {% for p in projects_sorted %}
+        {% if p.tags %}
+          {% for t in p.tags %}
+            {% assign tag_string = tag_string | append: t | append: "|" %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+      {% assign tags_all = tag_string | split: "|" | sort %}
+      {% assign tags_unique = "" | split: "" %}
+      {% for t in tags_all %}
+        {% if t != "" %}
+          {% if tags_unique contains t %}
+          {% else %}
+            {% assign tags_unique = tags_unique | push: t %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
       {% if featured and featured.size > 0 %}
-      <section class="projects-section">
+      <section id="featured" class="projects-section">
         <div class="section-head">
           <div class="section-title">Featured missions</div>
           <div class="section-meta">hand-picked</div>
@@ -37,11 +73,9 @@
           <article class="card card-featured">
             <div class="card-top">
               <div class="meta">
-                <span class="pill">{{ p.status }}</span>
-                <span class="dot">•</span>
-                <span class="meta-text">{{ p.year }}</span>
-                <span class="dot">•</span>
-                <span class="meta-text">{{ p.category }}</span>
+                {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
               </div>
               <h2 class="card-title">{{ p.title }}</h2>
               {% if p.role %}
@@ -55,12 +89,14 @@
             </div>
             {% endif %}
 
+            {% if p.summary %}
             <p class="card-summary">{{ p.summary }}</p>
+            {% endif %}
 
             {% if p.tags %}
             <div class="chips">
               {% for t in p.tags %}
-                <span class="chip">{{ t }}</span>
+                <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
               {% endfor %}
             </div>
             {% endif %}
@@ -78,49 +114,140 @@
       </section>
       {% endif %}
 
-      <section class="projects-section">
+      <section id="tags" class="projects-section">
+        <div class="section-head">
+          <div class="section-title">Tags</div>
+          <div class="section-meta">{{ tags_unique | size }}</div>
+        </div>
+
+        {% if tags_unique == nil or tags_unique.size == 0 %}
+          <div class="empty-state">
+            <p>No tags yet. Add <code>tags</code> arrays to projects in <code>_data/projects.yml</code>.</p>
+          </div>
+        {% else %}
+          <div class="tag-cloud">
+            {% for t in tags_unique %}
+              <a class="tag-pill" href="#tag-{{ t | slugify }}">{{ t }}</a>
+            {% endfor %}
+          </div>
+
+          <div class="tag-sections">
+            {% for t in tags_unique %}
+              <div id="tag-{{ t | slugify }}" class="tag-section">
+                <div class="tag-section-head">
+                  <div class="tag-name">{{ t }}</div>
+                  <a class="tag-back" href="#tags">Back</a>
+                </div>
+
+                <div class="cards-grid">
+                  {% for p in projects_sorted %}
+                    {% if p.tags and p.tags contains t %}
+                      <article class="card">
+                        <div class="card-top">
+                          <div class="meta">
+                            {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                            {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                            {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
+                          </div>
+                          <h2 class="card-title">{{ p.title }}</h2>
+                          {% if p.role %}
+                          <div class="card-role">{{ p.role }}</div>
+                          {% endif %}
+                        </div>
+
+                        {% if p.summary %}
+                        <p class="card-summary">{{ p.summary }}</p>
+                        {% endif %}
+
+                        {% if p.links %}
+                        <div class="card-links">
+                          {% for l in p.links %}
+                            <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                          {% endfor %}
+                        </div>
+                        {% endif %}
+                      </article>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </section>
+
+      <section id="all" class="projects-section">
         <div class="section-head">
           <div class="section-title">All projects</div>
-          <div class="section-meta">{{ site.data.projects | size }}</div>
+          <div class="section-meta">{{ projects_sorted | size }}</div>
         </div>
 
-        <div class="cards-grid">
-          {% for p in site.data.projects %}
-          <article class="card">
-            <div class="card-top">
-              <div class="meta">
-                <span class="pill">{{ p.status }}</span>
-                <span class="dot">•</span>
-                <span class="meta-text">{{ p.year }}</span>
-                <span class="dot">•</span>
-                <span class="meta-text">{{ p.category }}</span>
+        {% if projects_sorted == nil or projects_sorted.size == 0 %}
+          <div class="empty-state">
+            <p>
+              No projects loaded yet.
+              Create <code>_data/projects.yml</code> and add entries to populate this page.
+            </p>
+          </div>
+        {% else %}
+
+          {% assign current_year = "" %}
+          {% for p in projects_sorted %}
+            {% if p.year != current_year %}
+              {% assign current_year = p.year %}
+              <div class="year-divider">
+                <div class="year-title">{{ current_year }}</div>
+                <div class="year-rule"></div>
               </div>
-              <h2 class="card-title">{{ p.title }}</h2>
-              {% if p.role %}
-              <div class="card-role">{{ p.role }}</div>
+              <div class="cards-grid">
+            {% endif %}
+
+            <article class="card">
+              <div class="card-top">
+                <div class="meta">
+                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                  {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                  {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
+                </div>
+                <h2 class="card-title">{{ p.title }}</h2>
+                {% if p.role %}
+                <div class="card-role">{{ p.role }}</div>
+                {% endif %}
+              </div>
+
+              {% if p.summary %}
+              <p class="card-summary">{{ p.summary }}</p>
               {% endif %}
-            </div>
 
-            <p class="card-summary">{{ p.summary }}</p>
+              {% if p.tags %}
+              <div class="chips">
+                {% for t in p.tags %}
+                  <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
+                {% endfor %}
+              </div>
+              {% endif %}
 
-            {% if p.tags %}
-            <div class="chips">
-              {% for t in p.tags %}
-                <span class="chip">{{ t }}</span>
-              {% endfor %}
-            </div>
+              {% if p.links %}
+              <div class="card-links">
+                {% for l in p.links %}
+                  <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </article>
+
+            {% assign next_index = forloop.index0 | plus: 1 %}
+            {% if next_index < projects_sorted.size %}
+              {% assign next_p = projects_sorted[next_index] %}
+              {% if next_p.year != current_year %}
+                </div>
+              {% endif %}
+            {% else %}
+              </div>
             {% endif %}
-
-            {% if p.links %}
-            <div class="card-links">
-              {% for l in p.links %}
-                <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-              {% endfor %}
-            </div>
-            {% endif %}
-          </article>
           {% endfor %}
-        </div>
+
+        {% endif %}
       </section>
 
       <footer class="projects-footer">
