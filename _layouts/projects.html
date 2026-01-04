@@ -133,11 +133,8 @@
 
           <div class="tag-sections">
             {% for t in tags_unique %}
-              <div id="tag-{{ t | slugify }}" class="tag-section">
-                <div class="tag-section-head">
-                  <div class="tag-name">{{ t }}</div>
-                  <a class="tag-back" href="#tags">Back</a>
-                </div>
+              <details id="tag-{{ t | slugify }}" class="tag-accordion">
+                <summary class="tag-summary">{{ t }}</summary>
 
                 <div class="cards-grid">
                   {% for p in projects_sorted %}
@@ -170,7 +167,11 @@
                     {% endif %}
                   {% endfor %}
                 </div>
-              </div>
+
+                <div class="tag-accordion-footer">
+                  <a class="tag-back" href="#tags">Back</a>
+                </div>
+              </details>
             {% endfor %}
           </div>
         {% endif %}

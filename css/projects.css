@@ -87,7 +87,7 @@
 .featured-grid,
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 16px;
 }
 
@@ -324,6 +324,13 @@
   opacity: 0.95;
 }
 
+.tag-section:target {
+  outline: 1px solid rgba(0, 63, 135, 0.25);
+  background: rgba(0, 63, 135, 0.03);
+  border-radius: 14px;
+  padding: 12px;
+}
+
 .chip-link {
   text-decoration: none;
   color: inherit;
@@ -353,4 +360,14 @@
   height: 1px;
   flex: 1;
   background: rgba(0, 0, 0, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ajusta si tu nav ocupa más/menos */
+.projects-section,
+.tag-section {
+  scroll-margin-top: 90px;
 }
