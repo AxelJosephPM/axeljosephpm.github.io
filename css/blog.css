@@ -1,69 +1,611 @@
-/* =========================
-   SERIES BOX — ultra compact
-   ========================= */
+/* =========================================
+   blog.css — Axel Joseph
+   - Blog index: cream background + white cards
+   - Post pages: pure white "paper" layout
+   - Compact editorial series box
+   ========================================= */
 
-/* If your include uses .series-box, .series-head, etc. */
-.series-mini .series-box {
-  margin-top: 12px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: #ffffff;
+/* ---------- Base / tokens ---------- */
+
+:root {
+  --bg-cream: #fbf7ef;
+  --bg-white: #ffffff;
+
+  --text: #1f1f1f;
+  --muted: rgba(0, 0, 0, 0.60);
+  --muted-2: rgba(0, 0, 0, 0.45);
+
+  --border: rgba(0, 0, 0, 0.10);
+  --border-soft: rgba(0, 0, 0, 0.08);
+
+  --card: #ffffff;
+  --card-hover: rgba(0, 0, 0, 0.02);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+
+  --shadow-soft: 0 1px 0 rgba(0, 0, 0, 0.03);
+  --max: 920px;
 }
 
-/* Make header row feel like a small label */
-.series-mini .series-box .series-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-  font-size: 10px;
-  letter-spacing: 0.20em;
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg-white);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.55;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  opacity: 0.86;
+}
+
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+}
+
+/* ---------- Blog index page layout ---------- */
+
+body.blog-page {
+  background: var(--bg-cream);
+}
+
+.blog-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 64px 20px 70px;
+}
+
+/* Header / hero */
+.blog-hero .hero-kicker,
+.blog-hero .hero-kicker {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.55;
+  margin-bottom: 10px;
+}
+
+.blog-hero .hero-title {
+  font-size: 54px;
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+
+.blog-hero .hero-subtitle {
+  margin: 0;
+  max-width: 70ch;
+  opacity: 0.72;
+}
+
+/* Quote block under subtitle */
+.blog-quote {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.blog-quote blockquote {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.blog-quote .q {
+  opacity: 0.78;
+}
+
+.blog-quote .a {
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   opacity: 0.55;
+}
 
+/* Tabs */
+.hero-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-action {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  opacity: 0.65;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.20);
+}
+
+.hero-action:hover {
+  opacity: 0.90;
+}
+
+.hero-rule {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.18);
+  margin-top: 18px;
+  opacity: 0.55;
+}
+
+/* Sections */
+.blog-section {
+  margin-top: 26px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.section-meta {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
+
+/* Tag pills (top) */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-pill {
+  display: inline-block;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.tag-pill:hover {
+  opacity: 0.95;
+}
+
+/* Cards (posts list) */
+.cards {
+  display: grid;
+  gap: 14px;
+}
+
+/* Generic card style (shared with projects look) */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.card:hover {
+  background: var(--card);
+}
+
+.card-top {
+  margin-bottom: 10px;
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dot {
+  opacity: 0.35;
+}
+
+.meta-text {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.pill {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  opacity: 0.70;
+}
+
+.card-title {
+  font-size: 20px;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
   margin: 0 0 6px;
 }
 
-/* Reduce list spacing and avoid "big UI" feel */
-.series-mini .series-box ul {
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
+.card-summary {
+  margin: 0 0 10px;
+  opacity: 0.78;
+  max-width: 78ch;
 }
 
-.series-mini .series-box li {
-  margin: 0;
+/* Chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+
+.chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.015);
+  text-decoration: none;
+  opacity: 0.78;
+}
+
+.chip:hover {
+  opacity: 0.95;
+}
+
+/* Links row */
+.card-links {
+  margin-top: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.card-links .link {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.22);
+  padding-bottom: 3px;
+  opacity: 0.68;
+}
+
+.card-links .link:hover {
+  opacity: 0.95;
+}
+
+.empty-state {
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-soft);
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 0.82;
+}
+
+/* Footer */
+.blog-footer {
+  margin-top: 28px;
+}
+
+.footer-rule {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.16);
+  opacity: 0.55;
+}
+
+.footer-text {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.50;
+}
+
+/* ---------- Post page (white paper) ---------- */
+
+body.post-white {
+  background: #ffffff;
+}
+
+.post-wrap-min {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 64px 20px 64px;
+}
+
+.post-hero-min .hero-kicker {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.55;
+  margin-bottom: 10px;
+}
+
+.post-title-min {
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+}
+
+.post-meta-min {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 12px;
+}
+
+.hero-actions-min {
+  margin-top: 10px;
+  gap: 14px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hero-rule-min {
+  margin-top: 22px;
+  opacity: 0.35;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+/* smaller chips on post page */
+.chips-min {
+  margin-top: 6px;
+}
+
+.chips-min .chip {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+/* remove heavy boxes: post content becomes clean paper */
+.post-content-min {
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin-top: 24px;
+  max-width: 68ch;
+}
+
+/* long-form typography */
+.post-content-min p {
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+.post-content-min h1,
+.post-content-min h2,
+.post-content-min h3 {
+  letter-spacing: -0.01em;
+}
+
+.post-content-min h2 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.post-content-min h3 {
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+
+.post-content-min ul,
+.post-content-min ol {
+  margin: 0 0 16px 18px;
+}
+
+.post-content-min li {
+  margin: 6px 0;
+}
+
+.post-content-min img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+}
+
+/* code blocks */
+.post-content-min pre {
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 12px;
+  padding: 12px 14px;
+  overflow: auto;
+  background: #fbfbfb;
+}
+
+.post-content-min code {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 0.1em 0.3em;
+  border-radius: 6px;
+}
+
+.post-content-min pre code {
+  background: transparent;
   padding: 0;
 }
 
-/* Links: small, calm */
-.series-mini .series-box a {
-  display: inline-block;
+/* blockquotes: subtle callout */
+.post-content-min blockquote {
+  margin: 18px 0;
+  padding: 12px 14px;
+  border-left: 3px solid rgba(0, 0, 0, 0.28);
+  background: #fafafa;
+  border-radius: 12px;
+}
+
+/* ---------- SERIES BOX — editorial/minimal ---------- */
+
+.series-mini .series-box {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+}
+
+.series-mini .series-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+
+.series-mini .series-left {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.series-mini .series-kicker {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+.series-mini .series-dot {
+  opacity: 0.35;
+}
+
+.series-mini .series-name {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.70;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40ch;
+}
+
+.series-mini .series-count {
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  opacity: 0.50;
+  white-space: nowrap;
+}
+
+.series-mini .series-list {
+  display: grid;
+  gap: 6px;
+}
+
+.series-mini .series-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+
+  padding: 6px 8px;
+  border-radius: 10px;
+
+  text-decoration: none;
+  color: inherit;
+
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.series-mini .series-item:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.series-mini .series-index {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+.series-mini .series-text {
   font-size: 13px;
   line-height: 1.35;
-  text-decoration: underline;
-  text-underline-offset: 3px;
   opacity: 0.92;
 }
 
-/* If your series include marks current post with a class,
-   these make it subtle instead of a big highlight */
-.series-mini .series-box .is-current,
-.series-mini .series-box a[aria-current="page"] {
-  text-decoration: none;
-  opacity: 0.65;
-  cursor: default;
+.series-mini .series-item.is-current,
+.series-mini .series-item[aria-current="page"] {
+  border-color: rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.015);
 }
 
-/* Optional: if the include has numbering pills (#1, #2...) */
-.series-mini .series-box .series-index,
-.series-mini .series-box .pill,
-.series-mini .series-box .tag {
-  font-size: 10px;
-  padding: 3px 7px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,0,0,0.10);
-  background: transparent;
-  opacity: 0.65;
+.series-mini .series-item.is-current .series-text,
+.series-mini .series-item[aria-current="page"] .series-text {
+  opacity: 0.70;
+}
+
+.series-mini .series-item.is-current .series-index,
+.series-mini .series-item[aria-current="page"] .series-index {
+  opacity: 0.45;
+}
+
+/* ---------- Responsive tweaks ---------- */
+
+@media (max-width: 640px) {
+  .blog-hero .hero-title {
+    font-size: 44px;
+  }
+
+  .post-title-min {
+    font-size: 36px;
+  }
+
+  .card {
+    padding: 16px 16px;
+  }
 }
