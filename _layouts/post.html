@@ -1,3 +1,7 @@
+---
+layout: null
+---
+
 <!doctype html>
 <html>
   <head>
@@ -10,17 +14,16 @@
     {% include mathjax.html %}
   </head>
 
-  <body class="post-page post-white">
+  <body class="post-page">
     {% include nav.html %}
 
-    <main class="post-wrap post-wrap-min">
-      <header class="post-hero post-hero-min">
-        <div class="hero-kicker">BLOG POST</div>
-        <h1 class="hero-title post-title-min">{{ page.title }}</h1>
+    <main class="post-wrap">
+      <header class="post-hero">
+        <div class="post-kicker">BLOG POST</div>
+        <h1 class="post-title">{{ page.title }}</h1>
 
-        <div class="post-meta post-meta-min">
+        <div class="post-meta">
           <span class="meta-text">{{ page.date | date: "%d %B %Y" }}</span>
-
           {% if page.series %}
             <span class="dot">•</span>
             <span class="meta-text">Series: {{ page.series }}</span>
@@ -28,32 +31,55 @@
         </div>
 
         {% if page.tags %}
-          <div class="chips chips-min">
+          <div class="chips" style="margin-top:12px;">
             {% for t in page.tags %}
-              <a class="chip chip-link" href="/blog/#tag={{ t | slugify }}">{{ t }}</a>
+              <a class="chip" href="/blog/#tag-{{ t | slugify }}" data-tag="{{ t }}">{{ t }}</a>
             {% endfor %}
           </div>
         {% endif %}
 
+        <div class="post-actions">
+          <a href="/blog/">← Back to Blog</a>
+          <a href="{{ "/feed.xml" | relative_url }}">RSS</a>
+        </div>
+
         {% if page.series %}
-          <div class="series-mini">
-            {% include series_box.html %}
+          {%- comment -%} series box snippet (your version) {%- endcomment -%}
+          {% assign s = page.series %}
+          {% assign series_posts = site.posts | where: "series", s | sort: "series_index" %}
+
+          <div class="series-box">
+            <div class="series-head">
+              <div class="series-title">Series</div>
+              <div class="series-name">{{ s }}</div>
+            </div>
+
+            <div class="series-list">
+              {% for p in series_posts %}
+                {% if p.url == page.url %}
+                  <div class="series-item is-current">
+                    <span class="series-index">#{{ p.series_index }}</span>
+                    <span class="series-text">{{ p.title }}</span>
+                  </div>
+                {% else %}
+                  <a class="series-item" href="{{ p.url }}">
+                    <span class="series-index">#{{ p.series_index }}</span>
+                    <span class="series-text">{{ p.title }}</span>
+                  </a>
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
         {% endif %}
 
-        <div class="hero-actions hero-actions-min">
-          <a class="hero-action" href="/blog/">← Back to Blog</a>
-          <a class="hero-action" href="/rss.xml">RSS</a>
-        </div>
-
-        <div class="hero-rule hero-rule-min"></div>
+        <div class="post-rule"></div>
       </header>
 
-      <article class="post-content post-content-min">
+      <article class="post-content">
         {{ content }}
       </article>
 
-      <footer class="post-footer post-footer-min">
+      <footer class="blog-footer" style="margin-top:34px;">
         <div class="footer-rule"></div>
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
