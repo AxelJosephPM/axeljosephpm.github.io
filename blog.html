@@ -11,7 +11,10 @@ permalink: /blog/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title }} — {{ site.title }}</title>
 
+    <!-- Blog styling -->
     <link rel="stylesheet" href="/css/blog.css" />
+    <!-- Reuse NAV + tokens + “cream” from Projects -->
+    <link rel="stylesheet" href="/css/projects.css" />
 
     {% include mathjax.html %}
   </head>
@@ -24,81 +27,117 @@ permalink: /blog/
         <div class="hero-kicker">NOTES</div>
         <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
 
+        <!-- Quote (no box) -->
         <div class="blog-quote">
-          <blockquote>
-            <div class="q">
-              “I learned very early the difference between knowing the name of something and knowing something.”
-            </div>
-            <div class="a">Richard Feynman</div>
-          </blockquote>
+          <p class="blog-quote-text">
+            “I learned very early the difference between knowing the name of something and knowing something.”
+          </p>
+          <div class="blog-quote-author">Richard Feynman</div>
         </div>
 
         <div class="hero-actions">
-          <a class="hero-action" href="#tags">Tags</a>
-          <a class="hero-action" href="#posts">Posts</a>
-          <a class="hero-action" href="{{ "/feed.xml" | relative_url }}">RSS</a>
+          <a class="hero-action" href="#tags">TAGS</a>
+          <a class="hero-action" href="#posts">POSTS</a>
+          <a class="hero-action" href="/feed.xml">RSS</a>
         </div>
 
         <div class="hero-rule"></div>
       </header>
-
-      {%- comment -%}
-      Tag filtering:
-        - Supports /blog/?tag=math
-        - Also supports anchors like /blog/#tag-math (from old links)
-      {%- endcomment -%}
 
       {% assign posts_sorted = site.posts %}
       {% if posts_sorted == nil %}
         {% assign posts_sorted = "" | split: "" %}
       {% endif %}
 
-      {%- comment -%} Selected tag from query string {%- endcomment -%}
-      {% assign selected_tag = "" %}
-      {% if page.url contains "?" %}
-        {# (not reliable in GH pages build) #}
-      {% endif %}
-
       {%- comment -%}
-      GitHub Pages/Jekyll doesn't expose query params in Liquid.
-      So we do the filter with a tiny JS snippet at the end, but:
-        - HTML still renders correctly without JS (shows all posts)
-        - Tag pills link to #tag-<slug> so JS can read it
-      {%- endcomment -%}
-
-      {%- comment -%}
-      Build tags list from site.tags (tag -> [posts])
-      site.tags is a map: [ [tagName, postsArray], ... ]
+      Build unique tag list from site.tags (map: tag -> [posts])
+      site.tags is a hash: { "tagname" => [posts...] }
       {%- endcomment -%}
       {% assign tags_sorted = site.tags | sort %}
+      {% assign tags_unique = "" | split: "" %}
+      {% for t in tags_sorted %}
+        {% assign tag_name = t[0] %}
+        {% if tag_name != "" %}
+          {% assign tags_unique = tags_unique | push: tag_name %}
+        {% endif %}
+      {% endfor %}
 
+      <!-- TAGS -->
       <section id="tags" class="blog-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta">{{ tags_sorted | size }}</div>
+          <div class="section-meta">{{ tags_unique | size }}</div>
         </div>
 
-        {% if tags_sorted == nil or tags_sorted.size == 0 %}
+        {% if tags_unique == nil or tags_unique.size == 0 %}
           <div class="empty-state">
-            <p>No tags yet. Add <code>tags</code> in your post frontmatter.</p>
+            <p>No tags yet.</p>
           </div>
         {% else %}
-          <div class="tag-cloud" id="tag-cloud">
-            <a class="tag-pill" href="#posts" data-tag="">All</a>
-            {% for t in tags_sorted %}
-              {% assign tag_name = t[0] %}
-              <a class="tag-pill" href="#tag-{{ tag_name | slugify }}" data-tag="{{ tag_name }}">
-                {{ tag_name }}
-              </a>
+          <div class="tag-cloud">
+            <a class="tag-pill tag-pill-clear" href="#posts">All</a>
+            {% for t in tags_unique %}
+              <a class="tag-pill" href="#tag-{{ t | slugify }}">{{ t }}</a>
+            {% endfor %}
+          </div>
+
+          <!-- Tag sections (works without JS) -->
+          <div class="tag-sections">
+            {% for t in tags_unique %}
+              <div id="tag-{{ t | slugify }}" class="tag-section">
+                <div class="tag-section-head">
+                  <div class="tag-name">{{ t }}</div>
+                  <a class="tag-back" href="#tags">Back</a>
+                </div>
+
+                <div class="posts-grid">
+                  {% assign tag_posts = site.tags[t] %}
+                  {% if tag_posts %}
+                    {% for post in tag_posts %}
+                      <article class="post-card">
+                        <div class="post-top">
+                          <div class="post-meta">
+                            <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
+                            {% if post.series %}
+                              <span class="dot">•</span>
+                              <span class="meta-text">Series: {{ post.series }}</span>
+                            {% endif %}
+                          </div>
+                          <h2 class="post-title">
+                            <a href="{{ post.url }}">{{ post.title }}</a>
+                          </h2>
+                        </div>
+
+                        {% if post.excerpt %}
+                          <p class="post-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 180 }}</p>
+                        {% endif %}
+
+                        {% if post.tags %}
+                          <div class="chips">
+                            {% for tt in post.tags %}
+                              <a class="chip chip-link" href="#tag-{{ tt | slugify }}">{{ tt }}</a>
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+
+                        <div class="post-links">
+                          <a class="link" href="{{ post.url }}">READ</a>
+                        </div>
+                      </article>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
             {% endfor %}
           </div>
         {% endif %}
       </section>
 
+      <!-- POSTS -->
       <section id="posts" class="blog-section">
         <div class="section-head">
           <div class="section-title">Posts</div>
-          <div class="section-meta"><span id="posts-count">{{ posts_sorted | size }}</span></div>
+          <div class="section-meta">{{ posts_sorted | size }}</div>
         </div>
 
         {% if posts_sorted == nil or posts_sorted.size == 0 %}
@@ -106,49 +145,37 @@ permalink: /blog/
             <p>No posts yet.</p>
           </div>
         {% else %}
-          <div class="cards" id="posts-list">
+          <div class="posts-grid">
             {% for post in posts_sorted %}
-              {% assign post_tags = "" %}
-              {% if post.tags %}
-                {% assign tag_attr = "" %}
-                {% for tt in post.tags %}
-                  {% assign tag_attr = tag_attr | append: tt | append: "|" %}
-                {% endfor %}
-                {% assign post_tags = tag_attr %}
-              {% endif %}
-
-              <article class="card post-card" data-tags="{{ post_tags | downcase }}">
-                <div class="card-top">
-                  <div class="meta">
+              <article class="post-card">
+                <div class="post-top">
+                  <div class="post-meta">
                     <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
-
                     {% if post.series %}
                       <span class="dot">•</span>
                       <span class="meta-text">Series: {{ post.series }}</span>
                     {% endif %}
                   </div>
 
-                  <h2 class="card-title">
-                    <a href="{{ post.url | relative_url }}" style="text-decoration:none;">
-                      {{ post.title }}
-                    </a>
+                  <h2 class="post-title">
+                    <a href="{{ post.url }}">{{ post.title }}</a>
                   </h2>
-
-                  {% if post.excerpt %}
-                    <p class="card-summary">{{ post.excerpt | strip_html | truncate: 180 }}</p>
-                  {% endif %}
                 </div>
+
+                {% if post.excerpt %}
+                  <p class="post-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 180 }}</p>
+                {% endif %}
 
                 {% if post.tags %}
                   <div class="chips">
-                    {% for tt in post.tags %}
-                      <a class="chip" href="#tag-{{ tt | slugify }}" data-tag="{{ tt }}">{{ tt }}</a>
+                    {% for t in post.tags %}
+                      <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
                     {% endfor %}
                   </div>
                 {% endif %}
 
-                <div class="card-links">
-                  <a class="link" href="{{ post.url | relative_url }}">Read</a>
+                <div class="post-links">
+                  <a class="link" href="{{ post.url }}">READ</a>
                 </div>
               </article>
             {% endfor %}
@@ -161,90 +188,5 @@ permalink: /blog/
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
     </main>
-
-    <script>
-      // Minimal tag filter:
-      // - Works with #tag-<slug> anchors and also ?tag=<name>
-      // - No build-time dependency (works on GitHub Pages)
-      (function () {
-        function getQueryTag() {
-          try {
-            var p = new URLSearchParams(window.location.search);
-            return (p.get("tag") || "").trim();
-          } catch (e) {
-            return "";
-          }
-        }
-
-        function getHashTag() {
-          var h = (window.location.hash || "").trim();
-          if (!h) return "";
-          if (h.indexOf("#tag-") !== 0) return "";
-          return decodeURIComponent(h.slice(5)).replace(/-/g, " ").trim();
-        }
-
-        function normalize(s) {
-          return (s || "").toLowerCase().trim();
-        }
-
-        function apply(tag) {
-          var wanted = normalize(tag);
-          var cards = document.querySelectorAll(".post-card");
-          var count = 0;
-
-          cards.forEach(function (card) {
-            var tags = normalize(card.getAttribute("data-tags") || "");
-            var ok = !wanted || tags.indexOf(wanted) !== -1;
-            card.style.display = ok ? "" : "none";
-            if (ok) count++;
-          });
-
-          var c = document.getElementById("posts-count");
-          if (c) c.textContent = String(count);
-
-          // highlight selected pill (optional)
-          document.querySelectorAll(".tag-pill, .chip").forEach(function (a) {
-            var t = normalize(a.getAttribute("data-tag") || "");
-            if (!wanted && t === "") a.style.opacity = "1";
-            else if (wanted && t && wanted === normalize(t)) a.style.opacity = "1";
-            else a.style.opacity = "";
-          });
-        }
-
-        function currentTag() {
-          return getQueryTag() || getHashTag();
-        }
-
-        // initial
-        apply(currentTag());
-
-        // react to clicks / hash changes
-        window.addEventListener("hashchange", function () {
-          apply(currentTag());
-        });
-
-        // allow clicking pills to filter even if hash doesn't change (e.g. clicking same tag)
-        document.addEventListener("click", function (e) {
-          var a = e.target.closest("[data-tag]");
-          if (!a) return;
-
-          var t = a.getAttribute("data-tag") || "";
-          // "All" resets
-          if (!t) {
-            // clear hash but keep posts section
-            history.replaceState(null, "", window.location.pathname + "#posts");
-            apply("");
-            e.preventDefault();
-            return;
-          }
-
-          // set hash to tag
-          var slug = encodeURIComponent(String(t).trim().toLowerCase().replace(/\s+/g, "-"));
-          history.replaceState(null, "", window.location.pathname + "#tag-" + slug);
-          apply(t);
-          e.preventDefault();
-        });
-      })();
-    </script>
   </body>
 </html>
