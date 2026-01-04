@@ -101,13 +101,16 @@
             </div>
             {% endif %}
 
-            {% if p.links %}
             <div class="card-links">
-              {% for l in p.links %}
-                <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-              {% endfor %}
+              {% if p.slug %}
+                <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
+              {% endif %}
+              {% if p.links %}
+                {% for l in p.links %}
+                  <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                {% endfor %}
+              {% endif %}
             </div>
-            {% endif %}
           </article>
           {% endfor %}
         </div>
@@ -156,13 +159,16 @@
                         <p class="card-summary">{{ p.summary }}</p>
                         {% endif %}
 
-                        {% if p.links %}
                         <div class="card-links">
-                          {% for l in p.links %}
-                            <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-                          {% endfor %}
+                          {% if p.slug %}
+                            <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
+                          {% endif %}
+                          {% if p.links %}
+                            {% for l in p.links %}
+                              <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                            {% endfor %}
+                          {% endif %}
                         </div>
-                        {% endif %}
                       </article>
                     {% endif %}
                   {% endfor %}
@@ -228,13 +234,16 @@
               </div>
               {% endif %}
 
-              {% if p.links %}
               <div class="card-links">
-                {% for l in p.links %}
-                  <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-                {% endfor %}
+                {% if p.slug %}
+                  <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
+                {% endif %}
+                {% if p.links %}
+                  {% for l in p.links %}
+                    <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                  {% endfor %}
+                {% endif %}
               </div>
-              {% endif %}
             </article>
 
             {% assign next_index = forloop.index0 | plus: 1 %}
