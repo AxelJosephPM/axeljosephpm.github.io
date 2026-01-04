@@ -24,7 +24,7 @@
 
         <div class="hero-actions">
           <a class="hero-action" href="#featured">Featured</a>
-          <a class="hero-action" href="#all">All</a>
+          <a class="hero-action" href="#browse">Browse</a>
           <a class="hero-action" href="#tags">Tags</a>
         </div>
 
@@ -40,7 +40,7 @@
       {% assign featured = projects_sorted | where: "featured", true %}
 
       {%- comment -%}
-      Build a unique tag list (Liquid has no "unique" filter for arrays-of-arrays nicely, so we do a string join trick).
+      Build a unique tag list.
       {%- endcomment -%}
       {% assign tag_string = "" %}
       {% for p in projects_sorted %}
@@ -96,7 +96,7 @@
             {% if p.tags %}
             <div class="chips">
               {% for t in p.tags %}
-                <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
+                <a class="chip chip-link tag-jump" href="#tag-{{ t | slugify }}" data-tag="{{ t | slugify }}">{{ t }}</a>
               {% endfor %}
             </div>
             {% endif %}
@@ -120,7 +120,9 @@
       <section id="tags" class="projects-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta">{{ tags_unique | size }}</div>
+          <div class="section-meta">
+            <span id="filterCount">{{ projects_sorted | size }}</span>/<span id="totalCount">{{ projects_sorted | size }}</span>
+          </div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
@@ -128,65 +130,33 @@
             <p>No tags yet. Add <code>tags</code> arrays to projects in <code>_data/projects.yml</code>.</p>
           </div>
         {% else %}
-          <div class="tag-cloud">
+          <div class="tag-cloud" id="tagCloud">
+            <button class="tag-pill tag-pill-clear" id="clearTag" type="button" aria-pressed="false" hidden>
+              Clear
+            </button>
+
             {% for t in tags_unique %}
-              <a class="tag-pill" href="#tag-{{ t | slugify }}">{{ t }}</a>
+              <button
+                class="tag-pill tag-filter"
+                type="button"
+                data-tag="{{ t | slugify }}"
+                aria-pressed="false"
+              >
+                {{ t }}
+              </button>
             {% endfor %}
           </div>
 
-          <div class="tag-sections">
-            {% for t in tags_unique %}
-              <details id="tag-{{ t | slugify }}" class="tag-accordion">
-                <summary class="tag-summary">{{ t }}</summary>
-
-                <div class="cards-grid">
-                  {% for p in projects_sorted %}
-                    {% if p.tags and p.tags contains t %}
-                      <article class="card">
-                        <div class="card-top">
-                          <div class="meta">
-                            {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
-                            {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
-                            {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
-                          </div>
-                          <h2 class="card-title">{{ p.title }}</h2>
-                          {% if p.role %}
-                          <div class="card-role">{{ p.role }}</div>
-                          {% endif %}
-                        </div>
-
-                        {% if p.summary %}
-                        <p class="card-summary">{{ p.summary }}</p>
-                        {% endif %}
-
-                        <div class="card-links">
-                          {% if p.slug %}
-                            <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
-                          {% endif %}
-                          {% if p.links %}
-                            {% for l in p.links %}
-                              <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-                            {% endfor %}
-                          {% endif %}
-                        </div>
-                      </article>
-                    {% endif %}
-                  {% endfor %}
-                </div>
-
-                <div class="tag-accordion-footer">
-                  <a class="tag-back" href="#tags">Back</a>
-                </div>
-              </details>
-            {% endfor %}
+          <div class="filter-hint" id="filterHint" hidden>
+            Filtering by: <span class="filter-name" id="filterName"></span>
           </div>
         {% endif %}
       </section>
 
-      <section id="all" class="projects-section">
+      <section id="browse" class="projects-section">
         <div class="section-head">
-          <div class="section-title">All projects</div>
-          <div class="section-meta">{{ projects_sorted | size }}</div>
+          <div class="section-title">Browse</div>
+          <div class="section-meta">all projects</div>
         </div>
 
         {% if projects_sorted == nil or projects_sorted.size == 0 %}
@@ -197,66 +167,53 @@
             </p>
           </div>
         {% else %}
+          <div class="cards-grid" id="projectsGrid">
+            {% for p in projects_sorted %}
+              {%- assign tags_attr = "" -%}
+              {%- if p.tags -%}
+                {%- for tt in p.tags -%}
+                  {%- assign tags_attr = tags_attr | append: tt | slugify | append: " " -%}
+                {%- endfor -%}
+              {%- endif -%}
 
-          {% assign current_year = "" %}
-          {% for p in projects_sorted %}
-            {% if p.year != current_year %}
-              {% assign current_year = p.year %}
-              <div class="year-divider">
-                <div class="year-title">{{ current_year }}</div>
-                <div class="year-rule"></div>
-              </div>
-              <div class="cards-grid">
-            {% endif %}
-
-            <article class="card">
-              <div class="card-top">
-                <div class="meta">
-                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
-                  {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
-                  {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
+              <article class="card project-card" data-tags="{{ tags_attr | strip }}">
+                <div class="card-top">
+                  <div class="meta">
+                    {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                    {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                    {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
+                  </div>
+                  <h2 class="card-title">{{ p.title }}</h2>
+                  {% if p.role %}
+                  <div class="card-role">{{ p.role }}</div>
+                  {% endif %}
                 </div>
-                <h2 class="card-title">{{ p.title }}</h2>
-                {% if p.role %}
-                <div class="card-role">{{ p.role }}</div>
+
+                {% if p.summary %}
+                <p class="card-summary">{{ p.summary }}</p>
                 {% endif %}
-              </div>
 
-              {% if p.summary %}
-              <p class="card-summary">{{ p.summary }}</p>
-              {% endif %}
-
-              {% if p.tags %}
-              <div class="chips">
-                {% for t in p.tags %}
-                  <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
-                {% endfor %}
-              </div>
-              {% endif %}
-
-              <div class="card-links">
-                {% if p.slug %}
-                  <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
-                {% endif %}
-                {% if p.links %}
-                  {% for l in p.links %}
-                    <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                {% if p.tags %}
+                <div class="chips">
+                  {% for t in p.tags %}
+                    <a class="chip chip-link tag-jump" href="#tag-{{ t | slugify }}" data-tag="{{ t | slugify }}">{{ t }}</a>
                   {% endfor %}
-                {% endif %}
-              </div>
-            </article>
-
-            {% assign next_index = forloop.index0 | plus: 1 %}
-            {% if next_index < projects_sorted.size %}
-              {% assign next_p = projects_sorted[next_index] %}
-              {% if next_p.year != current_year %}
                 </div>
-              {% endif %}
-            {% else %}
-              </div>
-            {% endif %}
-          {% endfor %}
+                {% endif %}
 
+                <div class="card-links">
+                  {% if p.slug %}
+                    <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
+                  {% endif %}
+                  {% if p.links %}
+                    {% for l in p.links %}
+                      <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
         {% endif %}
       </section>
 
@@ -265,5 +222,109 @@
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
     </main>
+
+    <script>
+      (function () {
+        const grid = document.getElementById("projectsGrid");
+        const tagCloud = document.getElementById("tagCloud");
+        if (!grid || !tagCloud) return;
+
+        const cards = Array.from(grid.querySelectorAll(".project-card"));
+        const tagButtons = Array.from(tagCloud.querySelectorAll(".tag-filter"));
+        const clearBtn = document.getElementById("clearTag");
+        const filterCount = document.getElementById("filterCount");
+        const filterHint = document.getElementById("filterHint");
+        const filterName = document.getElementById("filterName");
+
+        const total = cards.length;
+
+        function setHash(tag) {
+          if (!tag) {
+            history.replaceState(null, "", location.pathname + location.search);
+            return;
+          }
+          history.replaceState(null, "", "#tag-" + tag);
+        }
+
+        function getHashTag() {
+          const h = (location.hash || "").trim();
+          if (!h.startsWith("#tag-")) return "";
+          return h.replace("#tag-", "").trim();
+        }
+
+        function updateUI(activeTag) {
+          // buttons state
+          tagButtons.forEach(btn => {
+            const isActive = btn.dataset.tag === activeTag;
+            btn.classList.toggle("is-active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+          });
+
+          // clear button + hint
+          const hasFilter = !!activeTag;
+          clearBtn.hidden = !hasFilter;
+          clearBtn.setAttribute("aria-pressed", hasFilter ? "true" : "false");
+          filterHint.hidden = !hasFilter;
+          if (hasFilter) filterName.textContent = activeTag;
+
+          // filter cards
+          let visible = 0;
+          cards.forEach(card => {
+            if (!activeTag) {
+              card.hidden = false;
+              visible++;
+              return;
+            }
+            const tags = (card.dataset.tags || "").split(/\s+/).filter(Boolean);
+            const ok = tags.includes(activeTag);
+            card.hidden = !ok;
+            if (ok) visible++;
+          });
+
+          filterCount.textContent = String(visible);
+        }
+
+        function applyTag(tag) {
+          const active = tag || "";
+          setHash(active);
+          updateUI(active);
+          // move focus/scroll to grid for a "nice" feeling
+          const browse = document.getElementById("browse");
+          if (browse) browse.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        // click on tag pills
+        tagButtons.forEach(btn => {
+          btn.addEventListener("click", () => {
+            const tag = btn.dataset.tag;
+            const current = getHashTag();
+            // toggle behavior
+            applyTag(current === tag ? "" : tag);
+          });
+        });
+
+        // clear
+        clearBtn.addEventListener("click", () => applyTag(""));
+
+        // clicking chips inside cards should filter too (no need accordion)
+        document.querySelectorAll(".tag-jump").forEach(a => {
+          a.addEventListener("click", (e) => {
+            const tag = a.dataset.tag;
+            if (!tag) return;
+            e.preventDefault();
+            applyTag(tag);
+          });
+        });
+
+        // init from URL hash
+        const initial = getHashTag();
+        updateUI(initial);
+
+        // respond to manual hash change
+        window.addEventListener("hashchange", () => {
+          updateUI(getHashTag());
+        });
+      })();
+    </script>
   </body>
 </html>
