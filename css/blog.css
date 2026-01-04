@@ -1,130 +1,69 @@
 /* =========================
-   POST PAGE — white, minimal
+   SERIES BOX — ultra compact
    ========================= */
 
-body.post-white {
-  background: #ffffff;
-}
-
-/* keep wrap narrower (paper feel) */
-.post-wrap-min {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 64px 20px 64px;
-}
-
-/* make header more editorial */
-.post-hero-min .hero-kicker {
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 11px;
-  opacity: 0.55;
-  margin-bottom: 10px;
-}
-
-.post-title-min {
-  font-size: 44px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 0 0 14px;
-}
-
-.post-meta-min {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.65;
-  margin-bottom: 12px;
-}
-
-.hero-actions-min {
-  margin-top: 10px;
-  gap: 14px;
-}
-
-.hero-rule-min {
-  margin-top: 22px;
-  opacity: 0.35;
-}
-
-/* smaller chips on post page */
-.chips-min .chip {
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 999px;
-}
-
-/* remove heavy boxes: post content becomes clean paper */
-.post-content-min {
-  border: none;
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  margin-top: 24px;
-
-  /* readable long-form */
-  max-width: 68ch;
-}
-
-/* better typography for long posts */
-.post-content-min p {
-  line-height: 1.75;
-  margin: 0 0 16px;
-}
-
-.post-content-min h2 {
-  margin-top: 30px;
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
-}
-
-.post-content-min h3 {
-  margin-top: 22px;
-  margin-bottom: 8px;
-}
-
-/* images & figures: centered, clean */
-.post-content-min img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 20px auto;
-}
-
-/* code blocks: keep clean, not boxy */
-.post-content-min pre {
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: 12px;
-  padding: 12px 14px;
-  overflow: auto;
-  background: #fbfbfb;
-}
-
-/* blockquotes like subtle callouts */
-.post-content-min blockquote {
-  margin: 18px 0;
-  padding: 12px 14px;
-  border-left: 3px solid rgba(0,0,0,0.28);
-  background: #fafafa;
-  border-radius: 12px;
-}
-
-/* series box: smaller + subtler */
+/* If your include uses .series-box, .series-head, etc. */
 .series-mini .series-box {
-  margin-top: 14px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.10);
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
   background: #ffffff;
 }
 
+/* Make header row feel like a small label */
 .series-mini .series-box .series-head {
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+  font-size: 10px;
+  letter-spacing: 0.20em;
   text-transform: uppercase;
-  opacity: 0.60;
+  opacity: 0.55;
+
+  margin: 0 0 6px;
 }
 
+/* Reduce list spacing and avoid "big UI" feel */
+.series-mini .series-box ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.series-mini .series-box li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Links: small, calm */
 .series-mini .series-box a {
+  display: inline-block;
   font-size: 13px;
+  line-height: 1.35;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.92;
+}
+
+/* If your series include marks current post with a class,
+   these make it subtle instead of a big highlight */
+.series-mini .series-box .is-current,
+.series-mini .series-box a[aria-current="page"] {
+  text-decoration: none;
+  opacity: 0.65;
+  cursor: default;
+}
+
+/* Optional: if the include has numbering pills (#1, #2...) */
+.series-mini .series-box .series-index,
+.series-mini .series-box .pill,
+.series-mini .series-box .tag {
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: transparent;
+  opacity: 0.65;
 }
