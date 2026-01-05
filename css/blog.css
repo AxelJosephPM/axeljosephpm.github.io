@@ -366,22 +366,31 @@ nav a:hover,
   }
 }
 
+/* Make button look exactly like the link */
 .link-btn {
   appearance: none;
   background: transparent;
   border: 0;
   padding: 0;
+  margin: 0;
   font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
   cursor: pointer;
 }
 
-.link-btn:focus {
-  outline: none;
+/* Keep underline behavior consistent */
+.link-btn {
+  display: inline-block; /* igual que el <a> */
 }
 
+/* Focus visible (accesible) sin romper estética */
+.link-btn:focus { outline: none; }
 .link-btn:focus-visible {
   outline: 2px solid rgba(0,0,0,0.25);
   outline-offset: 3px;
   border-radius: 8px;
 }
+
 
