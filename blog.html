@@ -11,7 +11,8 @@ permalink: /blog/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Blog" }} — {{ site.title }}</title>
 
-    <link rel="stylesheet" href="/css/blog.css" />
+    <!-- cache-busting para que SIEMPRE se vean cambios en GitHub Pages -->
+    <link rel="stylesheet" href="/css/blog.css?v={{ site.time | date: '%s' }}" />
 
     {% include mathjax.html %}
   </head>
@@ -24,9 +25,12 @@ permalink: /blog/
         <div class="hero-kicker">NOTES</div>
         <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
 
-        <p class="hero-quote">
-          “I learned very early the difference between knowing the name of something and knowing something.”
-          <span class="hero-quote-author">Richard Feynman</span>
+        <!-- cita sin caja -->
+        <p class="blog-quote">
+          <span class="blog-quote-text">
+            “I learned very early the difference between knowing the name of something and knowing something.”
+          </span>
+          <span class="blog-quote-author">Richard Feynman</span>
         </p>
 
         <div class="hero-actions">
@@ -41,7 +45,7 @@ permalink: /blog/
       {%- assign posts_sorted = site.posts | sort: "date" | reverse -%}
 
       {%- comment -%}
-      Build unique tag list from site.tags (map: tag -> [posts])
+      Tags come from site.tags map: tag -> [posts]
       {%- endcomment -%}
       {% assign tags_sorted = site.tags | sort %}
       {% assign tags_unique = "" | split: "" %}
@@ -54,7 +58,9 @@ permalink: /blog/
       <section id="tags" class="blog-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
+          <div class="section-meta">
+            <span id="tagCount">{{ tags_unique | size }}</span>
+          </div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
@@ -67,7 +73,7 @@ permalink: /blog/
             {% for t in tags_unique %}
               <button class="tag-pill" type="button" data-tag="{{ t | downcase | strip }}">{{ t }}</button>
             {% endfor %}
-            <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
+            <button class="tag-pill tag-pill-clear" type="button" id="clearTags">Clear</button>
           </div>
 
           <div class="filter-hint" id="filterHint" style="display:none;">
@@ -90,7 +96,7 @@ permalink: /blog/
             <p>No posts yet.</p>
           </div>
         {% else %}
-          <div class="posts-list" id="postsList">
+          <div class="posts-list posts-grid" id="postsList">
             {% for post in posts_sorted %}
               {% assign tags_attr = "" %}
               {% if post.tags %}
@@ -99,11 +105,7 @@ permalink: /blog/
                 {% endfor %}
               {% endif %}
 
-              <article
-                class="post-card"
-                data-tags="{{ tags_attr }}"
-                data-url="{{ post.url }}"
-              >
+              <article class="post-card" data-tags="{{ tags_attr }}" data-url="{{ post.url }}">
                 <div class="post-meta">
                   <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
                   {% if post.series %}
@@ -113,7 +115,7 @@ permalink: /blog/
                 </div>
 
                 <h2 class="post-title">
-                  <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
                 </h2>
 
                 {% if post.excerpt %}
@@ -128,14 +130,17 @@ permalink: /blog/
                   </div>
                 {% endif %}
 
-                <div class="card-links">
+                <!-- IMPORTANTE: usa post-links + (a.link) para que READ/SHARE compartan estética -->
+                <div class="post-links">
                   <a class="link" href="{{ post.url | relative_url }}">READ</a>
-                  
+
                   <button
                     class="link link-btn js-share"
                     type="button"
                     data-url="{{ post.url | absolute_url }}"
-                    data-title="{{ post.title | escape }}">
+                    data-title="{{ post.title | escape }}"
+                    aria-label="Copy link to clipboard"
+                  >
                     SHARE
                   </button>
                 </div>
@@ -171,10 +176,12 @@ permalink: /blog/
         const total = postCards.length;
         if (totalEl) totalEl.textContent = String(total);
 
-        const selected = new Set(); // stores lowercase tags
+        const selected = new Set(); // lowercase tags
 
         function getCardTags(card) {
-          const raw = (card.getAttribute("data-tags") || "").split("|").filter(Boolean);
+          const raw = (card.getAttribute("data-tags") || "")
+            .split("|")
+            .filter(Boolean);
           return new Set(raw.map(s => s.trim().toLowerCase()).filter(Boolean));
         }
 
@@ -228,7 +235,6 @@ permalink: /blog/
           applyFilter();
         }
 
-        // Click on tag pills (top)
         tagCloud.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-tag]");
           if (!btn) return;
@@ -241,7 +247,6 @@ permalink: /blog/
             return;
           }
 
-          // toggle
           if (selected.has(tag)) {
             selected.delete(tag);
             btn.classList.remove("is-active");
@@ -253,12 +258,10 @@ permalink: /blog/
           applyFilter();
         });
 
-        // Clear button
         if (clearBtn) {
           clearBtn.addEventListener("click", () => clearSelection());
         }
 
-        // Click on chips inside a post card also toggles filters
         postsList.addEventListener("click", (e) => {
           const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
@@ -275,19 +278,15 @@ permalink: /blog/
             setButtonActive(tag, true);
           }
           applyFilter();
-
-          // optional: scroll to top of tags area
-          // document.getElementById("tags")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
-        // init
         clearSelection();
       })();
     </script>
+
     <script>
       (function () {
         function toast(msg) {
-          // ultra-minimal feedback (sin CSS extra)
           const t = document.createElement("div");
           t.textContent = msg;
           t.style.position = "fixed";
@@ -312,7 +311,6 @@ permalink: /blog/
             await navigator.clipboard.writeText(text);
             return true;
           } catch (e) {
-            // fallback
             const ta = document.createElement("textarea");
             ta.value = text;
             ta.style.position = "fixed";
@@ -337,14 +335,11 @@ permalink: /blog/
           const url = btn.getAttribute("data-url") || window.location.href;
           const title = btn.getAttribute("data-title") || document.title;
 
-          // share nativo si existe (móvil)
           if (navigator.share) {
             try {
               await navigator.share({ title, url });
               return;
-            } catch (e) {
-              // si cancela, no hacemos nada
-            }
+            } catch (e) {}
           }
 
           const ok = await copyToClipboard(url);
