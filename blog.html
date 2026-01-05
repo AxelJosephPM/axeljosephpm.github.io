@@ -24,7 +24,6 @@ permalink: /blog/
         <div class="hero-kicker">NOTES</div>
         <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
 
-        <!-- Quote (sin caja) -->
         <div class="blog-quote">
           <p class="blog-quote-text">
             “I learned very early the difference between knowing the name of something and knowing something.”
@@ -44,7 +43,7 @@ permalink: /blog/
       {%- assign posts_sorted = site.posts | sort: "date" | reverse -%}
 
       {%- comment -%}
-      Build unique tag list from site.tags (map: tag -> [posts])
+      Unique tags from site.tags (map: tag -> [posts])
       {%- endcomment -%}
       {% assign tags_sorted = site.tags | sort %}
       {% assign tags_unique = "" | split: "" %}
@@ -131,19 +130,12 @@ permalink: /blog/
                   </div>
                 {% endif %}
 
+                <!-- actions -->
                 <div class="post-links">
-                  <!-- READ as button (same style as SHARE) -->
-                  <button
-                    class="link js-read"
-                    type="button"
-                    data-href="{{ post.url | relative_url }}"
-                    aria-label="Read post"
-                  >
-                    READ
-                  </button>
+                  <a class="link" href="{{ post.url | relative_url }}">READ</a>
 
                   <button
-                    class="link js-share"
+                    class="link link-btn js-share"
                     type="button"
                     data-url="{{ post.url | absolute_url }}"
                     data-title="{{ post.title | escape }}"
@@ -164,7 +156,6 @@ permalink: /blog/
       </footer>
     </main>
 
-    <!-- Tag filtering -->
     <script>
       (function () {
         const tagCloud = document.getElementById("tagCloud");
@@ -220,7 +211,7 @@ permalink: /blog/
           postCards.forEach(card => {
             const tags = getCardTags(card);
 
-            // AND logic
+            // AND logic: must contain all selected tags
             let ok = true;
             for (const t of selected) {
               if (!tags.has(t)) { ok = false; break; }
@@ -242,7 +233,7 @@ permalink: /blog/
           applyFilter();
         }
 
-        // Click top tag pills
+        // Tag pill clicks (top)
         tagCloud.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-tag]");
           if (!btn) return;
@@ -255,6 +246,7 @@ permalink: /blog/
             return;
           }
 
+          // toggle
           if (selected.has(tag)) {
             selected.delete(tag);
             btn.classList.remove("is-active");
@@ -266,9 +258,12 @@ permalink: /blog/
           applyFilter();
         });
 
-        if (clearBtn) clearBtn.addEventListener("click", () => clearSelection());
+        // Clear button
+        if (clearBtn) {
+          clearBtn.addEventListener("click", () => clearSelection());
+        }
 
-        // Click chips inside cards toggles filters
+        // Click on chips inside a post card also toggles filters
         postsList.addEventListener("click", (e) => {
           const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
@@ -284,26 +279,16 @@ permalink: /blog/
             selected.add(tag);
             setButtonActive(tag, true);
           }
-
           applyFilter();
         });
 
+        // init
         clearSelection();
       })();
     </script>
 
-    <!-- READ + SHARE -->
     <script>
       (function () {
-        // READ
-        document.addEventListener("click", (ev) => {
-          const btn = ev.target.closest(".js-read");
-          if (!btn) return;
-          const href = btn.getAttribute("data-href");
-          if (href) window.location.href = href;
-        });
-
-        // Toast
         function toast(msg) {
           const t = document.createElement("div");
           t.textContent = msg;
@@ -346,7 +331,6 @@ permalink: /blog/
           }
         }
 
-        // SHARE
         document.addEventListener("click", async (ev) => {
           const btn = ev.target.closest(".js-share");
           if (!btn) return;
@@ -359,7 +343,7 @@ permalink: /blog/
               await navigator.share({ title, url });
               return;
             } catch (e) {
-              // cancelled
+              // ignore cancel
             }
           }
 

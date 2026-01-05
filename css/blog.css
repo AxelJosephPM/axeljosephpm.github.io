@@ -394,3 +394,46 @@ nav a:hover,
   }
 }
 
+/* =========================
+   FIX: SHARE button = READ link
+   (put this at the very end of blog.css)
+   ========================= */
+
+.post-links .link-btn{
+  /* reset button */
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+
+  /* force anchor-like behavior */
+  display: inline-block;
+  line-height: normal;          /* avoid weird baseline */
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+
+  cursor: pointer;
+}
+
+/* ensure underline rule applies even if some global CSS targets only <a> */
+.post-links .link-btn{
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  padding-bottom: 6px;
+}
+
+.post-links .link-btn:hover{
+  border-bottom-color: rgba(0,0,0,0.40);
+}
+
+.post-links .link-btn:focus{ outline: none; }
+.post-links .link-btn:focus-visible{
+  outline: 2px solid rgba(0,0,0,0.25);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+
