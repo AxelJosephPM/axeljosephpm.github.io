@@ -128,8 +128,15 @@ permalink: /blog/
                   </div>
                 {% endif %}
 
-                <div class="post-actions">
-                  <a class="link" href="{{ post.url }}">Read</a>
+                <div class="card-links">
+                  <a class="link" href="{{ post.url | relative_url }}">READ</a>
+                  <button
+                    class="link link-btn js-share"
+                    type="button"
+                    data-url="{{ post.url | absolute_url }}"
+                    data-title="{{ post.title | escape }}">
+                    SHARE
+                  </button>
                 </div>
               </article>
             {% endfor %}
@@ -274,6 +281,74 @@ permalink: /blog/
 
         // init
         clearSelection();
+      })();
+    </script>
+    <script>
+      (function () {
+        function toast(msg) {
+          // ultra-minimal feedback (sin CSS extra)
+          const t = document.createElement("div");
+          t.textContent = msg;
+          t.style.position = "fixed";
+          t.style.left = "50%";
+          t.style.bottom = "18px";
+          t.style.transform = "translateX(-50%)";
+          t.style.padding = "10px 12px";
+          t.style.border = "1px solid rgba(0,0,0,0.12)";
+          t.style.borderRadius = "12px";
+          t.style.background = "#fff";
+          t.style.boxShadow = "0 8px 20px rgba(0,0,0,0.08)";
+          t.style.fontSize = "12px";
+          t.style.letterSpacing = "0.12em";
+          t.style.textTransform = "uppercase";
+          t.style.zIndex = 9999;
+          document.body.appendChild(t);
+          setTimeout(() => t.remove(), 1200);
+        }
+
+        async function copyToClipboard(text) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return true;
+          } catch (e) {
+            // fallback
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              document.execCommand("copy");
+              ta.remove();
+              return true;
+            } catch (e2) {
+              ta.remove();
+              return false;
+            }
+          }
+        }
+
+        document.addEventListener("click", async (ev) => {
+          const btn = ev.target.closest(".js-share");
+          if (!btn) return;
+
+          const url = btn.getAttribute("data-url") || window.location.href;
+          const title = btn.getAttribute("data-title") || document.title;
+
+          // share nativo si existe (móvil)
+          if (navigator.share) {
+            try {
+              await navigator.share({ title, url });
+              return;
+            } catch (e) {
+              // si cancela, no hacemos nada
+            }
+          }
+
+          const ok = await copyToClipboard(url);
+          toast(ok ? "Link copied" : "Copy failed");
+        });
       })();
     </script>
   </body>
