@@ -5,7 +5,7 @@
 /* Use the same “cream” as Projects if Projects defines a var.
    Fallback stays close to your Projects look. */
 :root{
-  --blog-cream: var(--cream, var(--bg, #f7f3eb));
+  --blog-cream: var(--cream, var(--bg, #fbfaf7));
   --ink: rgba(0,0,0,0.86);
   --muted: rgba(0,0,0,0.58);
   --hairline: rgba(0,0,0,0.12);
