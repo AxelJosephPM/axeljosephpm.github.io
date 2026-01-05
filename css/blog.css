@@ -343,6 +343,7 @@ nav a:hover,
   color: inherit;
   text-transform: inherit;
   letter-spacing: inherit;
+  line-height: 1;
 }
 
 /* Focus visible (accessible) without breaking aesthetics */

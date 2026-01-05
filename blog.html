@@ -11,8 +11,7 @@ permalink: /blog/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Blog" }} — {{ site.title }}</title>
 
-    <!-- cache-busting para que SIEMPRE se vean cambios en GitHub Pages -->
-    <link rel="stylesheet" href="/css/blog.css?v={{ site.time | date: '%s' }}" />
+    <link rel="stylesheet" href="/css/blog.css" />
 
     {% include mathjax.html %}
   </head>
@@ -25,13 +24,13 @@ permalink: /blog/
         <div class="hero-kicker">NOTES</div>
         <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
 
-        <!-- cita sin caja -->
-        <p class="blog-quote">
-          <span class="blog-quote-text">
+        <!-- Quote (sin caja) -->
+        <div class="blog-quote">
+          <p class="blog-quote-text">
             “I learned very early the difference between knowing the name of something and knowing something.”
-          </span>
-          <span class="blog-quote-author">Richard Feynman</span>
-        </p>
+          </p>
+          <div class="blog-quote-author">Richard Feynman</div>
+        </div>
 
         <div class="hero-actions">
           <a class="hero-action" href="#tags">Tags</a>
@@ -45,7 +44,7 @@ permalink: /blog/
       {%- assign posts_sorted = site.posts | sort: "date" | reverse -%}
 
       {%- comment -%}
-      Tags come from site.tags map: tag -> [posts]
+      Build unique tag list from site.tags (map: tag -> [posts])
       {%- endcomment -%}
       {% assign tags_sorted = site.tags | sort %}
       {% assign tags_unique = "" | split: "" %}
@@ -58,9 +57,7 @@ permalink: /blog/
       <section id="tags" class="blog-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta">
-            <span id="tagCount">{{ tags_unique | size }}</span>
-          </div>
+          <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
@@ -96,7 +93,7 @@ permalink: /blog/
             <p>No posts yet.</p>
           </div>
         {% else %}
-          <div class="posts-list posts-grid" id="postsList">
+          <div class="posts-list" id="postsList">
             {% for post in posts_sorted %}
               {% assign tags_attr = "" %}
               {% if post.tags %}
@@ -105,7 +102,11 @@ permalink: /blog/
                 {% endfor %}
               {% endif %}
 
-              <article class="post-card" data-tags="{{ tags_attr }}" data-url="{{ post.url }}">
+              <article
+                class="post-card"
+                data-tags="{{ tags_attr }}"
+                data-url="{{ post.url }}"
+              >
                 <div class="post-meta">
                   <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
                   {% if post.series %}
@@ -115,7 +116,7 @@ permalink: /blog/
                 </div>
 
                 <h2 class="post-title">
-                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                  <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
                 </h2>
 
                 {% if post.excerpt %}
@@ -130,12 +131,19 @@ permalink: /blog/
                   </div>
                 {% endif %}
 
-                <!-- IMPORTANTE: usa post-links + (a.link) para que READ/SHARE compartan estética -->
                 <div class="post-links">
-                  <a class="link" href="{{ post.url | relative_url }}">READ</a>
+                  <!-- READ as button (same style as SHARE) -->
+                  <button
+                    class="link js-read"
+                    type="button"
+                    data-href="{{ post.url | relative_url }}"
+                    aria-label="Read post"
+                  >
+                    READ
+                  </button>
 
                   <button
-                    class="link link-btn js-share"
+                    class="link js-share"
                     type="button"
                     data-url="{{ post.url | absolute_url }}"
                     data-title="{{ post.title | escape }}"
@@ -156,6 +164,7 @@ permalink: /blog/
       </footer>
     </main>
 
+    <!-- Tag filtering -->
     <script>
       (function () {
         const tagCloud = document.getElementById("tagCloud");
@@ -179,9 +188,7 @@ permalink: /blog/
         const selected = new Set(); // lowercase tags
 
         function getCardTags(card) {
-          const raw = (card.getAttribute("data-tags") || "")
-            .split("|")
-            .filter(Boolean);
+          const raw = (card.getAttribute("data-tags") || "").split("|").filter(Boolean);
           return new Set(raw.map(s => s.trim().toLowerCase()).filter(Boolean));
         }
 
@@ -213,7 +220,7 @@ permalink: /blog/
           postCards.forEach(card => {
             const tags = getCardTags(card);
 
-            // AND logic: must contain all selected tags
+            // AND logic
             let ok = true;
             for (const t of selected) {
               if (!tags.has(t)) { ok = false; break; }
@@ -235,6 +242,7 @@ permalink: /blog/
           applyFilter();
         }
 
+        // Click top tag pills
         tagCloud.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-tag]");
           if (!btn) return;
@@ -258,10 +266,9 @@ permalink: /blog/
           applyFilter();
         });
 
-        if (clearBtn) {
-          clearBtn.addEventListener("click", () => clearSelection());
-        }
+        if (clearBtn) clearBtn.addEventListener("click", () => clearSelection());
 
+        // Click chips inside cards toggles filters
         postsList.addEventListener("click", (e) => {
           const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
@@ -277,6 +284,7 @@ permalink: /blog/
             selected.add(tag);
             setButtonActive(tag, true);
           }
+
           applyFilter();
         });
 
@@ -284,8 +292,18 @@ permalink: /blog/
       })();
     </script>
 
+    <!-- READ + SHARE -->
     <script>
       (function () {
+        // READ
+        document.addEventListener("click", (ev) => {
+          const btn = ev.target.closest(".js-read");
+          if (!btn) return;
+          const href = btn.getAttribute("data-href");
+          if (href) window.location.href = href;
+        });
+
+        // Toast
         function toast(msg) {
           const t = document.createElement("div");
           t.textContent = msg;
@@ -328,6 +346,7 @@ permalink: /blog/
           }
         }
 
+        // SHARE
         document.addEventListener("click", async (ev) => {
           const btn = ev.target.closest(".js-share");
           if (!btn) return;
@@ -339,7 +358,9 @@ permalink: /blog/
             try {
               await navigator.share({ title, url });
               return;
-            } catch (e) {}
+            } catch (e) {
+              // cancelled
+            }
           }
 
           const ok = await copyToClipboard(url);
