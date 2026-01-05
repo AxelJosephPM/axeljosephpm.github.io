@@ -9,12 +9,9 @@ permalink: /blog/
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ page.title }} — {{ site.title }}</title>
+    <title>{{ page.title | default: "Blog" }} — {{ site.title }}</title>
 
-    <!-- Blog styling -->
     <link rel="stylesheet" href="/css/blog.css" />
-    <!-- Reuse NAV + tokens + “cream” from Projects -->
-    <link rel="stylesheet" href="/css/projects.css" />
 
     {% include mathjax.html %}
   </head>
@@ -27,46 +24,37 @@ permalink: /blog/
         <div class="hero-kicker">NOTES</div>
         <h1 class="hero-title">{{ page.title | default: "Blog" }}</h1>
 
-        <!-- Quote (no box) -->
-        <div class="blog-quote">
-          <p class="blog-quote-text">
-            “I learned very early the difference between knowing the name of something and knowing something.”
-          </p>
-          <div class="blog-quote-author">Richard Feynman</div>
-        </div>
+        <p class="hero-quote">
+          “I learned very early the difference between knowing the name of something and knowing something.”
+          <span class="hero-quote-author">Richard Feynman</span>
+        </p>
 
         <div class="hero-actions">
-          <a class="hero-action" href="#tags">TAGS</a>
-          <a class="hero-action" href="#posts">POSTS</a>
+          <a class="hero-action" href="#tags">Tags</a>
+          <a class="hero-action" href="#posts">Posts</a>
           <a class="hero-action" href="/feed.xml">RSS</a>
         </div>
 
         <div class="hero-rule"></div>
       </header>
 
-      {% assign posts_sorted = site.posts %}
-      {% if posts_sorted == nil %}
-        {% assign posts_sorted = "" | split: "" %}
-      {% endif %}
+      {%- assign posts_sorted = site.posts | sort: "date" | reverse -%}
 
       {%- comment -%}
       Build unique tag list from site.tags (map: tag -> [posts])
-      site.tags is a hash: { "tagname" => [posts...] }
       {%- endcomment -%}
       {% assign tags_sorted = site.tags | sort %}
       {% assign tags_unique = "" | split: "" %}
-      {% for t in tags_sorted %}
-        {% assign tag_name = t[0] %}
-        {% if tag_name != "" %}
-          {% assign tags_unique = tags_unique | push: tag_name %}
-        {% endif %}
+      {% for tag in tags_sorted %}
+        {% assign tag_name = tag[0] %}
+        {% assign tags_unique = tags_unique | push: tag_name %}
       {% endfor %}
 
       <!-- TAGS -->
       <section id="tags" class="blog-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta">{{ tags_unique | size }}</div>
+          <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
@@ -74,61 +62,16 @@ permalink: /blog/
             <p>No tags yet.</p>
           </div>
         {% else %}
-          <div class="tag-cloud">
-            <a class="tag-pill tag-pill-clear" href="#posts">All</a>
+          <div class="tag-cloud" id="tagCloud" aria-label="Tag filters">
+            <button class="tag-pill is-active" type="button" data-tag="__all">All</button>
             {% for t in tags_unique %}
-              <a class="tag-pill" href="#tag-{{ t | slugify }}">{{ t }}</a>
+              <button class="tag-pill" type="button" data-tag="{{ t | downcase | strip }}">{{ t }}</button>
             {% endfor %}
+            <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
           </div>
 
-          <!-- Tag sections (works without JS) -->
-          <div class="tag-sections">
-            {% for t in tags_unique %}
-              <div id="tag-{{ t | slugify }}" class="tag-section">
-                <div class="tag-section-head">
-                  <div class="tag-name">{{ t }}</div>
-                  <a class="tag-back" href="#tags">Back</a>
-                </div>
-
-                <div class="posts-grid">
-                  {% assign tag_posts = site.tags[t] %}
-                  {% if tag_posts %}
-                    {% for post in tag_posts %}
-                      <article class="post-card">
-                        <div class="post-top">
-                          <div class="post-meta">
-                            <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
-                            {% if post.series %}
-                              <span class="dot">•</span>
-                              <span class="meta-text">Series: {{ post.series }}</span>
-                            {% endif %}
-                          </div>
-                          <h2 class="post-title">
-                            <a href="{{ post.url }}">{{ post.title }}</a>
-                          </h2>
-                        </div>
-
-                        {% if post.excerpt %}
-                          <p class="post-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 180 }}</p>
-                        {% endif %}
-
-                        {% if post.tags %}
-                          <div class="chips">
-                            {% for tt in post.tags %}
-                              <a class="chip chip-link" href="#tag-{{ tt | slugify }}">{{ tt }}</a>
-                            {% endfor %}
-                          </div>
-                        {% endif %}
-
-                        <div class="post-links">
-                          <a class="link" href="{{ post.url }}">READ</a>
-                        </div>
-                      </article>
-                    {% endfor %}
-                  {% endif %}
-                </div>
-              </div>
-            {% endfor %}
+          <div class="filter-hint" id="filterHint" style="display:none;">
+            Filtering by: <span id="filterList"></span>
           </div>
         {% endif %}
       </section>
@@ -137,7 +80,9 @@ permalink: /blog/
       <section id="posts" class="blog-section">
         <div class="section-head">
           <div class="section-title">Posts</div>
-          <div class="section-meta">{{ posts_sorted | size }}</div>
+          <div class="section-meta">
+            <span id="postsVisible">{{ posts_sorted | size }}</span>/<span id="postsTotal">{{ posts_sorted | size }}</span>
+          </div>
         </div>
 
         {% if posts_sorted == nil or posts_sorted.size == 0 %}
@@ -145,22 +90,31 @@ permalink: /blog/
             <p>No posts yet.</p>
           </div>
         {% else %}
-          <div class="posts-grid">
+          <div class="posts-list" id="postsList">
             {% for post in posts_sorted %}
-              <article class="post-card">
-                <div class="post-top">
-                  <div class="post-meta">
-                    <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
-                    {% if post.series %}
-                      <span class="dot">•</span>
-                      <span class="meta-text">Series: {{ post.series }}</span>
-                    {% endif %}
-                  </div>
+              {% assign tags_attr = "" %}
+              {% if post.tags %}
+                {% for t in post.tags %}
+                  {% assign tags_attr = tags_attr | append: t | downcase | strip | append: "|" %}
+                {% endfor %}
+              {% endif %}
 
-                  <h2 class="post-title">
-                    <a href="{{ post.url }}">{{ post.title }}</a>
-                  </h2>
+              <article
+                class="post-card"
+                data-tags="{{ tags_attr }}"
+                data-url="{{ post.url }}"
+              >
+                <div class="post-meta">
+                  <span class="meta-text">{{ post.date | date: "%Y-%m-%d" }}</span>
+                  {% if post.series %}
+                    <span class="dot">•</span>
+                    <span class="meta-text">Series: {{ post.series }}</span>
+                  {% endif %}
                 </div>
+
+                <h2 class="post-title">
+                  <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+                </h2>
 
                 {% if post.excerpt %}
                   <p class="post-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 180 }}</p>
@@ -169,13 +123,13 @@ permalink: /blog/
                 {% if post.tags %}
                   <div class="chips">
                     {% for t in post.tags %}
-                      <a class="chip chip-link" href="#tag-{{ t | slugify }}">{{ t }}</a>
+                      <button class="chip chip-link" type="button" data-tag="{{ t | downcase | strip }}">{{ t }}</button>
                     {% endfor %}
                   </div>
                 {% endif %}
 
-                <div class="post-links">
-                  <a class="link" href="{{ post.url }}">READ</a>
+                <div class="post-actions">
+                  <a class="link" href="{{ post.url }}">Read</a>
                 </div>
               </article>
             {% endfor %}
@@ -188,5 +142,139 @@ permalink: /blog/
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
     </main>
+
+    <script>
+      (function () {
+        const tagCloud = document.getElementById("tagCloud");
+        const clearBtn = document.getElementById("clearTags");
+        const hint = document.getElementById("filterHint");
+        const filterList = document.getElementById("filterList");
+
+        const postsList = document.getElementById("postsList");
+        const visibleEl = document.getElementById("postsVisible");
+        const totalEl = document.getElementById("postsTotal");
+
+        if (!tagCloud || !postsList) return;
+
+        const tagButtons = Array.from(tagCloud.querySelectorAll("[data-tag]"));
+        const allBtn = tagCloud.querySelector('[data-tag="__all"]');
+        const postCards = Array.from(postsList.querySelectorAll(".post-card"));
+
+        const total = postCards.length;
+        if (totalEl) totalEl.textContent = String(total);
+
+        const selected = new Set(); // stores lowercase tags
+
+        function getCardTags(card) {
+          const raw = (card.getAttribute("data-tags") || "").split("|").filter(Boolean);
+          return new Set(raw.map(s => s.trim().toLowerCase()).filter(Boolean));
+        }
+
+        function setButtonActive(tag, isActive) {
+          const btn = tagCloud.querySelector(`[data-tag="${CSS.escape(tag)}"]`);
+          if (!btn) return;
+          btn.classList.toggle("is-active", isActive);
+        }
+
+        function syncAllButton() {
+          const hasFilters = selected.size > 0;
+          if (allBtn) allBtn.classList.toggle("is-active", !hasFilters);
+        }
+
+        function renderHint() {
+          if (!hint || !filterList) return;
+          if (selected.size === 0) {
+            hint.style.display = "none";
+            filterList.textContent = "";
+            return;
+          }
+          hint.style.display = "";
+          filterList.textContent = Array.from(selected).join(", ");
+        }
+
+        function applyFilter() {
+          let shown = 0;
+
+          postCards.forEach(card => {
+            const tags = getCardTags(card);
+
+            // AND logic: must contain all selected tags
+            let ok = true;
+            for (const t of selected) {
+              if (!tags.has(t)) { ok = false; break; }
+            }
+
+            card.style.display = ok ? "" : "none";
+            if (ok) shown++;
+          });
+
+          if (visibleEl) visibleEl.textContent = String(shown);
+          syncAllButton();
+          renderHint();
+        }
+
+        function clearSelection() {
+          selected.clear();
+          tagButtons.forEach(btn => btn.classList.remove("is-active"));
+          if (allBtn) allBtn.classList.add("is-active");
+          applyFilter();
+        }
+
+        // Click on tag pills (top)
+        tagCloud.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-tag]");
+          if (!btn) return;
+
+          const tag = (btn.getAttribute("data-tag") || "").toLowerCase().trim();
+          if (!tag) return;
+
+          if (tag === "__all") {
+            clearSelection();
+            return;
+          }
+
+          // toggle
+          if (selected.has(tag)) {
+            selected.delete(tag);
+            btn.classList.remove("is-active");
+          } else {
+            selected.add(tag);
+            btn.classList.add("is-active");
+          }
+
+          applyFilter();
+        });
+
+        // Clear button
+        if (clearBtn) {
+          clearBtn.addEventListener("click", () => clearSelection());
+        }
+
+        // Click on chips inside a post card also toggles filters
+        postsList.addEventListener("click", (e) => {
+          const chip = e.target.closest(".chip-link[data-tag]");
+          if (!chip) return;
+          e.preventDefault();
+
+          const tag = (chip.getAttribute("data-tag") || "").toLowerCase().trim();
+          if (!tag) return;
+
+          if (selected.has(tag)) {
+            selected.delete(tag);
+            setButtonActive(tag, false);
+          } else {
+            selected.add(tag);
+            setButtonActive(tag, true);
+          }
+          applyFilter();
+
+          // optional: scroll to top of tags area
+          // document.getElementById("tags")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        // init
+        clearSelection();
+      })();
+    </script>
   </body>
 </html>
