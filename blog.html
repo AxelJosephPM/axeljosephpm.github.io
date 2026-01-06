@@ -132,13 +132,14 @@ permalink: /blog/
                 <div class="post-links">
                   <a class="link" href="{{ post.url | relative_url }}">READ</a>
 
-                  <button
+                  <a
                     class="link js-share"
-                    type="button"
+                    href="{{ post.url | absolute_url }}"
                     data-url="{{ post.url | absolute_url }}"
-                    data-title="{{ post.title | escape }}">
+                    data-title="{{ post.title | escape }}"
+                    rel="nofollow">
                     SHARE
-                  </button>
+                  </a>
                 </div>
               </article>
             {% endfor %}
@@ -325,6 +326,8 @@ permalink: /blog/
         document.addEventListener("click", async (ev) => {
           const btn = ev.target.closest(".js-share");
           if (!btn) return;
+
+          ev.preventDefault();
 
           const url = btn.getAttribute("data-url") || window.location.href;
           const title = btn.getAttribute("data-title") || document.title;
