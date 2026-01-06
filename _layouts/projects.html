@@ -23,9 +23,8 @@
         </p>
 
         <div class="hero-actions">
-          <a class="hero-action" href="#featured">Featured</a>
-          <a class="hero-action" href="#browse">Browse</a>
           <a class="hero-action" href="#tags">Tags</a>
+          <a class="hero-action" href="#all">All</a>
         </div>
 
         <div class="hero-rule"></div>
@@ -37,10 +36,9 @@
       {% endif %}
 
       {% assign projects_sorted = projects | sort: "year" | reverse %}
-      {% assign featured = projects_sorted | where: "featured", true %}
 
       {%- comment -%}
-      Build a unique tag list.
+      Build unique tag list
       {%- endcomment -%}
       {% assign tag_string = "" %}
       {% for p in projects_sorted %}
@@ -61,68 +59,11 @@
         {% endif %}
       {% endfor %}
 
-      {% if featured and featured.size > 0 %}
-      <section id="featured" class="projects-section">
-        <div class="section-head">
-          <div class="section-title">Featured missions</div>
-          <div class="section-meta">hand-picked</div>
-        </div>
-
-        <div class="featured-grid">
-          {% for p in featured %}
-          <article class="card card-featured">
-            <div class="card-top">
-              <div class="meta">
-                {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
-                {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
-                {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
-              </div>
-              <h2 class="card-title">{{ p.title }}</h2>
-              {% if p.role %}
-              <div class="card-role">{{ p.role }}</div>
-              {% endif %}
-            </div>
-
-            {% if p.image %}
-            <div class="thumb">
-              <img src="{{ p.image }}" alt="{{ p.title }} thumbnail" loading="lazy" />
-            </div>
-            {% endif %}
-
-            {% if p.summary %}
-            <p class="card-summary">{{ p.summary }}</p>
-            {% endif %}
-
-            {% if p.tags %}
-            <div class="chips">
-              {% for t in p.tags %}
-                <a class="chip chip-link tag-jump" href="#tag-{{ t | slugify }}" data-tag="{{ t | slugify }}">{{ t }}</a>
-              {% endfor %}
-            </div>
-            {% endif %}
-
-            <div class="card-links">
-              {% if p.slug %}
-                <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
-              {% endif %}
-              {% if p.links %}
-                {% for l in p.links %}
-                  <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-                {% endfor %}
-              {% endif %}
-            </div>
-          </article>
-          {% endfor %}
-        </div>
-      </section>
-      {% endif %}
-
+      <!-- TAGS -->
       <section id="tags" class="projects-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
-          <div class="section-meta">
-            <span id="filterCount">{{ projects_sorted | size }}</span>/<span id="totalCount">{{ projects_sorted | size }}</span>
-          </div>
+          <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
@@ -130,33 +71,27 @@
             <p>No tags yet. Add <code>tags</code> arrays to projects in <code>_data/projects.yml</code>.</p>
           </div>
         {% else %}
-          <div class="tag-cloud" id="tagCloud">
-            <button class="tag-pill tag-pill-clear" id="clearTag" type="button" aria-pressed="false" hidden>
-              Clear
-            </button>
-
+          <div class="tag-cloud" id="tagCloud" aria-label="Project tag filters">
+            <button class="tag-pill is-active" type="button" data-tag="__all">All</button>
             {% for t in tags_unique %}
-              <button
-                class="tag-pill tag-filter"
-                type="button"
-                data-tag="{{ t | slugify }}"
-                aria-pressed="false"
-              >
-                {{ t }}
-              </button>
+              <button class="tag-pill" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
             {% endfor %}
+            <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
           </div>
 
-          <div class="filter-hint" id="filterHint" hidden>
-            Filtering by: <span class="filter-name" id="filterName"></span>
+          <div class="filter-hint" id="filterHint" style="display:none;">
+            Filtering by: <span id="filterList"></span>
           </div>
         {% endif %}
       </section>
 
-      <section id="browse" class="projects-section">
+      <!-- ALL PROJECTS -->
+      <section id="all" class="projects-section">
         <div class="section-head">
-          <div class="section-title">Browse</div>
-          <div class="section-meta">all projects</div>
+          <div class="section-title">All projects</div>
+          <div class="section-meta">
+            <span id="projectsVisible">{{ projects_sorted | size }}</span>/<span id="projectsTotal">{{ projects_sorted | size }}</span>
+          </div>
         </div>
 
         {% if projects_sorted == nil or projects_sorted.size == 0 %}
@@ -167,16 +102,16 @@
             </p>
           </div>
         {% else %}
-          <div class="cards-grid" id="projectsGrid">
+          <div class="cards-grid" id="projectsList">
             {% for p in projects_sorted %}
-              {%- assign tags_attr = "" -%}
-              {%- if p.tags -%}
-                {%- for tt in p.tags -%}
-                  {%- assign tags_attr = tags_attr | append: tt | slugify | append: " " -%}
-                {%- endfor -%}
-              {%- endif -%}
+              {% assign tags_attr = "" %}
+              {% if p.tags %}
+                {% for t in p.tags %}
+                  {% assign tags_attr = tags_attr | append: (t | slugify) | append: "|" %}
+                {% endfor %}
+              {% endif %}
 
-              <article class="card project-card" data-tags="{{ tags_attr | strip }}">
+              <article class="card" data-tags="{{ tags_attr }}">
                 <div class="card-top">
                   <div class="meta">
                     {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
@@ -185,32 +120,29 @@
                   </div>
                   <h2 class="card-title">{{ p.title }}</h2>
                   {% if p.role %}
-                  <div class="card-role">{{ p.role }}</div>
+                    <div class="card-role">{{ p.role }}</div>
                   {% endif %}
                 </div>
 
                 {% if p.summary %}
-                <p class="card-summary">{{ p.summary }}</p>
+                  <p class="card-summary">{{ p.summary }}</p>
                 {% endif %}
 
                 {% if p.tags %}
-                <div class="chips">
-                  {% for t in p.tags %}
-                    <a class="chip chip-link tag-jump" href="#tag-{{ t | slugify }}" data-tag="{{ t | slugify }}">{{ t }}</a>
-                  {% endfor %}
-                </div>
+                  <div class="chips">
+                    {% for t in p.tags %}
+                      <button class="chip chip-link" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
+                    {% endfor %}
+                  </div>
                 {% endif %}
 
-                <div class="card-links">
-                  {% if p.slug %}
-                    <a class="link" href="/projects/{{ p.slug }}/">Brief</a>
-                  {% endif %}
-                  {% if p.links %}
+                {% if p.links %}
+                  <div class="card-links">
                     {% for l in p.links %}
                       <a class="link" href="{{ l.url }}">{{ l.label }}</a>
                     {% endfor %}
-                  {% endif %}
-                </div>
+                  </div>
+                {% endif %}
               </article>
             {% endfor %}
           </div>
@@ -225,105 +157,138 @@
 
     <script>
       (function () {
-        const grid = document.getElementById("projectsGrid");
         const tagCloud = document.getElementById("tagCloud");
-        if (!grid || !tagCloud) return;
+        const clearBtn = document.getElementById("clearTags");
+        const hint = document.getElementById("filterHint");
+        const filterList = document.getElementById("filterList");
 
-        const cards = Array.from(grid.querySelectorAll(".project-card"));
-        const tagButtons = Array.from(tagCloud.querySelectorAll(".tag-filter"));
-        const clearBtn = document.getElementById("clearTag");
-        const filterCount = document.getElementById("filterCount");
-        const filterHint = document.getElementById("filterHint");
-        const filterName = document.getElementById("filterName");
+        const list = document.getElementById("projectsList");
+        const visibleEl = document.getElementById("projectsVisible");
+        const totalEl = document.getElementById("projectsTotal");
+
+        if (!tagCloud || !list) return;
+
+        const tagButtons = Array.from(tagCloud.querySelectorAll("[data-tag]"));
+        const allBtn = tagCloud.querySelector('[data-tag="__all"]');
+        const cards = Array.from(list.querySelectorAll(".card"));
 
         const total = cards.length;
+        if (totalEl) totalEl.textContent = String(total);
 
-        function setHash(tag) {
-          if (!tag) {
-            history.replaceState(null, "", location.pathname + location.search);
+        const selected = new Set(); // OR logic (any tag match)
+
+        function getCardTags(card) {
+          const raw = (card.getAttribute("data-tags") || "")
+            .split("|")
+            .map(s => s.trim())
+            .filter(Boolean);
+          return new Set(raw);
+        }
+
+        function setButtonActive(tag, isActive) {
+          const btn = tagCloud.querySelector(`[data-tag="${CSS.escape(tag)}"]`);
+          if (!btn) return;
+          btn.classList.toggle("is-active", isActive);
+        }
+
+        function syncAllButton() {
+          const hasFilters = selected.size > 0;
+          if (allBtn) allBtn.classList.toggle("is-active", !hasFilters);
+        }
+
+        function renderHint() {
+          if (!hint || !filterList) return;
+          if (selected.size === 0) {
+            hint.style.display = "none";
+            filterList.textContent = "";
             return;
           }
-          history.replaceState(null, "", "#tag-" + tag);
+          hint.style.display = "";
+          filterList.textContent = Array.from(selected).join(", ");
         }
 
-        function getHashTag() {
-          const h = (location.hash || "").trim();
-          if (!h.startsWith("#tag-")) return "";
-          return h.replace("#tag-", "").trim();
-        }
+        // ✅ OR logic: show if card has ANY selected tag (or none selected -> show all)
+        function applyFilter() {
+          let shown = 0;
 
-        function updateUI(activeTag) {
-          // buttons state
-          tagButtons.forEach(btn => {
-            const isActive = btn.dataset.tag === activeTag;
-            btn.classList.toggle("is-active", isActive);
-            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
-          });
-
-          // clear button + hint
-          const hasFilter = !!activeTag;
-          clearBtn.hidden = !hasFilter;
-          clearBtn.setAttribute("aria-pressed", hasFilter ? "true" : "false");
-          filterHint.hidden = !hasFilter;
-          if (hasFilter) filterName.textContent = activeTag;
-
-          // filter cards
-          let visible = 0;
           cards.forEach(card => {
-            if (!activeTag) {
-              card.hidden = false;
-              visible++;
-              return;
+            const tags = getCardTags(card);
+
+            let ok = true;
+            if (selected.size > 0) {
+              ok = false;
+              for (const t of selected) {
+                if (tags.has(t)) { ok = true; break; }
+              }
             }
-            const tags = (card.dataset.tags || "").split(/\s+/).filter(Boolean);
-            const ok = tags.includes(activeTag);
-            card.hidden = !ok;
-            if (ok) visible++;
+
+            card.style.display = ok ? "" : "none";
+            if (ok) shown++;
           });
 
-          filterCount.textContent = String(visible);
+          if (visibleEl) visibleEl.textContent = String(shown);
+          syncAllButton();
+          renderHint();
         }
 
-        function applyTag(tag) {
-          const active = tag || "";
-          setHash(active);
-          updateUI(active);
-          // move focus/scroll to grid for a "nice" feeling
-          const browse = document.getElementById("browse");
-          if (browse) browse.scrollIntoView({ behavior: "smooth", block: "start" });
+        function clearSelection() {
+          selected.clear();
+          tagButtons.forEach(btn => btn.classList.remove("is-active"));
+          if (allBtn) allBtn.classList.add("is-active");
+          applyFilter();
         }
 
-        // click on tag pills
-        tagButtons.forEach(btn => {
-          btn.addEventListener("click", () => {
-            const tag = btn.dataset.tag;
-            const current = getHashTag();
-            // toggle behavior
-            applyTag(current === tag ? "" : tag);
-          });
+        // Click on top tag pills
+        tagCloud.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-tag]");
+          if (!btn) return;
+
+          const tag = (btn.getAttribute("data-tag") || "").trim();
+          if (!tag) return;
+
+          if (tag === "__all") {
+            clearSelection();
+            return;
+          }
+
+          // toggle
+          if (selected.has(tag)) {
+            selected.delete(tag);
+            btn.classList.remove("is-active");
+          } else {
+            selected.add(tag);
+            btn.classList.add("is-active");
+          }
+
+          applyFilter();
         });
 
-        // clear
-        clearBtn.addEventListener("click", () => applyTag(""));
+        if (clearBtn) clearBtn.addEventListener("click", clearSelection);
 
-        // clicking chips inside cards should filter too (no need accordion)
-        document.querySelectorAll(".tag-jump").forEach(a => {
-          a.addEventListener("click", (e) => {
-            const tag = a.dataset.tag;
-            if (!tag) return;
-            e.preventDefault();
-            applyTag(tag);
-          });
+        // Click on chips inside cards also toggles filters
+        list.addEventListener("click", (e) => {
+          const chip = e.target.closest(".chip-link[data-tag]");
+          if (!chip) return;
+          e.preventDefault();
+
+          const tag = (chip.getAttribute("data-tag") || "").trim();
+          if (!tag) return;
+
+          if (selected.has(tag)) {
+            selected.delete(tag);
+            setButtonActive(tag, false);
+          } else {
+            selected.add(tag);
+            setButtonActive(tag, true);
+          }
+
+          applyFilter();
+          // opcional: scroll a tags
+          // document.getElementById("tags")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
-        // init from URL hash
-        const initial = getHashTag();
-        updateUI(initial);
-
-        // respond to manual hash change
-        window.addEventListener("hashchange", () => {
-          updateUI(getHashTag());
-        });
+        // init
+        clearSelection();
       })();
     </script>
   </body>
