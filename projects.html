@@ -11,18 +11,23 @@ permalink: /projects/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Projects" }} — {{ site.title }}</title>
 
+    <!-- Reusamos la estética base de Blog -->
+    <link rel="stylesheet" href="/css/blog.css" />
+    <!-- Overrides específicos para Projects -->
     <link rel="stylesheet" href="/css/projects.css" />
+
     {% include mathjax.html %}
   </head>
 
-  <body class="projects-page">
+  <body class="projects-page blog-page">
     {% include nav.html %}
 
-    <main class="projects-wrap">
-      <header class="projects-hero">
+    <main class="blog-wrap projects-wrap">
+      <header class="blog-hero projects-hero">
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">{{ page.title | default: "Projects" }}</h1>
-        <p class="hero-subtitle">
+
+        <p class="blog-quote">
           A curated list of missions, simulations, and tools. Minimal, documented, and continuously improved.
         </p>
 
@@ -38,6 +43,7 @@ permalink: /projects/
       {% if projects == nil %}
         {% assign projects = "" | split: "" %}
       {% endif %}
+
       {% assign projects_sorted = projects | sort: "year" | reverse %}
 
       {%- comment -%} Build unique tag list {%- endcomment -%}
@@ -49,7 +55,6 @@ permalink: /projects/
           {% endfor %}
         {% endif %}
       {% endfor %}
-
       {% assign tags_all = tag_string | split: "|" | sort %}
       {% assign tags_unique = "" | split: "" %}
       {% for t in tags_all %}
@@ -61,7 +66,7 @@ permalink: /projects/
       {% endfor %}
 
       <!-- TAGS -->
-      <section id="tags" class="projects-section">
+      <section id="tags" class="blog-section projects-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
           <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
@@ -87,9 +92,9 @@ permalink: /projects/
       </section>
 
       <!-- PROJECTS -->
-      <section id="projects" class="projects-section">
+      <section id="projects" class="blog-section projects-section">
         <div class="section-head">
-          <div class="section-title">All projects</div>
+          <div class="section-title">Projects</div>
           <div class="section-meta">
             <span id="projectsVisible">{{ projects_sorted | size }}</span>/<span id="projectsTotal">{{ projects_sorted | size }}</span>
           </div>
@@ -97,10 +102,10 @@ permalink: /projects/
 
         {% if projects_sorted == nil or projects_sorted.size == 0 %}
           <div class="empty-state">
-            <p>No projects loaded yet. Add entries to <code>_data/projects.yml</code>.</p>
+            <p>No projects loaded yet. Create <code>_data/projects.yml</code> entries to populate this page.</p>
           </div>
         {% else %}
-          <div class="cards-grid" id="projectsList">
+          <div class="posts-list projects-grid" id="projectsList">
             {% for p in projects_sorted %}
               {% assign tags_attr = "" %}
               {% if p.tags %}
@@ -109,37 +114,35 @@ permalink: /projects/
                 {% endfor %}
               {% endif %}
 
-              <article class="card" data-tags="{{ tags_attr }}">
-                <div class="card-top">
-                  <div class="meta">
-                    {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
-                    {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
-                    {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
-                  </div>
-
-                  <h2 class="card-title">{{ p.title }}</h2>
-                  {% if p.role %}<div class="card-role">{{ p.role }}</div>{% endif %}
+              <article class="post-card project-card" data-tags="{{ tags_attr }}">
+                <div class="post-meta project-meta">
+                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                  {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                  {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
                 </div>
 
-                {% if p.summary %}<p class="card-summary">{{ p.summary }}</p>{% endif %}
+                <h2 class="post-title project-title">{{ p.title }}</h2>
+
+                {% if p.role %}
+                  <div class="project-role">{{ p.role }}</div>
+                {% endif %}
+
+                {% if p.summary %}
+                  <p class="post-excerpt project-summary">{{ p.summary }}</p>
+                {% endif %}
 
                 {% if p.tags %}
                   <div class="chips">
                     {% for t in p.tags %}
-                      <button class="chip js-chip" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
+                      <button class="chip chip-link" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
                     {% endfor %}
                   </div>
                 {% endif %}
 
                 {% if p.links %}
-                  <div class="card-links">
+                  <div class="post-links">
                     {% for l in p.links %}
-                      {% assign u = l.url | to_s %}
-                      {% if u contains "://" %}
-                        <a class="link" href="{{ l.url }}">{{ l.label }}</a>
-                      {% else %}
-                        <a class="link" href="{{ l.url | relative_url }}">{{ l.label }}</a>
-                      {% endif %}
+                      <a class="link" href="{{ l.url }}">{{ l.label }}</a>
                     {% endfor %}
                   </div>
                 {% endif %}
@@ -149,7 +152,7 @@ permalink: /projects/
         {% endif %}
       </section>
 
-      <footer class="projects-footer">
+      <footer class="blog-footer projects-footer">
         <div class="footer-rule"></div>
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
@@ -168,12 +171,15 @@ permalink: /projects/
 
         if (!tagCloud || !list) return;
 
+        const tagButtons = Array.from(tagCloud.querySelectorAll("[data-tag]"));
         const allBtn = tagCloud.querySelector('[data-tag="__all"]');
-        const cards = Array.from(list.querySelectorAll(".card"));
+        const cards = Array.from(list.querySelectorAll(".project-card"));
+
         const total = cards.length;
         if (totalEl) totalEl.textContent = String(total);
 
-        const selected = new Set();
+        // OR logic: show projects that have >= 1 selected tag
+        const selected = new Set(); // stores slugified tags
 
         function getCardTags(card) {
           return new Set(
@@ -184,15 +190,15 @@ permalink: /projects/
           );
         }
 
-        function setPillActive(tag, isActive) {
+        function setButtonActive(tag, isActive) {
           const btn = tagCloud.querySelector(`[data-tag="${CSS.escape(tag)}"]`);
           if (!btn) return;
           btn.classList.toggle("is-active", isActive);
         }
 
         function syncAllButton() {
-          if (!allBtn) return;
-          allBtn.classList.toggle("is-active", selected.size === 0);
+          const hasFilters = selected.size > 0;
+          if (allBtn) allBtn.classList.toggle("is-active", !hasFilters);
         }
 
         function renderHint() {
@@ -206,7 +212,6 @@ permalink: /projects/
           filterList.textContent = Array.from(selected).join(", ");
         }
 
-        // OR logic: si hay tags seleccionados -> mostrar si tiene CUALQUIERA de ellos
         function applyFilter() {
           let shown = 0;
 
@@ -232,15 +237,14 @@ permalink: /projects/
 
         function clearSelection() {
           selected.clear();
-          Array.from(tagCloud.querySelectorAll(".tag-pill")).forEach(b => b.classList.remove("is-active"));
+          tagButtons.forEach(btn => btn.classList.remove("is-active"));
           if (allBtn) allBtn.classList.add("is-active");
           applyFilter();
         }
 
-        // Tag pills (robusto: target puede no ser Element)
+        // Tag pills
         tagCloud.addEventListener("click", (e) => {
-          const target = e.target;
-          const btn = (target && target.closest) ? target.closest("[data-tag]") : null;
+          const btn = e.target.closest("[data-tag]");
           if (!btn) return;
 
           const tag = (btn.getAttribute("data-tag") || "").trim();
@@ -262,29 +266,30 @@ permalink: /projects/
           applyFilter();
         });
 
+        // Clear
         if (clearBtn) clearBtn.addEventListener("click", clearSelection);
 
-        // Chips inside cards
+        // Chips inside cards also toggle
         list.addEventListener("click", (e) => {
-          const target = e.target;
-          const chip = (target && target.closest) ? target.closest(".js-chip[data-tag]") : null;
+          const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
-
           e.preventDefault();
+
           const tag = (chip.getAttribute("data-tag") || "").trim();
           if (!tag) return;
 
           if (selected.has(tag)) {
             selected.delete(tag);
-            setPillActive(tag, false);
+            setButtonActive(tag, false);
           } else {
             selected.add(tag);
-            setPillActive(tag, true);
+            setButtonActive(tag, true);
           }
 
           applyFilter();
         });
 
+        // init
         clearSelection();
       })();
     </script>

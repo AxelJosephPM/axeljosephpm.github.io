@@ -37,3 +37,48 @@
 .highlight .sr { font-style: italic } /* Literal.String.Regex */
 .highlight .s1 { font-style: italic } /* Literal.String.Single */
 .highlight .ss { font-style: italic } /* Literal.String.Symbol */
+/* =========================
+   NAV — minimal centered
+   ========================= */
+
+.site-nav{
+  padding: 22px 20px 0;
+}
+
+.site-nav .nav-wrap{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.site-nav .nav-link{
+  text-decoration: none;
+  color: rgba(0,0,0,0.72);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  padding-bottom: 6px;
+  border-bottom: 1px solid transparent;
+}
+
+.site-nav .nav-link:hover{
+  border-bottom-color: rgba(0,0,0,0.28);
+}
+
+/* active state: subrayado suave según la página */
+.site-nav .nav-link.is-active{
+  color: rgba(0,0,0,0.86);
+  border-bottom-color: rgba(0,0,0,0.40);
+}
+
+/* accesibilidad */
+.site-nav .nav-link:focus{ outline: none; }
+.site-nav .nav-link:focus-visible{
+  outline: 2px solid rgba(0,0,0,0.25);
+  outline-offset: 3px;
+  border-radius: 10px;
+}

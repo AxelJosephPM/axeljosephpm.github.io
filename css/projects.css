@@ -1,442 +1,73 @@
-/* NASA-lite: sobrio, aireado, líneas finas, acento controlado */
+/* =========================
+   PROJECTS — blog-first overrides
+   (reusa blog.css para tipografía, pills, links, layout)
+   ========================= */
 
-.projects-page {
-  background: #fbfaf7;
+body.projects-page{
+  /* Fondo “cream” (mismo enfoque que blog.css) */
+  background: var(--cream, var(--bg, #fbfaf7));
+  color: rgba(0,0,0,0.86);
+
+  /* opcional: suaviza tipografía/render */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.projects-wrap {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 48px 18px 80px;
-  position: relative;
-}
 
-/* watermark sutil */
-.projects-wrap::before {
-  content: "PROJECTS";
-  position: fixed;
-  top: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 140px;
-  letter-spacing: 0.12em;
-  opacity: 0.04;
-  pointer-events: none;
-  user-select: none;
-  white-space: nowrap;
-}
-
-/* Hero */
-.projects-hero {
-  margin-top: 18px;
-  margin-bottom: 38px;
-}
-
-.hero-kicker {
-  font-size: 12px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
-.hero-title {
-  font-size: 56px;
-  line-height: 1.04;
-  margin: 10px 0 10px;
-}
-
-.hero-subtitle {
-  max-width: 72ch;
-  font-size: 16px;
-  line-height: 1.55;
-  opacity: 0.85;
-}
-
-.hero-rule {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.12);
-  margin-top: 18px;
-}
-
-/* Sections */
-.projects-section {
-  margin: 38px 0;
-}
-
-.section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.section-title {
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.section-meta {
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
-.featured-grid,
-.cards-grid {
+/* Grid 2 columnas tipo Projects (pero con estética Blog) */
+.projects-page .projects-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 16px;
 }
 
-@media (max-width: 860px) {
-  .featured-grid,
-  .cards-grid {
+/* En móvil: 1 columna */
+@media (max-width: 860px){
+  .projects-page .projects-grid{
     grid-template-columns: 1fr;
   }
-  .hero-title {
-    font-size: 44px;
-  }
 }
 
-/* Cards */
-.card {
-  border: 1px solid rgba(0, 0, 0, 0.10);
-  border-radius: 14px;
-  padding: 16px 16px 14px;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(4px);
+/* Un poco más de “aire” en la cabecera de Projects */
+.projects-hero .blog-quote{
+  margin-top: 4px;
+  margin-bottom: 16px;
 }
 
-.card-featured {
-  border-color: rgba(0, 0, 0, 0.14);
-}
-
-.card-top {
-  margin-bottom: 10px;
-}
-
-.meta {
-  display: flex;
+/* Pills para status (ACTIVE/ONGOING/...) */
+.projects-page .pill{
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.85;
-  flex-wrap: wrap;
-}
-
-.dot {
-  opacity: 0.35;
-}
-
-.meta-text {
-  opacity: 0.8;
-}
-
-.pill {
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(0,0,0,0.18);
   font-size: 10px;
   letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.62);
+  background: rgba(0,0,0,0.02);
 }
 
-/* Thumbnail */
-.thumb {
-  margin: 12px 0 12px;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+/* Meta line un pelín más compacta */
+.projects-page .project-meta{
+  gap: 10px;
 }
 
-.thumb img {
-  display: block;
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-/* Title/role/summary */
-.card-title {
-  font-size: 20px;
-  line-height: 1.2;
-  margin: 10px 0 6px;
-}
-
-.card-role {
+/* Role bajo el título */
+.projects-page .project-role{
   font-size: 12px;
   opacity: 0.75;
   letter-spacing: 0.04em;
+  margin: 0 0 8px;
 }
 
-.card-summary {
-  font-size: 14px;
-  line-height: 1.55;
-  opacity: 0.92;
-  margin: 10px 0 12px;
-}
-
-/* Chips */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0 0 12px;
-}
-
-.chip {
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-/* Links */
-.card-links {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.card-links .link {
-  text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  padding-bottom: 2px;
-}
-
-.card-links .link:hover {
-  border-bottom-color: rgba(0, 63, 135, 0.75);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-/* Footer */
-.projects-footer {
-  margin-top: 48px;
-}
-
-.footer-rule {
-  height: 1px;
-  background: rgba(0, 0, 0, 0.12);
-  margin-bottom: 12px;
-}
-
-.footer-text {
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.6;
-}
-
-.empty-state {
-  border: 1px dashed rgba(0, 0, 0, 0.16);
-  border-radius: 14px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.35);
-  opacity: 0.9;
-}
-
-.empty-state code {
-  font-size: 12px;
-}
-
-.hero-actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.hero-action {
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  padding-bottom: 2px;
-}
-
-.hero-action:hover {
-  border-bottom-color: rgba(0, 63, 135, 0.75);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 10px 0 18px;
-}
-
-.tag-pill {
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 7px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.35);
-}
-
-.tag-pill:hover {
-  border-color: rgba(0, 63, 135, 0.45);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-.tag-section {
-  margin: 22px 0 26px;
-}
-
-.tag-section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+/* Summary un pelín más “project card” */
+.projects-page .project-summary{
   margin-bottom: 10px;
 }
 
-.tag-name {
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.tag-back {
-  text-decoration: none;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.6;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
-  padding-bottom: 2px;
-}
-
-.tag-back:hover {
-  opacity: 0.95;
-}
-
-.tag-section:target {
-  outline: 1px solid rgba(0, 63, 135, 0.25);
-  background: rgba(0, 63, 135, 0.03);
-  border-radius: 14px;
-  padding: 12px;
-}
-
-.tag-accordion {
-  border: 1px solid rgba(0, 0, 0, 0.10);
-  border-radius: 14px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.35);
-  margin: 10px 0;
-}
-
-.tag-summary {
-  cursor: pointer;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.85;
-  list-style: none;
-}
-
-.tag-summary::-webkit-details-marker {
-  display: none;
-}
-
-.tag-summary::after {
-  content: " +";
-  opacity: 0.6;
-}
-
-.tag-accordion[open] .tag-summary {
-  opacity: 1;
-}
-
-.tag-accordion[open] .tag-summary::after {
-  content: " −";
-  opacity: 0.6;
-}
-
-.tag-accordion-footer {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.chip-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.chip-link:hover {
-  border-color: rgba(0, 63, 135, 0.45);
-  color: rgba(0, 63, 135, 0.95);
-}
-
-.year-divider {
-  margin: 18px 0 12px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.year-title {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  min-width: 70px;
-}
-
-.year-rule {
-  height: 1px;
-  flex: 1;
-  background: rgba(0, 0, 0, 0.12);
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* Ajusta si tu nav ocupa más/menos */
-.projects-section,
-.tag-section {
-  scroll-margin-top: 90px;
-}
-
-/* Buttons should look like your pills/chips (sin romper bordes) */
-.tag-pill,
-.chip-link {
-  appearance: none;
-  font: inherit;
-  background: transparent;
-  cursor: pointer;
-}
-
-/* Si chip-link es <button>, quítale el borde "nativo" sin tocar el borde de .chip */
-button.chip-link {
-  border: 0;
-  padding: 0;
-}
-
-/* ===== Filter states (like Blog) ===== */
-
-.tag-pill.is-active {
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.22);
-}
-
-/* hint like blog */
-.filter-hint {
+/* Hint del filtro como en blog */
+.projects-page .filter-hint{
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -444,20 +75,8 @@ button.chip-link {
   opacity: 0.65;
 }
 
-/* Ensure tag pills work as buttons without resetting the look */
-.tag-cloud button.tag-pill {
-  appearance: none;
-  font: inherit;
-  color: inherit;
+/* Estado activo de tags (igual que blog) */
+.projects-page .tag-pill.is-active{
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.22);
 }
-
-/* Ensure chip buttons behave like chips (not default button styles) */
-.chips button.chip {
-  appearance: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.05);
-}
-
