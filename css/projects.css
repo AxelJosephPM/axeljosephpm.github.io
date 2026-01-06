@@ -415,7 +415,7 @@ html {
 
 /* Buttons should look like your pills/chips (sin romper bordes) */
 .tag-pill,
-.chip-link{
+.chip-link {
   appearance: none;
   font: inherit;
   background: transparent;
@@ -423,20 +423,20 @@ html {
 }
 
 /* Si chip-link es <button>, quítale el borde "nativo" sin tocar el borde de .chip */
-button.chip-link{
+button.chip-link {
   border: 0;
   padding: 0;
 }
 
 /* ===== Filter states (like Blog) ===== */
 
-.tag-pill.is-active{
-  background: rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.22);
+.tag-pill.is-active {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.22);
 }
 
 /* hint like blog */
-.filter-hint{
+.filter-hint {
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -445,19 +445,19 @@ button.chip-link{
 }
 
 /* Ensure tag pills work as buttons without resetting the look */
-.tag-cloud button.tag-pill{
+.tag-cloud button.tag-pill {
   appearance: none;
   font: inherit;
   color: inherit;
 }
 
 /* Ensure chip buttons behave like chips (not default button styles) */
-.chips button.chip{
+.chips button.chip {
   appearance: none;
   font: inherit;
   color: inherit;
   cursor: pointer;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.05);
 }
 

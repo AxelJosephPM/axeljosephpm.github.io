@@ -11,9 +11,7 @@ permalink: /projects/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Projects" }} — {{ site.title }}</title>
 
-    <!-- Importante: aquí NO cargamos blog.css para evitar colisiones de estilos -->
     <link rel="stylesheet" href="/css/projects.css" />
-
     {% include mathjax.html %}
   </head>
 
@@ -21,7 +19,6 @@ permalink: /projects/
     {% include nav.html %}
 
     <main class="projects-wrap">
-      <!-- HERO (misma filosofía que blog) -->
       <header class="projects-hero">
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">{{ page.title | default: "Projects" }}</h1>
@@ -41,13 +38,9 @@ permalink: /projects/
       {% if projects == nil %}
         {% assign projects = "" | split: "" %}
       {% endif %}
-
       {% assign projects_sorted = projects | sort: "year" | reverse %}
 
-      {%- comment -%}
-      Build unique tag list from _data/projects.yml (display labels)
-      We'll compare using slugify for matching.
-      {%- endcomment -%}
+      {%- comment -%} Build unique tag list {%- endcomment -%}
       {% assign tag_string = "" %}
       {% for p in projects_sorted %}
         {% if p.tags %}
@@ -81,11 +74,9 @@ permalink: /projects/
         {% else %}
           <div class="tag-cloud" id="tagCloud" aria-label="Project tag filters">
             <button class="tag-pill is-active" type="button" data-tag="__all">All</button>
-
             {% for t in tags_unique %}
               <button class="tag-pill" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
             {% endfor %}
-
             <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
           </div>
 
@@ -106,10 +97,7 @@ permalink: /projects/
 
         {% if projects_sorted == nil or projects_sorted.size == 0 %}
           <div class="empty-state">
-            <p>
-              No projects loaded yet.
-              Create <code>_data/projects.yml</code> and add entries to populate this page.
-            </p>
+            <p>No projects loaded yet. Add entries to <code>_data/projects.yml</code>.</p>
           </div>
         {% else %}
           <div class="cards-grid" id="projectsList">
@@ -130,20 +118,15 @@ permalink: /projects/
                   </div>
 
                   <h2 class="card-title">{{ p.title }}</h2>
-
-                  {% if p.role %}
-                    <div class="card-role">{{ p.role }}</div>
-                  {% endif %}
+                  {% if p.role %}<div class="card-role">{{ p.role }}</div>{% endif %}
                 </div>
 
-                {% if p.summary %}
-                  <p class="card-summary">{{ p.summary }}</p>
-                {% endif %}
+                {% if p.summary %}<p class="card-summary">{{ p.summary }}</p>{% endif %}
 
                 {% if p.tags %}
                   <div class="chips">
                     {% for t in p.tags %}
-                      <button class="chip chip-link" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
+                      <button class="chip js-chip" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
                     {% endfor %}
                   </div>
                 {% endif %}
@@ -185,14 +168,11 @@ permalink: /projects/
 
         if (!tagCloud || !list) return;
 
-        const tagButtons = Array.from(tagCloud.querySelectorAll("[data-tag]"));
         const allBtn = tagCloud.querySelector('[data-tag="__all"]');
         const cards = Array.from(list.querySelectorAll(".card"));
-
         const total = cards.length;
         if (totalEl) totalEl.textContent = String(total);
 
-        // OR logic: show if card has ANY selected tag
         const selected = new Set();
 
         function getCardTags(card) {
@@ -204,15 +184,15 @@ permalink: /projects/
           );
         }
 
-        function setButtonActive(tag, isActive) {
+        function setPillActive(tag, isActive) {
           const btn = tagCloud.querySelector(`[data-tag="${CSS.escape(tag)}"]`);
           if (!btn) return;
           btn.classList.toggle("is-active", isActive);
         }
 
         function syncAllButton() {
-          const hasFilters = selected.size > 0;
-          if (allBtn) allBtn.classList.toggle("is-active", !hasFilters);
+          if (!allBtn) return;
+          allBtn.classList.toggle("is-active", selected.size === 0);
         }
 
         function renderHint() {
@@ -226,6 +206,7 @@ permalink: /projects/
           filterList.textContent = Array.from(selected).join(", ");
         }
 
+        // OR logic: si hay tags seleccionados -> mostrar si tiene CUALQUIERA de ellos
         function applyFilter() {
           let shown = 0;
 
@@ -251,14 +232,15 @@ permalink: /projects/
 
         function clearSelection() {
           selected.clear();
-          tagButtons.forEach(btn => btn.classList.remove("is-active"));
+          Array.from(tagCloud.querySelectorAll(".tag-pill")).forEach(b => b.classList.remove("is-active"));
           if (allBtn) allBtn.classList.add("is-active");
           applyFilter();
         }
 
-        // Top pills
+        // Tag pills (robusto: target puede no ser Element)
         tagCloud.addEventListener("click", (e) => {
-          const btn = e.target.closest("[data-tag]");
+          const target = e.target;
+          const btn = (target && target.closest) ? target.closest("[data-tag]") : null;
           if (!btn) return;
 
           const tag = (btn.getAttribute("data-tag") || "").trim();
@@ -284,19 +266,20 @@ permalink: /projects/
 
         // Chips inside cards
         list.addEventListener("click", (e) => {
-          const chip = e.target.closest(".chip-link[data-tag]");
+          const target = e.target;
+          const chip = (target && target.closest) ? target.closest(".js-chip[data-tag]") : null;
           if (!chip) return;
-          e.preventDefault();
 
+          e.preventDefault();
           const tag = (chip.getAttribute("data-tag") || "").trim();
           if (!tag) return;
 
           if (selected.has(tag)) {
             selected.delete(tag);
-            setButtonActive(tag, false);
+            setPillActive(tag, false);
           } else {
             selected.add(tag);
-            setButtonActive(tag, true);
+            setPillActive(tag, true);
           }
 
           applyFilter();
