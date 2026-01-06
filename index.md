@@ -4,7 +4,7 @@ title: Axel Joseph Patiño Mongelós
 permalink: /
 ---
 [Blog](blog) \
-[Proyectos](proyectos) \
+[Projects](projects) \
 [Code](https://github.com/AxelJosephPM)
 
 <span style="font-family: monospace; 0.9em;">
