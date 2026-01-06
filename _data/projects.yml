@@ -1,8 +1,9 @@
 - title: "S-ART — Student Astronomical Radio Telescope"
   slug: "s-art"
-  status: "Active"
+  url: "/projects/s-art/"
+  status: "ACTIVE"
   year: 2026
-  category: "CubeSat"
+  category: "CUBESAT"
   role: "Systems / EPS / OBC"
   summary: "Student CubeSat mission concept focused on solar radio observations and hands-on satellite engineering."
   tags: ["CubeSat", "EPS", "OBC", "Systems", "Python"]
@@ -10,17 +11,13 @@
   links:
     - label: "GitHub"
       url: "https://github.com/AxelJosephPM"
-    # si quieres, añade más links específicos:
-    # - label: "Docs"
-    #   url: "https://..."
-    # - label: "Demo"
-    #   url: "https://..."
 
 - title: "Black Hole Ray Tracing (Python)"
   slug: "bh-raytracing"
-  status: "Building"
+  url: "/projects/bh-raytracing/"
+  status: "BUILDING"
   year: 2025
-  category: "Simulation"
+  category: "SIMULATION"
   role: "Author"
   summary: "Ray-tracing based renderer to visualize black holes (Luminet-style) with a clean pipeline for exports."
   tags: ["Python", "GR", "Rendering", "Numerics"]
@@ -31,30 +28,23 @@
 
 - title: "CFD / Aerodynamics Tooling"
   slug: "cfd-tooling"
-  status: "Maintained"
+  url: "/projects/cfd-tooling/"
+  status: "MAINTAINED"
   year: 2025
   category: "CFD"
   role: "Author / Contributor"
   summary: "Collection of scripts and workflows for airfoil analysis, meshing experiments, and post-processing."
   tags: ["CFD", "Mesh", "Python", "XFOIL", "SU2"]
-  links:
-    - label: "GitHub"
-      url: "https://github.com/AxelJosephPM"
-    # opcional: si tienes un post “hub” sobre esto, mejor que /blog genérico:
-    # - label: "Write-up"
-    #   url: "/blog/2026/01/04/cfd-worklog/"
 
 - title: "Embedded Systems Notes + Examples"
   slug: "embedded-notes"
-  status: "Ongoing"
+  url: "/projects/embedded-notes/"
+  status: "ONGOING"
   year: 2025
-  category: "Embedded"
+  category: "EMBEDDED"
   role: "Author"
   summary: "Notes and small code examples around RTOS concepts, C patterns, and low-level debugging."
   tags: ["C", "RTOS", "Embedded"]
   links:
     - label: "GitHub"
       url: "https://github.com/AxelJosephPM"
-    # opcional: link directo a tu post de la serie si existe:
-    # - label: "Write-up"
-    #   url: "/blog/2026/01/04/embedded-series-1/"

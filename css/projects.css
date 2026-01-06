@@ -1,73 +1,93 @@
 /* =========================
-   PROJECTS — blog-first overrides
-   (reusa blog.css para tipografía, pills, links, layout)
+   PROJECTS — extends blog.css
+   (no duplicate nav/tags styles)
    ========================= */
 
 body.projects-page{
-  /* Fondo “cream” (mismo enfoque que blog.css) */
-  background: var(--cream, var(--bg, #fbfaf7));
-  color: rgba(0,0,0,0.86);
-
-  /* opcional: suaviza tipografía/render */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--blog-cream, #fbfaf7);
+  color: var(--ink, rgba(0,0,0,0.86));
 }
 
+/* Same rhythm as blog page */
+.projects-wrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 72px 22px 70px;
+}
 
-/* Grid 2 columnas tipo Projects (pero con estética Blog) */
-.projects-page .projects-grid{
+/* Grid of project cards */
+.projects-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 16px;
 }
 
-/* En móvil: 1 columna */
-@media (max-width: 860px){
-  .projects-page .projects-grid{
-    grid-template-columns: 1fr;
-  }
+/* Project card = blog post card vibe */
+.project-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius, 16px);
+  padding: 18px 18px 16px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 
-/* Un poco más de “aire” en la cabecera de Projects */
-.projects-hero .blog-quote{
-  margin-top: 4px;
-  margin-bottom: 16px;
-}
-
-/* Pills para status (ACTIVE/ONGOING/...) */
-.projects-page .pill{
-  display: inline-flex;
+.project-meta{
+  display: flex;
+  gap: 8px;
   align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.48);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.project-meta .pill{
   padding: 4px 8px;
   border-radius: 999px;
   border: 1px solid rgba(0,0,0,0.18);
   font-size: 10px;
   letter-spacing: 0.18em;
-  text-transform: uppercase;
   color: rgba(0,0,0,0.62);
   background: rgba(0,0,0,0.02);
 }
 
-/* Meta line un pelín más compacta */
-.projects-page .project-meta{
-  gap: 10px;
-}
-
-/* Role bajo el título */
-.projects-page .project-role{
-  font-size: 12px;
-  opacity: 0.75;
-  letter-spacing: 0.04em;
+.project-title{
+  font-size: 22px;
+  line-height: 1.18;
   margin: 0 0 8px;
 }
 
-/* Summary un pelín más “project card” */
-.projects-page .project-summary{
-  margin-bottom: 10px;
+.project-title a{
+  text-decoration: none;
+  color: rgba(0,0,0,0.86);
 }
 
-/* Hint del filtro como en blog */
-.projects-page .filter-hint{
+.project-title a:hover{
+  text-decoration: underline;
+}
+
+.project-role{
+  font-size: 12px;
+  color: rgba(0,0,0,0.62);
+  margin: 0 0 10px;
+}
+
+.project-summary{
+  margin: 0 0 12px;
+  color: rgba(0,0,0,0.62);
+  line-height: 1.55;
+  max-width: 72ch;
+}
+
+/* Active pill state like blog (important for filter UX) */
+.tag-pill.is-active{
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.22);
+}
+
+.filter-hint{
   margin-top: 8px;
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -75,17 +95,9 @@ body.projects-page{
   opacity: 0.65;
 }
 
-/* Estado activo de tags (igual que blog) */
-.projects-page .tag-pill.is-active{
-  background: rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.22);
-}
-
-.card-title-link{
-  text-decoration: none;
-  color: inherit;
-}
-
-.card-title-link:hover{
-  text-decoration: underline;
+/* Responsive */
+@media (max-width: 860px){
+  .projects-grid{
+    grid-template-columns: 1fr;
+  }
 }

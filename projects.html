@@ -1,7 +1,5 @@
 ---
 layout: null
-title: Projects
-permalink: /projects/
 ---
 
 <!doctype html>
@@ -11,7 +9,9 @@ permalink: /projects/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Projects" }} — {{ site.title }}</title>
 
+    <!-- Base visual (nav, wrap, secciones, pills, links) -->
     <link rel="stylesheet" href="/css/blog.css" />
+    <!-- Solo “extensiones” para tarjetas/grid de proyectos -->
     <link rel="stylesheet" href="/css/projects.css" />
 
     {% include mathjax.html %}
@@ -21,51 +21,34 @@ permalink: /projects/
     {% include nav.html %}
 
     <main class="projects-wrap">
-      <header class="projects-hero">
+      <header class="blog-hero projects-hero">
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">{{ page.title | default: "Projects" }}</h1>
-        <p class="hero-subtitle">
+
+        <p class="blog-quote-text">
           A curated list of missions, simulations, and tools. Minimal, documented, and continuously improved.
         </p>
 
         <div class="hero-actions">
           <a class="hero-action" href="#tags">Tags</a>
-          <a class="hero-action" href="#all">All</a>
+          <a class="hero-action" href="#projects">Projects</a>
         </div>
 
         <div class="hero-rule"></div>
       </header>
 
-      {%- comment -%}
-      1) Load list from _data/projects.yml (cards data)
-      2) Build a lookup from site pages under /projects/ so each card can link to its page
-      {%- endcomment -%}
-
       {% assign projects = site.data.projects %}
       {% if projects == nil %}
         {% assign projects = "" | split: "" %}
       {% endif %}
+
       {% assign projects_sorted = projects | sort: "year" | reverse %}
 
-      {%- comment -%}
-      Build map: project "slug" -> url
-      We will match by p.slug in projects.yml to the page's basename.
-      Example: projects/s-art.md => slug "s-art"
-      {%- endcomment -%}
-      {% assign project_pages = site.pages | where_exp: "pg", "pg.path contains 'projects/'" %}
-      {% assign url_map_string = "" %}
-      {% for pg in project_pages %}
-        {% assign base = pg.path | split: "/" | last | replace: ".md", "" | replace: ".html", "" %}
-        {% assign url_map_string = url_map_string | append: base | append: "=>" | append: pg.url | append: "||" %}
-      {% endfor %}
-
-      {%- comment -%}
-      Build unique tag list from projects_sorted
-      {%- endcomment -%}
+      {%- comment -%} Build unique tag list {%- endcomment -%}
       {% assign tag_string = "" %}
-      {% for pr in projects_sorted %}
-        {% if pr.tags %}
-          {% for t in pr.tags %}
+      {% for p in projects_sorted %}
+        {% if p.tags %}
+          {% for t in p.tags %}
             {% assign tag_string = tag_string | append: t | append: "|" %}
           {% endfor %}
         {% endif %}
@@ -74,32 +57,39 @@ permalink: /projects/
       {% assign tags_unique = "" | split: "" %}
       {% for t in tags_all %}
         {% if t != "" %}
-          {% assign norm = t | downcase | strip %}
-          {% if tags_unique contains norm %}
+          {% if tags_unique contains t %}
           {% else %}
-            {% assign tags_unique = tags_unique | push: norm %}
+            {% assign tags_unique = tags_unique | push: t %}
           {% endif %}
         {% endif %}
       {% endfor %}
 
       <!-- TAGS -->
-      <section id="tags" class="projects-section">
+      <section id="tags" class="blog-section">
         <div class="section-head">
           <div class="section-title">Tags</div>
           <div class="section-meta"><span id="tagCount">{{ tags_unique | size }}</span></div>
         </div>
 
         {% if tags_unique == nil or tags_unique.size == 0 %}
-          <div class="empty-state">
-            <p>No tags yet. Add <code>tags</code> arrays to projects in <code>_data/projects.yml</code>.</p>
-          </div>
+          <div class="empty-state"><p>No tags yet.</p></div>
         {% else %}
           <div class="tag-cloud" id="tagCloud" aria-label="Project tag filters">
-            <button class="tag-pill is-active" type="button" data-tag="__all">All</button>
+            <button class="tag-pill is-active" type="button" data-tag="__all" data-label="All">All</button>
+
             {% for t in tags_unique %}
-              <button class="tag-pill" type="button" data-tag="{{ t }}">{{ t }}</button>
+              {% assign ts = t | slugify %}
+              <button
+                class="tag-pill"
+                type="button"
+                id="tag-{{ ts }}"
+                data-tag="{{ ts }}"
+                data-label="{{ t }}">
+                {{ t }}
+              </button>
             {% endfor %}
-            <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
+
+            <button class="tag-pill tag-pill-clear" type="button" id="clearTags">Clear</button>
           </div>
 
           <div class="filter-hint" id="filterHint" style="display:none;">
@@ -108,8 +98,8 @@ permalink: /projects/
         {% endif %}
       </section>
 
-      <!-- ALL PROJECTS -->
-      <section id="all" class="projects-section">
+      <!-- PROJECTS -->
+      <section id="projects" class="blog-section">
         <div class="section-head">
           <div class="section-title">All projects</div>
           <div class="section-meta">
@@ -119,88 +109,59 @@ permalink: /projects/
 
         {% if projects_sorted == nil or projects_sorted.size == 0 %}
           <div class="empty-state">
-            <p>No projects loaded yet. Create <code>_data/projects.yml</code> and add entries.</p>
+            <p>No projects loaded yet. Add entries to <code>_data/projects.yml</code>.</p>
           </div>
         {% else %}
-          <div class="cards-grid" id="projectsList">
-            {% for pr in projects_sorted %}
-
-              {%- comment -%}
-              Resolve project page URL:
-              expects pr.slug in projects.yml matching filename in /projects/.
-              Example: pr.slug: "s-art" => /projects/s-art/
-              {%- endcomment -%}
-              {% assign project_url = "" %}
-              {% if pr.slug %}
-                {% assign needle = pr.slug | downcase | strip | append: "=>" %}
-                {% assign parts = url_map_string | split: "||" %}
-                {% for row in parts %}
-                  {% if row contains needle %}
-                    {% assign project_url = row | split: "=>" | last %}
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-              {% if project_url == "" and pr.url %}
-                {%- comment -%} fallback if you already store url in projects.yml {%- endcomment -%}
-                {% assign project_url = pr.url %}
-              {% endif %}
-
-              {%- comment -%}
-              Normalize tags into data-tags: lower + strip, separated by |
-              {%- endcomment -%}
+          <div class="projects-grid" id="projectsList">
+            {% for p in projects_sorted %}
               {% assign tags_attr = "" %}
-              {% if pr.tags %}
-                {% for t in pr.tags %}
-                  {% assign tags_attr = tags_attr | append: (t | downcase | strip) | append: "|" %}
+              {% if p.tags %}
+                {% for t in p.tags %}
+                  {% assign tags_attr = tags_attr | append: (t | slugify) | append: "|" %}
                 {% endfor %}
               {% endif %}
 
-              <article class="card" data-tags="{{ tags_attr }}" data-url="{{ project_url }}">
-                <div class="card-top">
-                  <div class="meta">
-                    {% if pr.status %}<span class="pill">{{ pr.status }}</span>{% endif %}
-                    {% if pr.year %}<span class="dot">•</span><span class="meta-text">{{ pr.year }}</span>{% endif %}
-                    {% if pr.category %}<span class="dot">•</span><span class="meta-text">{{ pr.category }}</span>{% endif %}
-                  </div>
+              {% assign project_url = p.url | default: "/projects/" | append: p.slug | append: "/" %}
 
-                  <h2 class="card-title">
-                    {% if project_url != "" %}
-                      <a class="card-title-link" href="{{ project_url }}">{{ pr.title }}</a>
-                    {% else %}
-                      {{ pr.title }}
-                    {% endif %}
-                  </h2>
-
-                  {% if pr.role %}
-                    <div class="card-role">{{ pr.role }}</div>
-                  {% endif %}
+              <article class="project-card" data-tags="{{ tags_attr }}" data-url="{{ project_url | relative_url }}">
+                <div class="project-meta">
+                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                  {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
+                  {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
                 </div>
 
-                {% if pr.image %}
-                  <div class="thumb">
-                    <img src="{{ pr.image }}" alt="{{ pr.title }} thumbnail" loading="lazy" />
-                  </div>
+                <h2 class="project-title">
+                  <a href="{{ project_url | relative_url }}">{{ p.title }}</a>
+                </h2>
+
+                {% if p.role %}
+                  <div class="project-role">{{ p.role }}</div>
                 {% endif %}
 
-                {% if pr.summary %}
-                  <p class="card-summary">{{ pr.summary }}</p>
+                {% if p.summary %}
+                  <p class="project-summary">{{ p.summary }}</p>
                 {% endif %}
 
-                {% if pr.tags %}
+                {% if p.tags %}
                   <div class="chips">
-                    {% for t in pr.tags %}
-                      <button class="chip chip-link" type="button" data-tag="{{ t | downcase | strip }}">{{ t }}</button>
+                    {% for t in p.tags %}
+                      <button
+                        class="chip chip-link"
+                        type="button"
+                        data-tag="{{ t | slugify }}"
+                        data-label="{{ t }}">
+                        {{ t }}
+                      </button>
                     {% endfor %}
                   </div>
                 {% endif %}
 
-                <div class="card-links">
-                  {% if project_url != "" %}
-                    <a class="link" href="{{ project_url }}">READ</a>
-                  {% endif %}
+                <div class="post-links">
+                  <!-- READ siempre al propio proyecto -->
+                  <a class="link" href="{{ project_url | relative_url }}">READ</a>
 
-                  {% if pr.links %}
-                    {% for l in pr.links %}
+                  {% if p.links %}
+                    {% for l in p.links %}
                       <a class="link" href="{{ l.url }}">{{ l.label }}</a>
                     {% endfor %}
                   {% endif %}
@@ -211,7 +172,7 @@ permalink: /projects/
         {% endif %}
       </section>
 
-      <footer class="projects-footer">
+      <footer class="blog-footer">
         <div class="footer-rule"></div>
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
@@ -232,18 +193,18 @@ permalink: /projects/
 
         const tagButtons = Array.from(tagCloud.querySelectorAll("[data-tag]"));
         const allBtn = tagCloud.querySelector('[data-tag="__all"]');
-        const cards = Array.from(list.querySelectorAll(".card"));
+        const cards = Array.from(list.querySelectorAll(".project-card"));
 
         const total = cards.length;
         if (totalEl) totalEl.textContent = String(total);
 
-        // ✅ OR logic: show cards that match any selected tag
-        const selected = new Set();
+        // OR logic: show if card has ANY selected tag
+        const selected = new Set(); // stores slugified tags
 
         function getCardTags(card) {
           const raw = (card.getAttribute("data-tags") || "")
             .split("|")
-            .map(s => s.trim().toLowerCase())
+            .map(s => s.trim())
             .filter(Boolean);
           return new Set(raw);
         }
@@ -267,7 +228,11 @@ permalink: /projects/
             return;
           }
           hint.style.display = "";
-          filterList.textContent = Array.from(selected).join(", ");
+          const labels = Array.from(selected).map(tag => {
+            const btn = tagCloud.querySelector(`[data-tag="${CSS.escape(tag)}"]`);
+            return btn?.getAttribute("data-label") || tag;
+          });
+          filterList.textContent = labels.join(", ");
         }
 
         function applyFilter() {
@@ -300,15 +265,18 @@ permalink: /projects/
           applyFilter();
         }
 
-        // Top tag pills
+        // Click on top tag pills
         tagCloud.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-tag]");
           if (!btn) return;
 
-          const tag = (btn.getAttribute("data-tag") || "").toLowerCase().trim();
+          const tag = (btn.getAttribute("data-tag") || "").trim();
           if (!tag) return;
 
-          if (tag === "__all") { clearSelection(); return; }
+          if (tag === "__all") {
+            clearSelection();
+            return;
+          }
 
           if (selected.has(tag)) {
             selected.delete(tag);
@@ -323,13 +291,13 @@ permalink: /projects/
 
         if (clearBtn) clearBtn.addEventListener("click", clearSelection);
 
-        // Chips inside cards toggle filters too
+        // Click on chips inside cards also toggles filters
         list.addEventListener("click", (e) => {
           const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
           e.preventDefault();
 
-          const tag = (chip.getAttribute("data-tag") || "").toLowerCase().trim();
+          const tag = (chip.getAttribute("data-tag") || "").trim();
           if (!tag) return;
 
           if (selected.has(tag)) {
@@ -343,7 +311,18 @@ permalink: /projects/
           applyFilter();
         });
 
+        // init
         clearSelection();
+
+        // Optional: support deep-link from project page: /proyectos/#tag-cfd
+        if (location.hash && location.hash.startsWith("#tag-")) {
+          const tag = location.hash.replace("#tag-", "").trim();
+          if (tag) {
+            selected.add(tag);
+            setButtonActive(tag, true);
+            applyFilter();
+          }
+        }
       })();
     </script>
   </body>
