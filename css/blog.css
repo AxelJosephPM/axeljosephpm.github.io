@@ -2,8 +2,6 @@
    BLOG — NASA-like minimal
    ========================= */
 
-/* Use the same “cream” as Projects if Projects defines a var.
-   Fallback stays close to your Projects look. */
 :root{
   --blog-cream: var(--cream, var(--bg, #fbfaf7));
   --ink: rgba(0,0,0,0.86);
@@ -18,7 +16,7 @@ body.blog-page{
   color: var(--ink);
 }
 
-/* --- NAV fallback: prevents bullet list top-left if projects.css ever changes --- */
+/* --- NAV fallback: prevents bullet list top-left --- */
 nav ul,
 .nav ul,
 .site-nav ul{
@@ -34,7 +32,6 @@ nav li,
   padding: 0;
 }
 
-/* try to mimic your centered minimal nav */
 nav,
 .nav,
 .site-nav{
@@ -88,23 +85,20 @@ nav a:hover,
   margin: 0 0 16px;
 }
 
-.blog-quote{
-  max-width: 72ch;
+.hero-quote{
+  max-width: 80ch;
   margin: 0 0 18px;
-}
-
-.blog-quote-text{
-  margin: 0 0 6px;
   color: rgba(0,0,0,0.62);
   line-height: 1.6;
   font-size: 15px;
 }
 
-.blog-quote-author{
+.hero-quote-author{
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.55;
+  margin-left: 6px;
 }
 
 /* tabs under hero */
@@ -160,7 +154,7 @@ nav a:hover,
   opacity: 0.40;
 }
 
-/* --- Tag pills --- */
+/* --- Tags --- */
 .tag-cloud{
   display: flex;
   flex-wrap: wrap;
@@ -178,66 +172,38 @@ nav a:hover,
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(0,0,0,0.65);
-  text-decoration: none;
   background: transparent;
-  cursor: pointer; /* works for <a> and <button> */
+  cursor: pointer;
 }
 
 .tag-pill:hover{
   background: rgba(0,0,0,0.03);
 }
 
-.tag-pill-clear{
+.tag-pill.is-active{
+  background: rgba(0,0,0,0.04);
+}
+
+.tag-clear{
   color: rgba(0,0,0,0.78);
 }
 
-/* --- Tag sections --- */
-.tag-sections{
-  margin-top: 14px;
-}
-
-.tag-section{
-  padding-top: 18px;
-  margin-top: 18px;
-  border-top: 1px solid rgba(0,0,0,0.10);
-}
-
-.tag-section-head{
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 6px 0 12px;
-}
-
-.tag-name{
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.65;
-}
-
-.tag-back{
+.filter-hint{
+  margin-top: 10px;
   font-size: 11px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.45;
-  text-decoration: none;
-  color: rgba(0,0,0,0.62);
+  opacity: 0.55;
 }
 
-.tag-back:hover{
-  text-decoration: underline;
-}
-
-/* --- Posts grid + cards --- */
-.posts-grid{
+/* --- Posts --- */
+.posts-list{
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px; /* slightly more breathing room */
+  gap: 16px; /* spacing between cards */
 }
 
 .post-card{
-  background: var(--card);           /* IMPORTANT: white cards */
+  background: var(--card);
   border: 1px solid rgba(0,0,0,0.10);
   border-radius: var(--radius);
   padding: 18px 18px 16px;
@@ -281,7 +247,7 @@ nav a:hover,
   max-width: 72ch;
 }
 
-/* chips like Projects */
+/* chips */
 .chips{
   display: flex;
   flex-wrap: wrap;
@@ -296,35 +262,33 @@ nav a:hover,
   font-size: 11px;
   color: rgba(0,0,0,0.62);
   background: rgba(0,0,0,0.02);
+  cursor: pointer;
 }
 
-.chip-link{
-  text-decoration: none;
-}
-
-.chip-link:hover{
+.chip:hover{
   background: rgba(0,0,0,0.04);
 }
 
-/* links row */
+/* ✅ READ + SHARE: identical styling */
 .post-links{
   display: flex;
-  gap: 14px;
+  gap: 16px;
   margin-top: 8px;
-  align-items: center;
+  align-items: baseline;
 }
 
-/* ✅ unified link style for both <a> and <button> */
 .post-links .link{
-  position: relative;
   display: inline-block;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   text-decoration: none;
   color: rgba(0,0,0,0.62);
+
   border-bottom: 1px solid rgba(0,0,0,0.22);
   padding-bottom: 6px;
+
+  line-height: 1;
   background: transparent;
   cursor: pointer;
 }
@@ -333,21 +297,20 @@ nav a:hover,
   border-bottom-color: rgba(0,0,0,0.40);
 }
 
-/* Make button look exactly like the link (keep underline) */
 .post-links button.link{
   appearance: none;
+  -webkit-appearance: none;
   border: 0;
-  border-bottom: 1px solid rgba(0,0,0,0.22); /* <- recupera el look de READ */
-  padding: 0 0 6px;                          /* <- igual que .link */
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  padding: 0 0 6px;
   margin: 0;
   font: inherit;
   color: inherit;
-  text-transform: inherit;
   letter-spacing: inherit;
-  background: transparent;
+  text-transform: inherit;
 }
 
-/* Focus visible (accessible) without breaking aesthetics */
+/* focus */
 .post-links .link:focus{ outline: none; }
 .post-links .link:focus-visible{
   outline: 2px solid rgba(0,0,0,0.25);
@@ -358,16 +321,6 @@ nav a:hover,
 .empty-state{
   padding: 14px 0 6px;
   color: rgba(0,0,0,0.55);
-}
-
-/* Blog list spacing */
-.posts-list{
-  display: grid;
-  gap: 16px; /* a bit more than before */
-}
-
-.post-card{
-  margin: 0; /* ensure grid gap controls spacing */
 }
 
 /* --- Footer --- */
@@ -387,54 +340,3 @@ nav a:hover,
   text-transform: uppercase;
   opacity: 0.45;
 }
-
-/* --- Responsive --- */
-@media (min-width: 980px){
-  .posts-grid{
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =========================
-   FIX: SHARE button = READ link
-   (put this at the very end of blog.css)
-   ========================= */
-
-.post-links .link-btn{
-  /* reset button */
-  appearance: none;
-  -webkit-appearance: none;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-
-  /* force anchor-like behavior */
-  display: inline-block;
-  line-height: normal;          /* avoid weird baseline */
-  color: inherit;
-  text-transform: inherit;
-  letter-spacing: inherit;
-
-  cursor: pointer;
-}
-
-/* ensure underline rule applies even if some global CSS targets only <a> */
-.post-links .link-btn{
-  border-bottom: 1px solid rgba(0,0,0,0.22);
-  padding-bottom: 6px;
-}
-
-.post-links .link-btn:hover{
-  border-bottom-color: rgba(0,0,0,0.40);
-}
-
-.post-links .link-btn:focus{ outline: none; }
-.post-links .link-btn:focus-visible{
-  outline: 2px solid rgba(0,0,0,0.25);
-  outline-offset: 3px;
-  border-radius: 8px;
-}
-
-
