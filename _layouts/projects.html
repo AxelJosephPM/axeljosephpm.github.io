@@ -1,11 +1,17 @@
+---
+layout: null
+title: Projects
+permalink: /projects/
+---
+
 <!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{ page.title }} — {{ site.title }}</title>
+    <title>{{ page.title | default: "Projects" }} — {{ site.title }}</title>
 
-    <link rel="stylesheet" href="/css/blog.css" />
+    <!-- ✅ IMPORTANT: do NOT load blog.css here (it can override nav + common classes like .chips/.chip/.link) -->
     <link rel="stylesheet" href="/css/projects.css" />
 
     {% include mathjax.html %}
@@ -38,7 +44,7 @@
       {% assign projects_sorted = projects | sort: "year" | reverse %}
 
       {%- comment -%}
-      Build unique tag list
+      Build unique tag list (display labels) + stable slug mapping
       {%- endcomment -%}
       {% assign tag_string = "" %}
       {% for p in projects_sorted %}
@@ -48,14 +54,14 @@
           {% endfor %}
         {% endif %}
       {% endfor %}
+
       {% assign tags_all = tag_string | split: "|" | sort %}
       {% assign tags_unique = "" | split: "" %}
       {% for t in tags_all %}
         {% if t != "" %}
-          {% if tags_unique contains t %}
-          {% else %}
+          {% unless tags_unique contains t %}
             {% assign tags_unique = tags_unique | push: t %}
-          {% endif %}
+          {% endunless %}
         {% endif %}
       {% endfor %}
 
@@ -118,7 +124,9 @@
                     {% if p.year %}<span class="dot">•</span><span class="meta-text">{{ p.year }}</span>{% endif %}
                     {% if p.category %}<span class="dot">•</span><span class="meta-text">{{ p.category }}</span>{% endif %}
                   </div>
+
                   <h2 class="card-title">{{ p.title }}</h2>
+
                   {% if p.role %}
                     <div class="card-role">{{ p.role }}</div>
                   {% endif %}
@@ -175,14 +183,16 @@
         const total = cards.length;
         if (totalEl) totalEl.textContent = String(total);
 
-        const selected = new Set(); // OR logic (any tag match)
+        // OR logic: show if card has ANY selected tag
+        const selected = new Set();
 
         function getCardTags(card) {
-          const raw = (card.getAttribute("data-tags") || "")
-            .split("|")
-            .map(s => s.trim())
-            .filter(Boolean);
-          return new Set(raw);
+          return new Set(
+            (card.getAttribute("data-tags") || "")
+              .split("|")
+              .map(s => s.trim())
+              .filter(Boolean)
+          );
         }
 
         function setButtonActive(tag, isActive) {
@@ -207,7 +217,6 @@
           filterList.textContent = Array.from(selected).join(", ");
         }
 
-        // ✅ OR logic: show if card has ANY selected tag (or none selected -> show all)
         function applyFilter() {
           let shown = 0;
 
@@ -238,7 +247,7 @@
           applyFilter();
         }
 
-        // Click on top tag pills
+        // Top pills
         tagCloud.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-tag]");
           if (!btn) return;
@@ -251,7 +260,6 @@
             return;
           }
 
-          // toggle
           if (selected.has(tag)) {
             selected.delete(tag);
             btn.classList.remove("is-active");
@@ -265,7 +273,7 @@
 
         if (clearBtn) clearBtn.addEventListener("click", clearSelection);
 
-        // Click on chips inside cards also toggles filters
+        // Chips inside cards
         list.addEventListener("click", (e) => {
           const chip = e.target.closest(".chip-link[data-tag]");
           if (!chip) return;
@@ -283,11 +291,8 @@
           }
 
           applyFilter();
-          // opcional: scroll a tags
-          // document.getElementById("tags")?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
 
-        // init
         clearSelection();
       })();
     </script>

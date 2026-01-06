@@ -413,15 +413,18 @@ html {
   scroll-margin-top: 90px;
 }
 
-/* Buttons should look like your pills/chips */
+/* Buttons should look like your pills/chips (sin romper bordes) */
 .tag-pill,
 .chip-link{
   appearance: none;
-  background: transparent;
   font: inherit;
-  border: none; /* si ya defines border en .tag-pill/.chip, puedes quitar esta línea */
+  background: transparent;
+  cursor: pointer;
 }
 
-/* Si tus .tag-pill/.chip ya tienen borde, comenta lo de arriba y deja solo esto: */
-.tag-pill,
-.chip-link{ cursor: pointer; }
+/* Si chip-link es <button>, quítale el borde "nativo" sin tocar el borde de .chip */
+button.chip-link{
+  border: 0;
+  padding: 0;
+}
+

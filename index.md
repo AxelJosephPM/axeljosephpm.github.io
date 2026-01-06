@@ -1,6 +1,7 @@
 ---
 layout: inicio
 title: Axel Joseph Patiño Mongelós
+permalink: /
 ---
 [Blog](blog) \
 [Proyectos](proyectos) \
