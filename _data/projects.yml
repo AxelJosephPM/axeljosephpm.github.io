@@ -1,23 +1,26 @@
 - title: "S-ART — Student Astronomical Radio Telescope"
   slug: "s-art"
-  status: "ACTIVE"
+  status: "Active"
   year: 2026
-  category: "CUBESAT"
+  category: "CubeSat"
   role: "Systems / EPS / OBC"
   summary: "Student CubeSat mission concept focused on solar radio observations and hands-on satellite engineering."
   tags: ["CubeSat", "EPS", "OBC", "Systems", "Python"]
   featured: true
   links:
-    - label: "Read"
-      url: "/blog"
     - label: "GitHub"
       url: "https://github.com/AxelJosephPM"
+    # si quieres, añade más links específicos:
+    # - label: "Docs"
+    #   url: "https://..."
+    # - label: "Demo"
+    #   url: "https://..."
 
 - title: "Black Hole Ray Tracing (Python)"
   slug: "bh-raytracing"
-  status: "BUILDING"
+  status: "Building"
   year: 2025
-  category: "SIMULATION"
+  category: "Simulation"
   role: "Author"
   summary: "Ray-tracing based renderer to visualize black holes (Luminet-style) with a clean pipeline for exports."
   tags: ["Python", "GR", "Rendering", "Numerics"]
@@ -28,24 +31,30 @@
 
 - title: "CFD / Aerodynamics Tooling"
   slug: "cfd-tooling"
-  status: "MAINTAINED"
+  status: "Maintained"
   year: 2025
   category: "CFD"
   role: "Author / Contributor"
   summary: "Collection of scripts and workflows for airfoil analysis, meshing experiments, and post-processing."
   tags: ["CFD", "Mesh", "Python", "XFOIL", "SU2"]
   links:
-    - label: "Read"
-      url: "/blog"
+    - label: "GitHub"
+      url: "https://github.com/AxelJosephPM"
+    # opcional: si tienes un post “hub” sobre esto, mejor que /blog genérico:
+    # - label: "Write-up"
+    #   url: "/blog/2026/01/04/cfd-worklog/"
 
 - title: "Embedded Systems Notes + Examples"
   slug: "embedded-notes"
-  status: "ONGOING"
+  status: "Ongoing"
   year: 2025
-  category: "EMBEDDED"
+  category: "Embedded"
   role: "Author"
   summary: "Notes and small code examples around RTOS concepts, C patterns, and low-level debugging."
   tags: ["C", "RTOS", "Embedded"]
   links:
-    - label: "Read"
-      url: "/blog"
+    - label: "GitHub"
+      url: "https://github.com/AxelJosephPM"
+    # opcional: link directo a tu post de la serie si existe:
+    # - label: "Write-up"
+    #   url: "/blog/2026/01/04/embedded-series-1/"
