@@ -1,21 +1,22 @@
 /* =========================
-   HOME — match Projects/Blog style
+   HOME — NASA-like minimal
    ========================= */
 
 :root{
-  --home-cream: var(--cream, var(--bg, #f7f3eb));
+  --cream: #fbfaf7;
   --ink: rgba(0,0,0,0.86);
-  --muted: rgba(0,0,0,0.60);
+  --muted: rgba(0,0,0,0.62);
   --hairline: rgba(0,0,0,0.12);
   --card: #ffffff;
   --radius: 16px;
 }
 
 body.home-page{
-  background: var(--home-cream);
+  background: var(--cream);
   color: var(--ink);
 }
 
+/* Layout */
 .home-wrap{
   max-width: 980px;
   margin: 0 auto;
@@ -27,7 +28,7 @@ body.home-page{
   letter-spacing: 0.24em;
   text-transform: uppercase;
   font-size: 11px;
-  opacity: 0.55;
+  opacity: 0.60;
   margin-bottom: 10px;
 }
 
@@ -39,48 +40,59 @@ body.home-page{
 }
 
 .home-hero .hero-subtitle{
-  margin: 0 0 16px;
+  max-width: 72ch;
+  margin: 0 0 18px;
   color: var(--muted);
   line-height: 1.6;
-  max-width: 72ch;
+  font-size: 15px;
 }
 
-.home-hero .hero-actions{
+.home-cta{
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 6px;
 }
 
-.home-hero .hero-action{
+.cta-pill{
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--hairline);
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 999px;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(0,0,0,0.65);
+  color: rgba(0,0,0,0.72);
   text-decoration: none;
-  background: rgba(255,255,255,0.4);
+  background: transparent;
 }
 
-.home-hero .hero-action:hover{
+.cta-pill:hover{
   background: rgba(0,0,0,0.03);
 }
 
-.home-hero .hero-rule{
+.hero-rule{
   height: 1px;
   background: rgba(0,0,0,0.10);
   margin-top: 18px;
 }
 
-/* Sections */
-.home-section{
+/* Grid */
+.home-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
   margin-top: 28px;
 }
 
+@media (min-width: 900px){
+  .home-grid{
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Section head (match blog style) */
 .section-head{
   display: flex;
   justify-content: space-between;
@@ -102,70 +114,92 @@ body.home-page{
   opacity: 0.40;
 }
 
-/* Cards */
-.home-card{
-  background: var(--card);
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: var(--radius);
-  padding: 18px;
+.mini-link{
+  color: rgba(0,0,0,0.62);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  padding-bottom: 3px;
 }
 
-.home-grid{
+.mini-link:hover{
+  border-bottom-color: rgba(0,0,0,0.40);
+}
+
+/* Cards */
+.home-list{
   display: grid;
-  grid-template-columns: 1fr;
   gap: 14px;
 }
 
-@media (min-width: 900px){
-  .home-grid{
-    grid-template-columns: 1fr 1fr;
-  }
+.mini-card{
+  background: var(--card);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius);
+  padding: 16px 16px 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 
-/* Small tweaks to reuse Projects cards */
-.home-project-card .card-title,
-.home-post-card .card-title{
-  margin: 8px 0 6px;
+.mini-meta{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.48);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
-.home-post-link{
+.dot{ opacity: 0.5; }
+
+.pill{
+  border: 1px solid rgba(0,0,0,0.14);
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+
+.mini-title{
+  font-size: 18px;
+  line-height: 1.18;
+  margin: 0 0 8px;
+}
+
+.mini-title a{
   color: rgba(0,0,0,0.86);
   text-decoration: none;
 }
 
-.home-post-link:hover{
+.mini-title a:hover{
   text-decoration: underline;
 }
 
-.bullets{
+.mini-excerpt{
   margin: 0;
-  padding-left: 18px;
-}
-
-.bullets li{
-  margin: 8px 0;
-  color: rgba(0,0,0,0.70);
+  color: rgba(0,0,0,0.62);
   line-height: 1.55;
 }
 
-.home-more{
-  margin-top: 12px;
+/* Footer */
+.home-footer{ margin-top: 30px; }
+
+.footer-rule{
+  height: 1px;
+  background: rgba(0,0,0,0.10);
 }
 
-.muted{
-  color: var(--muted);
-  margin: 0;
+.footer-text{
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.45;
 }
 
-/* Contact */
-.home-contact{
-  display: grid;
-  gap: 10px;
-}
-
-.contact-row{
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  align-items: baseline;
-  gap: 10p
+/* empty */
+.empty-state{
+  padding: 14px 0 6px;
+  color: rgba(0,0,0,0.55);
 }

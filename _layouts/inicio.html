@@ -1,35 +1,120 @@
-<html>
-<head>
-    <title>{{ page.title }}</title>
-    <meta charset='UTF-8'>
-    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <meta name='description' content='Gregory Gundersen is a PhD candidate at Princeton.'>
-    <meta name='keywords' content='{{ page.keywords }}'>
-    <meta name='author' content='Gregory Gundersen'>
+    <title>{{ page.title | default: "Axel Joseph" }}</title>
 
-    <link href='/css/blog.css' rel='stylesheet'/>
-    <link href='/css/trac.css' rel='stylesheet'/>
-    <link href='/css/markdown.css' rel='stylesheet'/>
-    <link rel="stylesheet" href="/css/home.css" />
+    <!-- Reuse blog styles for nav + typography baseline -->
+    <link rel="stylesheet" href="{{ '/css/blog.css' | relative_url }}" />
+    <link rel="stylesheet" href="{{ '/css/home.css' | relative_url }}" />
+  </head>
 
+  <body class="home-page">
+    {% include nav.html %}
 
+    <main class="home-wrap">
+      <header class="home-hero">
+        <div class="hero-kicker">PORTFOLIO</div>
+        <h1 class="hero-title">{{ page.title | default: "Axel Joseph" }}</h1>
 
-</head>
-<body>
+        <p class="hero-subtitle">
+          Aerospace / Physics. CubeSats, embedded systems, simulation tooling. Minimal notes, continuously improved.
+        </p>
 
-<div style="margin-top: 250px;">
-  
+        <div class="home-cta">
+          <a class="cta-pill" href="{{ '/blog/' | relative_url }}">Blog</a>
+          <a class="cta-pill" href="{{ '/projects/' | relative_url }}">Projects</a>
+          <a class="cta-pill" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">GitHub</a>
+          <a class="cta-pill" href="mailto:axeljoseph@hotmail.com">Email</a>
+        </div>
 
-<div class="content">
-    <div class='wrap article'>
-      <h1>Axel Joseph</h1>
-      {{ content }}
-  </div>
-</div>
+        <div class="hero-rule"></div>
+      </header>
 
-</div>
-</body>
+      <section class="home-grid">
+        <!-- Latest posts -->
+        <div class="home-col">
+          <div class="section-head">
+            <div class="section-title">Latest posts</div>
+            <div class="section-meta">
+              <a class="mini-link" href="{{ '/blog/' | relative_url }}">View all</a>
+            </div>
+          </div>
+
+          <div class="home-list">
+            {% assign latest_posts = site.posts | sort: "date" | reverse | slice: 0, 4 %}
+            {% for post in latest_posts %}
+              <article class="mini-card">
+                <div class="mini-meta">
+                  <span>{{ post.date | date: "%Y-%m-%d" }}</span>
+                  {% if post.series %}
+                    <span class="dot">•</span>
+                    <span>Series: {{ post.series }}</span>
+                  {% endif %}
+                </div>
+
+                <h2 class="mini-title">
+                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                </h2>
+
+                {% if post.excerpt %}
+                  <p class="mini-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 130 }}</p>
+                {% endif %}
+              </article>
+            {% endfor %}
+
+            {% if latest_posts == nil or latest_posts.size == 0 %}
+              <div class="empty-state">No posts yet.</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Featured projects -->
+        <div class="home-col">
+          <div class="section-head">
+            <div class="section-title">Featured projects</div>
+            <div class="section-meta">
+              <a class="mini-link" href="{{ '/projects/' | relative_url }}">View all</a>
+            </div>
+          </div>
+
+          <div class="home-list">
+            {% assign featured = site.data.projects | where: "featured", true %}
+            {% assign featured = featured | sort: "year" | reverse | slice: 0, 4 %}
+
+            {% for p in featured %}
+              <article class="mini-card">
+                <div class="mini-meta">
+                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
+                  {% if p.year %}<span class="dot">•</span><span>{{ p.year }}</span>{% endif %}
+                  {% if p.category %}<span class="dot">•</span><span>{{ p.category }}</span>{% endif %}
+                </div>
+
+                <h2 class="mini-title">
+                  <a href="{{ '/projects/' | append: p.slug | append: '/' | relative_url }}">{{ p.title }}</a>
+                </h2>
+
+                {% if p.summary %}
+                  <p class="mini-excerpt">{{ p.summary }}</p>
+                {% endif %}
+              </article>
+            {% endfor %}
+
+            {% if featured == nil or featured.size == 0 %}
+              <div class="empty-state">Mark some projects as <code>featured: true</code> in <code>_data/projects.yml</code>.</div>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+
+      <footer class="home-footer">
+        <div class="footer-rule"></div>
+        <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
+      </footer>
+    </main>
+  </body>
 </html>
 
 
