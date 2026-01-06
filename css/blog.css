@@ -333,17 +333,18 @@ nav a:hover,
   border-bottom-color: rgba(0,0,0,0.40);
 }
 
-/* Make button look exactly like the link */
+/* Make button look exactly like the link (keep underline) */
 .post-links button.link{
   appearance: none;
   border: 0;
-  padding: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.22); /* <- recupera el look de READ */
+  padding: 0 0 6px;                          /* <- igual que .link */
   margin: 0;
   font: inherit;
   color: inherit;
   text-transform: inherit;
   letter-spacing: inherit;
-  line-height: 1;
+  background: transparent;
 }
 
 /* Focus visible (accessible) without breaking aesthetics */
