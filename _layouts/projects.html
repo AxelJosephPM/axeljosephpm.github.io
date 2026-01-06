@@ -11,7 +11,7 @@ permalink: /projects/
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page.title | default: "Projects" }} — {{ site.title }}</title>
 
-    <!-- ✅ IMPORTANT: do NOT load blog.css here (it can override nav + common classes like .chips/.chip/.link) -->
+    <!-- Importante: aquí NO cargamos blog.css para evitar colisiones de estilos -->
     <link rel="stylesheet" href="/css/projects.css" />
 
     {% include mathjax.html %}
@@ -21,6 +21,7 @@ permalink: /projects/
     {% include nav.html %}
 
     <main class="projects-wrap">
+      <!-- HERO (misma filosofía que blog) -->
       <header class="projects-hero">
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">{{ page.title | default: "Projects" }}</h1>
@@ -30,7 +31,7 @@ permalink: /projects/
 
         <div class="hero-actions">
           <a class="hero-action" href="#tags">Tags</a>
-          <a class="hero-action" href="#all">All</a>
+          <a class="hero-action" href="#projects">Projects</a>
         </div>
 
         <div class="hero-rule"></div>
@@ -44,7 +45,8 @@ permalink: /projects/
       {% assign projects_sorted = projects | sort: "year" | reverse %}
 
       {%- comment -%}
-      Build unique tag list (display labels) + stable slug mapping
+      Build unique tag list from _data/projects.yml (display labels)
+      We'll compare using slugify for matching.
       {%- endcomment -%}
       {% assign tag_string = "" %}
       {% for p in projects_sorted %}
@@ -79,9 +81,11 @@ permalink: /projects/
         {% else %}
           <div class="tag-cloud" id="tagCloud" aria-label="Project tag filters">
             <button class="tag-pill is-active" type="button" data-tag="__all">All</button>
+
             {% for t in tags_unique %}
               <button class="tag-pill" type="button" data-tag="{{ t | slugify }}">{{ t }}</button>
             {% endfor %}
+
             <button class="tag-pill tag-clear" type="button" id="clearTags">Clear</button>
           </div>
 
@@ -91,8 +95,8 @@ permalink: /projects/
         {% endif %}
       </section>
 
-      <!-- ALL PROJECTS -->
-      <section id="all" class="projects-section">
+      <!-- PROJECTS -->
+      <section id="projects" class="projects-section">
         <div class="section-head">
           <div class="section-title">All projects</div>
           <div class="section-meta">
@@ -147,7 +151,12 @@ permalink: /projects/
                 {% if p.links %}
                   <div class="card-links">
                     {% for l in p.links %}
-                      <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                      {% assign u = l.url | to_s %}
+                      {% if u contains "://" %}
+                        <a class="link" href="{{ l.url }}">{{ l.label }}</a>
+                      {% else %}
+                        <a class="link" href="{{ l.url | relative_url }}">{{ l.label }}</a>
+                      {% endif %}
                     {% endfor %}
                   </div>
                 {% endif %}
