@@ -1,53 +1,69 @@
 /* =========================
-   HOME — simple, vertical links,
-   nerd note secondary
+   HOME — minimal + vertical menu
    ========================= */
 
 :root{
-  --cream: #fbfaf7;
+  --home-cream: var(--cream, var(--bg, #fbfaf7));
   --ink: rgba(0,0,0,0.86);
-  --muted: rgba(0,0,0,0.62);
+  --muted: rgba(0,0,0,0.58);
   --hairline: rgba(0,0,0,0.12);
   --card: #ffffff;
   --radius: 16px;
 }
 
 body.home-page{
-  background: var(--cream);
+  background: var(--home-cream);
   color: var(--ink);
 }
 
+/* layout wrapper */
 .home-wrap{
   max-width: 980px;
   margin: 0 auto;
-  padding: 72px 22px 70px;
+  padding: 64px 22px 90px;
 }
 
-/* Hero */
-.home-hero .hero-kicker{
+/* hero */
+.home-hero{
+  margin-top: 20px;
+  margin-bottom: 22px;
+}
+
+.home-kicker{
   letter-spacing: 0.24em;
   text-transform: uppercase;
   font-size: 11px;
-  opacity: 0.60;
+  opacity: 0.55;
   margin-bottom: 10px;
 }
 
-.home-hero .hero-title{
+.home-title{
   font-size: 56px;
   line-height: 1.02;
   letter-spacing: -0.02em;
-  margin: 0 0 14px;
+  margin: 0;
 }
 
-/* Vertical links (como tu idea original) */
-.home-links{
+/* two-column area */
+.home-grid{
   display: grid;
-  gap: 8px;
-  margin-top: 6px;
-  width: fit-content;
+  grid-template-columns: 170px 1fr;
+  gap: 46px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+/* left vertical menu */
+.home-menu{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .home-link{
+  display: inline-block;
+  width: fit-content;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -55,94 +71,107 @@ body.home-page{
   color: rgba(0,0,0,0.62);
   border-bottom: 1px solid rgba(0,0,0,0.22);
   padding-bottom: 6px;
-  width: fit-content;
 }
 
 .home-link:hover{
   border-bottom-color: rgba(0,0,0,0.40);
 }
 
-.hero-rule{
-  height: 1px;
-  background: rgba(0,0,0,0.10);
-  margin-top: 18px;
+/* right column */
+.home-right{
+  display: block;
 }
 
-/* Nerd block should feel secondary */
-.nerd-wrap{
-  margin-top: 18px;
-}
-
-/* hacemos el bloque más estrecho */
-.nerd-box{
-  max-width: 760px;          /* 👈 más estrecho */
-  background: rgba(255,255,255,0.70);
+/* proposition card (secondary, narrower) */
+.math-card{
+  max-width: 720px;            /* makes it “secondary” */
+  background: var(--card);
   border: 1px solid rgba(0,0,0,0.10);
   border-radius: var(--radius);
-  padding: 14px 14px 12px;   /* 👈 menos padding */
-  box-shadow: 0 1px 0 rgba(0,0,0,0.015);
+  padding: 16px 18px 14px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 
-.nerd-title{
+.math-card-head{
+  margin-bottom: 8px;
+}
+
+.math-card-kicker{
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.55;
-  margin-bottom: 10px;
 }
 
-.nerd-text{
-  margin: 0 0 8px;
+.math-card-body{
+  color: rgba(0,0,0,0.70);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.math-lead{
+  margin: 0 0 10px;
   color: rgba(0,0,0,0.62);
-  font-size: 13px;           /* 👈 más pequeño */
-  line-height: 1.55;
 }
 
-/* ecuación menos protagonista */
-.nerd-eq{
-  font-size: 15px;           /* 👈 baja un punto */
-  line-height: 1.35;
-  margin: 8px 0 8px;
+.math-eq{
+  margin: 10px 0 10px;
+  overflow-x: auto;
 }
 
-/* proof accordion */
-.nerd-proof{
-  margin-top: 8px;
-  border-top: 1px solid rgba(0,0,0,0.08);
+/* details */
+.math-details{
+  margin-top: 10px;
   padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.08);
 }
 
-.nerd-proof-summary{
+.math-details > summary{
   cursor: pointer;
   list-style: none;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0,0,0,0.62);
-  display: inline-block;
-  border-bottom: 1px solid rgba(0,0,0,0.22);
+  opacity: 0.62;
   padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0,0,0,0.18);
+  width: fit-content;
 }
 
-.nerd-proof-summary::-webkit-details-marker{ display:none; }
-
-.nerd-proof[open] .nerd-proof-summary{
-  border-bottom-color: rgba(0,0,0,0.40);
+.math-details > summary::-webkit-details-marker{
+  display: none;
 }
 
-.nerd-proof-body{
+.math-details[open] > summary{
+  opacity: 0.78;
+  border-bottom-color: rgba(0,0,0,0.28);
+}
+
+.math-proof{
   margin-top: 10px;
-  color: rgba(0,0,0,0.72);
-  font-size: 13px;
-  line-height: 1.6;
+  color: rgba(0,0,0,0.62);
 }
 
-.nerd-eq-proof{
-  font-size: 14px;           /* 👈 proof aún más secundario */
+.home-content{
+  margin-top: 16px;
+  max-width: 720px;
+  opacity: 0.75;
 }
 
-/* Responsive */
+/* responsive */
 @media (max-width: 860px){
-  .home-hero .hero-title{ font-size: 44px; }
-  .nerd-box{ max-width: 100%; }
+  .home-title{ font-size: 44px; }
+  .home-grid{
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .home-menu{
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 6px;
+  }
+  .math-card{
+    max-width: 100%;
+  }
 }
