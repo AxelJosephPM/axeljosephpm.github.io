@@ -1,5 +1,5 @@
 /* =========================
-   HOME — NASA-like minimal
+   HOME — Minimal + nerd box
    ========================= */
 
 :root{
@@ -16,7 +16,6 @@ body.home-page{
   color: var(--ink);
 }
 
-/* Layout */
 .home-wrap{
   max-width: 980px;
   margin: 0 auto;
@@ -47,29 +46,27 @@ body.home-page{
   font-size: 15px;
 }
 
-.home-cta{
+/* links (like Blog read link) */
+.home-links{
   display: flex;
+  gap: 14px;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.cta-pill{
-  display: inline-flex;
   align-items: center;
-  border: 1px solid var(--hairline);
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,0.72);
-  text-decoration: none;
-  background: transparent;
+  margin-top: 2px;
 }
 
-.cta-pill:hover{
-  background: rgba(0,0,0,0.03);
+.home-link{
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(0,0,0,0.62);
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  padding-bottom: 6px;
+}
+
+.home-link:hover{
+  border-bottom-color: rgba(0,0,0,0.40);
 }
 
 .hero-rule{
@@ -78,60 +75,9 @@ body.home-page{
   margin-top: 18px;
 }
 
-/* Grid */
-.home-grid{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  margin-top: 28px;
-}
-
-@media (min-width: 900px){
-  .home-grid{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* Section head (match blog style) */
-.section-head{
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin: 18px 0 14px;
-}
-
-.section-title{
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.62;
-}
-
-.section-meta{
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.40;
-}
-
-.mini-link{
-  color: rgba(0,0,0,0.62);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.22);
-  padding-bottom: 3px;
-}
-
-.mini-link:hover{
-  border-bottom-color: rgba(0,0,0,0.40);
-}
-
-/* Cards */
-.home-list{
-  display: grid;
-  gap: 14px;
-}
-
-.mini-card{
+/* Nerd box */
+.nerd-box{
+  margin-top: 22px;
   background: var(--card);
   border: 1px solid rgba(0,0,0,0.10);
   border-radius: var(--radius);
@@ -139,47 +85,56 @@ body.home-page{
   box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
 
-.mini-meta{
-  display: flex;
-  gap: 8px;
-  align-items: center;
+.nerd-kicker{
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0,0,0,0.48);
+  opacity: 0.55;
   margin-bottom: 10px;
-  flex-wrap: wrap;
 }
 
-.dot{ opacity: 0.5; }
-
-.pill{
-  border: 1px solid rgba(0,0,0,0.14);
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-}
-
-.mini-title{
-  font-size: 18px;
-  line-height: 1.18;
-  margin: 0 0 8px;
-}
-
-.mini-title a{
-  color: rgba(0,0,0,0.86);
-  text-decoration: none;
-}
-
-.mini-title a:hover{
-  text-decoration: underline;
-}
-
-.mini-excerpt{
-  margin: 0;
+.nerd-text{
   color: rgba(0,0,0,0.62);
+  font-size: 13px;
   line-height: 1.55;
+}
+
+.nerd-eq{
+  font-size: 16px;
+  line-height: 1.35;
+  margin: 10px 0 10px;
+}
+
+/* Proof as a clean accordion */
+.nerd-proof{
+  margin-top: 6px;
+  border-top: 1px solid rgba(0,0,0,0.10);
+  padding-top: 10px;
+}
+
+.nerd-proof-summary{
+  cursor: pointer;
+  list-style: none;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.62);
+  display: inline-block;
+  border-bottom: 1px solid rgba(0,0,0,0.22);
+  padding-bottom: 6px;
+}
+
+.nerd-proof-summary::-webkit-details-marker{ display:none; }
+
+.nerd-proof[open] .nerd-proof-summary{
+  border-bottom-color: rgba(0,0,0,0.40);
+}
+
+.nerd-proof-body{
+  margin-top: 12px;
+  color: rgba(0,0,0,0.72);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 /* Footer */
@@ -198,8 +153,8 @@ body.home-page{
   opacity: 0.45;
 }
 
-/* empty */
-.empty-state{
-  padding: 14px 0 6px;
-  color: rgba(0,0,0,0.55);
+/* Responsive */
+@media (max-width: 860px){
+  .home-hero .hero-title{ font-size: 44px; }
+  .nerd-eq{ font-size: 15px; }
 }

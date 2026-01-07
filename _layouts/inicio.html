@@ -3,12 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Axel Joseph</title>
 
-    <title>{{ page.title | default: "Axel Joseph" }}</title>
-
-    <!-- Reuse blog styles for nav + typography baseline -->
+    <!-- Base styles (nav + general vibe) -->
     <link rel="stylesheet" href="{{ '/css/blog.css' | relative_url }}" />
     <link rel="stylesheet" href="{{ '/css/home.css' | relative_url }}" />
+
+    {% include mathjax.html %}
   </head>
 
   <body class="home-page">
@@ -17,96 +18,68 @@
     <main class="home-wrap">
       <header class="home-hero">
         <div class="hero-kicker">PORTFOLIO</div>
-        <h1 class="hero-title">{{ page.title | default: "Axel Joseph" }}</h1>
+        <h1 class="hero-title">Axel Joseph</h1>
 
         <p class="hero-subtitle">
-          Aerospace / Physics. CubeSats, embedded systems, simulation tooling. Minimal notes, continuously improved.
+          Aerospace / Physics · CubeSats · Embedded Systems · Simulation tooling
         </p>
 
-        <div class="home-cta">
-          <a class="cta-pill" href="{{ '/blog/' | relative_url }}">Blog</a>
-          <a class="cta-pill" href="{{ '/projects/' | relative_url }}">Projects</a>
-          <a class="cta-pill" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">GitHub</a>
-          <a class="cta-pill" href="mailto:axeljoseph@hotmail.com">Email</a>
+        <div class="home-links">
+          <a class="home-link" href="{{ '/blog/' | relative_url }}">Blog</a>
+          <a class="home-link" href="{{ '/projects/' | relative_url }}">Projects</a>
+          <a class="home-link" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">Code</a>
+          <a class="home-link" href="mailto:axeljoseph@hotmail.com">Email</a>
         </div>
 
         <div class="hero-rule"></div>
       </header>
 
-      <section class="home-grid">
-        <!-- Latest posts -->
-        <div class="home-col">
-          <div class="section-head">
-            <div class="section-title">Latest posts</div>
-            <div class="section-meta">
-              <a class="mini-link" href="{{ '/blog/' | relative_url }}">View all</a>
-            </div>
-          </div>
+      <!-- Friki: Proposición + demostración (corta) -->
+      <section class="nerd-box" aria-label="Nerd note">
+        <div class="nerd-kicker">Proposición 4.4.5 (base ortonormal)</div>
 
-          <div class="home-list">
-            {% assign latest_posts = site.posts | sort: "date" | reverse | slice: 0, 4 %}
-            {% for post in latest_posts %}
-              <article class="mini-card">
-                <div class="mini-meta">
-                  <span>{{ post.date | date: "%Y-%m-%d" }}</span>
-                  {% if post.series %}
-                    <span class="dot">•</span>
-                    <span>Series: {{ post.series }}</span>
-                  {% endif %}
-                </div>
-
-                <h2 class="mini-title">
-                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                </h2>
-
-                {% if post.excerpt %}
-                  <p class="mini-excerpt">{{ post.excerpt | strip_html | replace: "\n", " " | truncate: 130 }}</p>
-                {% endif %}
-              </article>
-            {% endfor %}
-
-            {% if latest_posts == nil or latest_posts.size == 0 %}
-              <div class="empty-state">No posts yet.</div>
-            {% endif %}
-          </div>
+        <div class="nerd-text">
+          Sea \(H\) un espacio de Hilbert y \(\{u_k\}_{k\ge 1}\) una base ortonormal. Entonces
         </div>
 
-        <!-- Featured projects -->
-        <div class="home-col">
-          <div class="section-head">
-            <div class="section-title">Featured projects</div>
-            <div class="section-meta">
-              <a class="mini-link" href="{{ '/projects/' | relative_url }}">View all</a>
-            </div>
-          </div>
-
-          <div class="home-list">
-            {% assign featured = site.data.projects | where: "featured", true %}
-            {% assign featured = featured | sort: "year" | reverse | slice: 0, 4 %}
-
-            {% for p in featured %}
-              <article class="mini-card">
-                <div class="mini-meta">
-                  {% if p.status %}<span class="pill">{{ p.status }}</span>{% endif %}
-                  {% if p.year %}<span class="dot">•</span><span>{{ p.year }}</span>{% endif %}
-                  {% if p.category %}<span class="dot">•</span><span>{{ p.category }}</span>{% endif %}
-                </div>
-
-                <h2 class="mini-title">
-                  <a href="{{ '/projects/' | append: p.slug | append: '/' | relative_url }}">{{ p.title }}</a>
-                </h2>
-
-                {% if p.summary %}
-                  <p class="mini-excerpt">{{ p.summary }}</p>
-                {% endif %}
-              </article>
-            {% endfor %}
-
-            {% if featured == nil or featured.size == 0 %}
-              <div class="empty-state">Mark some projects as <code>featured: true</code> in <code>_data/projects.yml</code>.</div>
-            {% endif %}
-          </div>
+        <div class="nerd-eq">
+          \[
+            \sum_{k=1}^{\infty}\alpha_k\,u_k \text{ converge en } H
+            \quad\Longleftrightarrow\quad
+            (\alpha_k)_{k\ge 1}\in \ell^2
+            \;\;(\text{i.e. }\sum_{k=1}^{\infty}|\alpha_k|^2<\infty).
+          \]
         </div>
+
+        <details class="nerd-proof">
+          <summary class="nerd-proof-summary">Demostración (idea corta)</summary>
+
+          <div class="nerd-proof-body">
+            <p>
+              Sea \(s_n=\sum_{k=1}^{n}\alpha_k u_k\). Por ortonormalidad:
+            </p>
+
+            <div class="nerd-eq">
+              \[
+                \|s_n-s_m\|^2
+                = \left\|\sum_{k=m+1}^{n}\alpha_k u_k\right\|^2
+                = \sum_{k=m+1}^{n}|\alpha_k|^2.
+              \]
+            </div>
+
+            <p>
+              (⇒) Si \(\sum \alpha_k u_k\) converge, \((s_n)\) es de Cauchy, luego
+              \(\sum_{k=m+1}^{n}|\alpha_k|^2\to 0\) cuando \(m,n\to\infty\), y por tanto
+              \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge, es decir \((\alpha_k)\in\ell^2\).
+            </p>
+
+            <p>
+              (⇐) Si \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge, entonces
+              \(\|s_n-s_m\|^2=\sum_{k=m+1}^{n}|\alpha_k|^2 \to 0\),
+              así que \((s_n)\) es de Cauchy. Como \(H\) es completo, \((s_n)\) converge y la serie converge en \(H\).
+            </p>
+          </div>
+        </details>
       </section>
 
       <footer class="home-footer">
@@ -116,9 +89,3 @@
     </main>
   </body>
 </html>
-
-
-
-
-
-
