@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ site.title }}</title>
 
-    <!-- Global look (cream + nav styling) -->
+    <!-- Keep global “cream” + nav look consistent -->
     <link rel="stylesheet" href="/css/blog.css" />
     <!-- Home-specific layout -->
     <link rel="stylesheet" href="/css/home.css" />
@@ -17,86 +17,25 @@
     {% include nav.html %}
 
     <main class="home-wrap">
-      <header class="home-hero" role="banner" aria-label="Home header">
+      <header class="home-hero" role="banner">
         <div class="home-kicker">PORTFOLIO</div>
         <h1 class="home-title">Axel Joseph</h1>
       </header>
 
-      <section class="home-grid" aria-label="Home content">
-        <!-- Left: vertical menu -->
-        <aside class="home-left" aria-label="Primary links">
-          <nav class="home-menu">
-            <a class="home-link" href="/blog/">Blog</a>
-            <a class="home-link" href="/projects/">Projects</a>
-            <a class="home-link" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">Code</a>
-            <a class="home-link" href="mailto:axeljoseph@hotmail.com">Email</a>
-          </nav>
-        </aside>
-
-        <!-- Right: subtle “geek block” -->
-        <section class="home-right" aria-label="Featured note">
-          <article class="math-card">
-            <div class="math-card-head">
-              <div class="math-card-kicker">PROPOSICIÓN</div>
-            </div>
-
-            <div class="math-card-body">
-              <p class="math-lead">
-                Sea \(H\) un espacio de Hilbert y \(\{u_k\}_{k\ge 1}\) una base ortonormal. Entonces:
-              </p>
-
-              <div class="math-eq">
-                \[
-                  \sum_{k=1}^{\infty}\alpha_k\,u_k \text{ converge en } H
-                  \quad\Longleftrightarrow\quad
-                  (\alpha_k)_{k\ge 1}\in \ell^2
-                  \;\; \bigl(\text{i.e. } \sum_{k=1}^{\infty}|\alpha_k|^2 < \infty \bigr).
-                \]
-              </div>
-
-              <details class="math-details">
-                <summary>Demostración</summary>
-
-                <div class="math-proof">
-                  <p>
-                    Sea \(s_n=\sum_{k=1}^n\alpha_k u_k\). Por ortonormalidad,
-                  </p>
-
-                  <div class="math-eq">
-                    \[
-                      \|s_n-s_m\|^2
-                      = \left\langle \sum_{k=m+1}^{n}\alpha_k u_k,\;\sum_{j=m+1}^{n}\alpha_j u_j\right\rangle
-                      = \sum_{k=m+1}^{n}|\alpha_k|^2.
-                    \]
-                  </div>
-
-                  <p>
-                    (\(\Rightarrow\)) Si \(\sum_{k=1}^{\infty}\alpha_k u_k\) converge en \(H\),
-                    entonces \((s_n)\) es de Cauchy. Por la igualdad anterior,
-                    \(\sum_{k=m+1}^{n}|\alpha_k|^2 \to 0\) cuando \(m,n\to\infty\),
-                    lo que equivale a que \(\sum_{k=1}^{\infty}|\alpha_k|^2<\infty\), es decir,
-                    \((\alpha_k)\in \ell^2\).
-                  </p>
-
-                  <p>
-                    (\(\Leftarrow\)) Si \(\sum_{k=1}^{\infty}|\alpha_k|^2<\infty\),
-                    entonces \(\sum_{k=m+1}^{n}|\alpha_k|^2\to 0\) cuando \(m,n\to\infty\).
-                    Por tanto \(\|s_n-s_m\|^2\to 0\) y \((s_n)\) es de Cauchy.
-                    Como \(H\) es completo, \((s_n)\) converge en \(H\) y la serie converge en \(H\).
-                  </p>
-                </div>
-              </details>
-            </div>
-          </article>
-
-          <!-- If index.md has extra content, keep it but visually secondary -->
-          {% if content %}
-            <div class="home-content">
-              {{ content }}
-            </div>
-          {% endif %}
-        </section>
+      <section class="home-grid" aria-label="Primary links">
+        <nav class="home-menu">
+          <a class="home-link" href="/blog/">Blog</a>
+          <a class="home-link" href="/projects/">Projects</a>
+          <a class="home-link" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">Code</a>
+          <a class="home-link" href="mailto:axeljoseph@hotmail.com">Email</a>
+        </nav>
       </section>
+
+      {% if content %}
+        <section class="home-content">
+          {{ content }}
+        </section>
+      {% endif %}
     </main>
   </body>
 </html>

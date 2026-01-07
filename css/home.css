@@ -1,5 +1,5 @@
 /* =========================
-   HOME — minimal + vertical menu
+   HOME — NASA-like minimal
    ========================= */
 
 :root{
@@ -7,8 +7,6 @@
   --ink: rgba(0,0,0,0.86);
   --muted: rgba(0,0,0,0.58);
   --hairline: rgba(0,0,0,0.12);
-  --card: #ffffff;
-  --radius: 16px;
 }
 
 body.home-page{
@@ -16,17 +14,16 @@ body.home-page{
   color: var(--ink);
 }
 
-/* layout wrapper */
 .home-wrap{
   max-width: 980px;
   margin: 0 auto;
   padding: 64px 22px 90px;
 }
 
-/* hero */
+/* Title block */
 .home-hero{
   margin-top: 20px;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .home-kicker{
@@ -44,23 +41,23 @@ body.home-page{
   margin: 0;
 }
 
-/* two-column area */
+/* Layout: keep it simple, vertical menu under title */
 .home-grid{
-  display: grid;
-  grid-template-columns: 170px 1fr;
-  gap: 46px;
-  align-items: start;
   margin-top: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.10);
+  max-width: 520px; /* keep it compact, NASA-like */
 }
 
-/* left vertical menu */
 .home-menu{
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 10px;
+  margin: 0;
+  padding: 0;
 }
 
+/* Link style (same “READ” vibe) */
 .home-link{
   display: inline-block;
   width: fit-content;
@@ -77,101 +74,16 @@ body.home-page{
   border-bottom-color: rgba(0,0,0,0.40);
 }
 
-/* right column */
-.home-right{
-  display: block;
-}
-
-/* proposition card (secondary, narrower) */
-.math-card{
-  max-width: 720px;            /* makes it “secondary” */
-  background: var(--card);
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: var(--radius);
-  padding: 16px 18px 14px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
-}
-
-.math-card-head{
-  margin-bottom: 8px;
-}
-
-.math-card-kicker{
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.55;
-}
-
-.math-card-body{
-  color: rgba(0,0,0,0.70);
-  font-size: 14px;
+/* Optional markdown content (if you keep index.md text) */
+.home-content{
+  margin-top: 18px;
+  max-width: 72ch;
+  color: rgba(0,0,0,0.62);
   line-height: 1.6;
 }
 
-.math-lead{
-  margin: 0 0 10px;
-  color: rgba(0,0,0,0.62);
-}
-
-.math-eq{
-  margin: 10px 0 10px;
-  overflow-x: auto;
-}
-
-/* details */
-.math-details{
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(0,0,0,0.08);
-}
-
-.math-details > summary{
-  cursor: pointer;
-  list-style: none;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.62;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(0,0,0,0.18);
-  width: fit-content;
-}
-
-.math-details > summary::-webkit-details-marker{
-  display: none;
-}
-
-.math-details[open] > summary{
-  opacity: 0.78;
-  border-bottom-color: rgba(0,0,0,0.28);
-}
-
-.math-proof{
-  margin-top: 10px;
-  color: rgba(0,0,0,0.62);
-}
-
-.home-content{
-  margin-top: 16px;
-  max-width: 720px;
-  opacity: 0.75;
-}
-
-/* responsive */
+/* Responsive */
 @media (max-width: 860px){
   .home-title{ font-size: 44px; }
-  .home-grid{
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-  .home-menu{
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 6px;
-  }
-  .math-card{
-    max-width: 100%;
-  }
+  .home-grid{ max-width: 100%; }
 }
