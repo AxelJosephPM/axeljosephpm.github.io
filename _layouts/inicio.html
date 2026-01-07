@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Axel Joseph</title>
 
-    <!-- Base styles (nav + general vibe) -->
+    <!-- Reutilizamos el look base (nav, tipografía) -->
     <link rel="stylesheet" href="{{ '/css/blog.css' | relative_url }}" />
     <link rel="stylesheet" href="{{ '/css/home.css' | relative_url }}" />
 
@@ -20,72 +20,65 @@
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">Axel Joseph</h1>
 
-        <p class="hero-subtitle">
-          Aerospace / Physics · CubeSats · Embedded Systems · Simulation tooling
-        </p>
-
-        <div class="home-links">
+        <nav class="home-links" aria-label="Home links">
           <a class="home-link" href="{{ '/blog/' | relative_url }}">Blog</a>
           <a class="home-link" href="{{ '/projects/' | relative_url }}">Projects</a>
           <a class="home-link" href="https://github.com/AxelJosephPM" target="_blank" rel="noopener">Code</a>
           <a class="home-link" href="mailto:axeljoseph@hotmail.com">Email</a>
-        </div>
+        </nav>
 
         <div class="hero-rule"></div>
       </header>
 
-      <!-- Friki: Proposición + demostración (corta) -->
-      <section class="nerd-box" aria-label="Nerd note">
-        <div class="nerd-kicker">Proposición 4.4.5 (base ortonormal)</div>
+      <!-- Nota friki (secundaria) -->
+      <section class="nerd-wrap" aria-label="Nerd note">
+        <div class="nerd-box">
+          <div class="nerd-title">Proposición</div>
 
-        <div class="nerd-text">
-          Sea \(H\) un espacio de Hilbert y \(\{u_k\}_{k\ge 1}\) una base ortonormal. Entonces
-        </div>
+          <p class="nerd-text">
+            Sea \(H\) un espacio de Hilbert y \(\{u_k\}_{k\ge 1}\) una base ortonormal.
+          </p>
 
-        <div class="nerd-eq">
-          \[
-            \sum_{k=1}^{\infty}\alpha_k\,u_k \text{ converge en } H
-            \quad\Longleftrightarrow\quad
-            (\alpha_k)_{k\ge 1}\in \ell^2
-            \;\;(\text{i.e. }\sum_{k=1}^{\infty}|\alpha_k|^2<\infty).
-          \]
-        </div>
-
-        <details class="nerd-proof">
-          <summary class="nerd-proof-summary">Demostración (idea corta)</summary>
-
-          <div class="nerd-proof-body">
-            <p>
-              Sea \(s_n=\sum_{k=1}^{n}\alpha_k u_k\). Por ortonormalidad:
-            </p>
-
-            <div class="nerd-eq">
-              \[
-                \|s_n-s_m\|^2
-                = \left\|\sum_{k=m+1}^{n}\alpha_k u_k\right\|^2
-                = \sum_{k=m+1}^{n}|\alpha_k|^2.
-              \]
-            </div>
-
-            <p>
-              (⇒) Si \(\sum \alpha_k u_k\) converge, \((s_n)\) es de Cauchy, luego
-              \(\sum_{k=m+1}^{n}|\alpha_k|^2\to 0\) cuando \(m,n\to\infty\), y por tanto
-              \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge, es decir \((\alpha_k)\in\ell^2\).
-            </p>
-
-            <p>
-              (⇐) Si \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge, entonces
-              \(\|s_n-s_m\|^2=\sum_{k=m+1}^{n}|\alpha_k|^2 \to 0\),
-              así que \((s_n)\) es de Cauchy. Como \(H\) es completo, \((s_n)\) converge y la serie converge en \(H\).
-            </p>
+          <div class="nerd-eq">
+            \[
+              \sum_{k=1}^{\infty}\alpha_k\,u_k \text{ converge en } H
+              \quad\Longleftrightarrow\quad
+              (\alpha_k)\in \ell^2
+              \;\;(\text{i.e. }\sum_{k=1}^{\infty}|\alpha_k|^2<\infty).
+            \]
           </div>
-        </details>
-      </section>
 
-      <footer class="home-footer">
-        <div class="footer-rule"></div>
-        <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
-      </footer>
+          <details class="nerd-proof">
+            <summary class="nerd-proof-summary">Demostración</summary>
+
+            <div class="nerd-proof-body">
+              <p>
+                Sea \(s_n=\sum_{k=1}^{n}\alpha_k u_k\). Por ortonormalidad:
+              </p>
+
+              <div class="nerd-eq nerd-eq-proof">
+                \[
+                  \|s_n-s_m\|^2
+                  = \left\|\sum_{k=m+1}^{n}\alpha_k u_k\right\|^2
+                  = \sum_{k=m+1}^{n}|\alpha_k|^2.
+                \]
+              </div>
+
+              <p>
+                (⇒) Si \(\sum \alpha_k u_k\) converge, \((s_n)\) es de Cauchy, luego
+                \(\sum_{k=m+1}^{n}|\alpha_k|^2\to 0\) cuando \(m,n\to\infty\).
+                Por tanto \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge y \((\alpha_k)\in\ell^2\).
+              </p>
+
+              <p>
+                (⇐) Si \(\sum_{k=1}^{\infty}|\alpha_k|^2\) converge, entonces
+                \(\|s_n-s_m\|^2=\sum_{k=m+1}^{n}|\alpha_k|^2 \to 0\),
+                así que \((s_n)\) es de Cauchy. Como \(H\) es completo, \((s_n)\) converge y la serie converge en \(H\).
+              </p>
+            </div>
+          </details>
+        </div>
+      </section>
     </main>
   </body>
 </html>

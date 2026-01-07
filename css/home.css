@@ -1,5 +1,6 @@
 /* =========================
-   HOME — Minimal + nerd box
+   HOME — simple, vertical links,
+   nerd note secondary
    ========================= */
 
 :root{
@@ -38,21 +39,12 @@ body.home-page{
   margin: 0 0 14px;
 }
 
-.home-hero .hero-subtitle{
-  max-width: 72ch;
-  margin: 0 0 18px;
-  color: var(--muted);
-  line-height: 1.6;
-  font-size: 15px;
-}
-
-/* links (like Blog read link) */
+/* Vertical links (como tu idea original) */
 .home-links{
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: 2px;
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  width: fit-content;
 }
 
 .home-link{
@@ -63,6 +55,7 @@ body.home-page{
   color: rgba(0,0,0,0.62);
   border-bottom: 1px solid rgba(0,0,0,0.22);
   padding-bottom: 6px;
+  width: fit-content;
 }
 
 .home-link:hover{
@@ -75,17 +68,22 @@ body.home-page{
   margin-top: 18px;
 }
 
-/* Nerd box */
-.nerd-box{
-  margin-top: 22px;
-  background: var(--card);
-  border: 1px solid rgba(0,0,0,0.10);
-  border-radius: var(--radius);
-  padding: 16px 16px 14px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+/* Nerd block should feel secondary */
+.nerd-wrap{
+  margin-top: 18px;
 }
 
-.nerd-kicker{
+/* hacemos el bloque más estrecho */
+.nerd-box{
+  max-width: 760px;          /* 👈 más estrecho */
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius);
+  padding: 14px 14px 12px;   /* 👈 menos padding */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.015);
+}
+
+.nerd-title{
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -94,21 +92,23 @@ body.home-page{
 }
 
 .nerd-text{
+  margin: 0 0 8px;
   color: rgba(0,0,0,0.62);
-  font-size: 13px;
+  font-size: 13px;           /* 👈 más pequeño */
   line-height: 1.55;
 }
 
+/* ecuación menos protagonista */
 .nerd-eq{
-  font-size: 16px;
+  font-size: 15px;           /* 👈 baja un punto */
   line-height: 1.35;
-  margin: 10px 0 10px;
+  margin: 8px 0 8px;
 }
 
-/* Proof as a clean accordion */
+/* proof accordion */
 .nerd-proof{
-  margin-top: 6px;
-  border-top: 1px solid rgba(0,0,0,0.10);
+  margin-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.08);
   padding-top: 10px;
 }
 
@@ -131,30 +131,18 @@ body.home-page{
 }
 
 .nerd-proof-body{
-  margin-top: 12px;
+  margin-top: 10px;
   color: rgba(0,0,0,0.72);
   font-size: 13px;
   line-height: 1.6;
 }
 
-/* Footer */
-.home-footer{ margin-top: 30px; }
-
-.footer-rule{
-  height: 1px;
-  background: rgba(0,0,0,0.10);
-}
-
-.footer-text{
-  margin-top: 14px;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.45;
+.nerd-eq-proof{
+  font-size: 14px;           /* 👈 proof aún más secundario */
 }
 
 /* Responsive */
 @media (max-width: 860px){
   .home-hero .hero-title{ font-size: 44px; }
-  .nerd-eq{ font-size: 15px; }
+  .nerd-box{ max-width: 100%; }
 }
