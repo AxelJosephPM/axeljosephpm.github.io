@@ -7,6 +7,8 @@
   --ink: rgba(0,0,0,0.86);
   --muted: rgba(0,0,0,0.58);
   --hairline: rgba(0,0,0,0.12);
+  --card: #ffffff;
+  --radius: 16px;
 }
 
 body.home-page{
@@ -41,37 +43,80 @@ body.home-page{
   margin: 0;
 }
 
-/* Layout: keep it simple, vertical menu under title */
+/* Actions block */
 .home-grid{
-  margin-top: 10px;
+  margin-top: 14px;
   padding-top: 14px;
   border-top: 1px solid rgba(0,0,0,0.10);
-  max-width: 520px; /* keep it compact, NASA-like */
 }
 
-.home-menu{
+/* 2x2 “big buttons” */
+.home-actions{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 720px;
+  margin-top: 14px;
+}
+
+/* Card-like buttons */
+.home-action{
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
+  align-items: center;
+  gap: 12px;
+
+  text-decoration: none;
+  color: rgba(0,0,0,0.82);
+
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius);
+
+  padding: 14px 14px 13px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  backdrop-filter: blur(4px);
 }
 
-/* Link style (same “READ” vibe) */
-.home-link{
-  display: inline-block;
-  width: fit-content;
-  font-size: 11px;
+.home-action:hover{
+  border-color: rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.82);
+}
+
+.home-action:focus{ outline: none; }
+.home-action:focus-visible{
+  outline: 2px solid rgba(0,0,0,0.25);
+  outline-offset: 3px;
+  border-radius: calc(var(--radius) + 4px);
+}
+
+/* Icon */
+.home-ico{
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.02);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: rgba(0,0,0,0.70);
+}
+
+/* Text */
+.home-label{
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  text-decoration: none;
-  color: rgba(0,0,0,0.62);
-  border-bottom: 1px solid rgba(0,0,0,0.22);
-  padding-bottom: 6px;
+  line-height: 1.1;
 }
 
-.home-link:hover{
-  border-bottom-color: rgba(0,0,0,0.40);
+.home-sub{
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: rgba(0,0,0,0.55);
 }
 
 /* Optional markdown content (if you keep index.md text) */
@@ -85,5 +130,11 @@ body.home-page{
 /* Responsive */
 @media (max-width: 860px){
   .home-title{ font-size: 44px; }
-  .home-grid{ max-width: 100%; }
+}
+
+@media (max-width: 520px){
+  .home-actions{
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
 }
