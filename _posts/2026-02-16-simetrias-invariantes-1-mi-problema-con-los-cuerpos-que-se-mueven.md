@@ -1,12 +1,14 @@
 ---
 layout: post
-title: "Simetrías que te hacen invariante (1): Mi problema con los cuerpos que se mueven"
+title: "Mi problema con los cuerpos que se mueven"
 date: 2026-02-16
 tags: [physics, space-time, simetry]
 series: "Simetrías que te hacen invariante"
 series_index: 1
 published: true
 ---
+
+Antes de preguntarnos por qué algo se mueve, quizá deberíamos preguntarnos por qué el movimiento es posible.
 
 # Mi problema con los cuerpos que se mueven
 
@@ -37,25 +39,23 @@ Hemos cambiado el lenguaje —de fuerza a geometría, de geometría a acción—
 ¿Por qué un cuerpo recorre una trayectoria?
 ¿Qué significa realmente que algo *se mueva*?
 
----
-
 Cuando hacemos mecánica, partimos —casi sin advertirlo— de una estructura conceptual muy fuerte.
 
 Asumimos que:
 
-- Existe un espacio continuo en el que los cuerpos están situados.
-- Ese espacio admite coordenadas.
-- Existe un parámetro temporal que ordena los estados.
-- Un objeto puede ocupar distintos puntos del espacio en distintos instantes.
+1. Existe un espacio continuo en el que los cuerpos están situados.
+2. Ese espacio admite coordenadas.
+3. Existe un parámetro temporal que ordena los estados.
+4. Un objeto puede ocupar distintos puntos del espacio en distintos instantes.
 
 Nada de esto lo demostramos. Lo postulamos.
 
 En ese marco, el movimiento se convierte en algo casi administrativo:  
 es simplemente la variación de unas coordenadas con respecto al tiempo.
 
-\[
+$$
 \text{Movimiento} \equiv \frac{d x^i}{dt}
-\]
+$$
 
 Y así, sin darnos cuenta, lo hemos trivializado.
 

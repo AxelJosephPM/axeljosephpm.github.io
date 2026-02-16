@@ -4,7 +4,7 @@ subtitle: Here is some extra detail about the post.
 layout: default
 date: 2020-06-21
 keywords: blogging, writing
-published: true
+published: false
 ---
 
 Here are some words. And this is some math:
