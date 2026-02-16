@@ -50,8 +50,7 @@ Asumimos que:
 
 Nada de esto lo demostramos. Lo postulamos.
 
-En ese marco, el movimiento se convierte en algo casi administrativo:  
-es simplemente la variación de unas coordenadas con respecto al tiempo.
+En ese marco, el movimiento se convierte en algo casi administrativo: es simplemente la variación de unas coordenadas con respecto al tiempo.
 
 $$
 \text{Movimiento} \equiv \frac{d x^i}{dt}
@@ -59,18 +58,15 @@ $$
 
 Y así, sin darnos cuenta, lo hemos trivializado.
 
-Pero lo que hemos hecho en realidad es mucho más radical:  
-hemos supuesto que el objeto puede estar aquí ahora y allí después.
+Pero lo que hemos hecho en realidad es mucho más radical: hemos supuesto que el objeto puede estar aquí ahora y allí después.
 
 Eso es precisamente lo que quiero cuestionar.
 
-Porque antes incluso de hablar de fuerzas, geodésicas o principios variacionales,  
-ya hemos dado por hecho que el cambio de posición es posible.
+Porque antes incluso de hablar de fuerzas, geodésicas o principios variacionales, ya hemos dado por hecho que el cambio de posición es posible.
 
 Y esa posibilidad no es tan obvia como parece.
 
-Cuando escribimos \( x^i(t) \), afirmamos algo muy fuerte:  
-que existe una correspondencia entre un ente físico y una familia ordenada de puntos del espacio.
+Cuando escribimos \( x^i(t) \), afirmamos algo muy fuerte: que existe una correspondencia entre un ente físico y una familia ordenada de puntos del espacio.
 
 Lo llamamos trayectoria.  
 Lo llamamos evolución.  
@@ -78,10 +74,6 @@ Lo llamamos movimiento.
 
 Pero todo eso vive primero en el lenguaje matemático.
 
-Tal vez el movimiento no sea simplemente una propiedad de los cuerpos,  
-sino una consecuencia de la estructura geométrica con la que pensamos el mundo.
+Tal vez el movimiento no sea simplemente una propiedad de los cuerpos, sino una consecuencia de la estructura geométrica con la que pensamos el mundo.
 
-Y si eso es cierto,  
-la pregunta ya no es solo por qué algo se mueve,  
-sino qué debe ser la realidad  
-para que el movimiento sea posible.
+Y si eso es cierto, la pregunta ya no es solo por qué algo se mueve, sino qué debe ser la realidad para que el movimiento sea posible.
