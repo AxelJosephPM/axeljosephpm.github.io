@@ -66,7 +66,7 @@ Porque antes incluso de hablar de fuerzas, geodésicas o principios variacionale
 
 Y esa posibilidad no es tan obvia como parece.
 
-Cuando escribimos \( x^i(t) \), afirmamos algo muy fuerte: que existe una correspondencia entre un ente físico y una familia ordenada de puntos del espacio.
+Cuando escribimos $x^i(t)$, afirmamos algo muy fuerte: que existe una correspondencia entre un ente físico y una familia ordenada de puntos del espacio.
 
 Lo llamamos trayectoria.  
 Lo llamamos evolución.  
