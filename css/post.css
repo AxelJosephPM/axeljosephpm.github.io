@@ -230,6 +230,10 @@ body.blog-post-page {
   margin: 24px auto;
 }
 
+.post-content.markdown-body .post-image-half {
+  width: 50%;
+}
+
 .post-content.markdown-body table {
   width: 100%;
   max-width: 100%;
@@ -314,6 +318,10 @@ body.blog-post-page {
   .post-content.markdown-body table {
     table-layout: fixed;
     font-size: 0.95rem;
+  }
+
+  .post-content.markdown-body .post-image-half {
+    width: 100%;
   }
 
   .post-content.markdown-body th,
