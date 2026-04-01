@@ -112,7 +112,7 @@ permalink: /blog/
                   {% endif %}
                 </div>
 
-                <h2 class="post-title">
+                <h2 class="post-title{% if post.title contains '$' %} post-title-math{% endif %}">
                   <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
                 </h2>
 

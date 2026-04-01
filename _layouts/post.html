@@ -11,10 +11,10 @@ layout: null
 
     <!-- Base + blog tokens (chips, typographic defaults) -->
     <link rel="stylesheet" href="{{ '/css/blog.css' | relative_url }}" />
-    <!-- Post-specific tweaks (white background, series mini, etc.) -->
-    <link rel="stylesheet" href="{{ '/css/post.css' | relative_url }}" />
-    <!-- Markdown typography (code blocks, headings, etc.) -->
+    <!-- Markdown typography (code blocks, tables, etc.) -->
     <link rel="stylesheet" href="{{ '/css/markdown.css' | relative_url }}" />
+    <!-- Post-specific tweaks should win over generic markdown defaults -->
+    <link rel="stylesheet" href="{{ '/css/post.css' | relative_url }}" />
 
     {% include mathjax.html %}
   </head>
@@ -26,9 +26,9 @@ layout: null
       <header class="post-hero post-hero-min">
         <div class="hero-kicker">BLOG POST</div>
 
-        <h1 class="post-title-min">{{ page.title }}</h1>
+        <h1 class="hero-title post-title-min{% if page.title contains '$' %} post-title-math{% endif %}">{{ page.title }}</h1>
 
-        <div class="post-meta-min">
+        <div class="hero-meta post-meta-min">
           {{ page.date | date: "%d %B %Y" }}
           {% if page.series %}
             <span class="dot">•</span>
@@ -58,7 +58,7 @@ layout: null
         {% endif %}
       </header>
 
-      <article class="post-content post-content-min markdown">
+      <article class="post-content post-content-min markdown markdown-body">
         {{ content }}
       </article>
 

@@ -177,6 +177,15 @@ body.blog-post-page {
   max-width: 78ch;
 }
 
+.post-title-min {
+  max-width: 100%;
+}
+
+.post-content.markdown-body,
+.post-content.markdown-body > * {
+  min-width: 0;
+}
+
 .project-content p,
 .post-content p {
   line-height: 1.75;
@@ -214,6 +223,50 @@ body.blog-post-page {
   border-radius: 12px;
 }
 
+.post-content.markdown-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 24px auto;
+}
+
+.post-content.markdown-body table {
+  width: 100%;
+  max-width: 100%;
+  display: table;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+.post-content.markdown-body th,
+.post-content.markdown-body td {
+  vertical-align: top;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.post-content.markdown-body pre,
+.post-content.markdown-body .highlight,
+.post-content.markdown-body .highlight pre {
+  max-width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-content.markdown-body mjx-container[jax="CHTML"][display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.1rem 0 0.35rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-content.markdown-body mjx-container[jax="CHTML"] {
+  max-width: 100%;
+}
+
 /* footer */
 .project-footer,
 .post-footer {
@@ -231,4 +284,40 @@ body.blog-post-page {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .project-wrap,
+  .post-wrap {
+    padding: 48px 16px 56px;
+  }
+
+  .project-hero .hero-title,
+  .post-hero .hero-title {
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+    line-height: 1.12;
+  }
+
+  .series-head {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .series-item {
+    align-items: flex-start;
+  }
+
+  .post-content {
+    margin-top: 20px;
+  }
+
+  .post-content.markdown-body table {
+    table-layout: fixed;
+    font-size: 0.95rem;
+  }
+
+  .post-content.markdown-body th,
+  .post-content.markdown-body td {
+    padding: 0.55rem 0.7rem;
+  }
 }

@@ -44,6 +44,7 @@ nav ul,
 .site-nav ul{
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 18px;
 }
 
@@ -106,6 +107,7 @@ nav a:hover,
   display: flex;
   gap: 14px;
   margin-top: 14px;
+  flex-wrap: wrap;
 }
 
 .hero-action{
@@ -231,6 +233,22 @@ nav a:hover,
   margin: 0 0 8px;
 }
 
+.post-title-math{
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-title-math a{
+  display: block;
+}
+
+.post-title-math mjx-container[jax="CHTML"]{
+  max-width: 100%;
+}
+
 .post-title a{
   text-decoration: none;
   color: rgba(0,0,0,0.86);
@@ -339,4 +357,45 @@ nav a:hover,
   letter-spacing: 0.22em;
   text-transform: uppercase;
   opacity: 0.45;
+}
+
+@media (max-width: 720px){
+  nav,
+  .nav,
+  .site-nav{
+    padding: 18px 16px 0;
+  }
+
+  nav ul,
+  .nav ul,
+  .site-nav ul{
+    gap: 12px;
+  }
+
+  .blog-wrap{
+    padding: 48px 16px 56px;
+  }
+
+  .blog-hero .hero-title{
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
+  }
+
+  .section-head{
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .post-card{
+    padding: 16px 14px;
+  }
+
+  .post-title{
+    font-size: 19px;
+    line-height: 1.24;
+  }
+
+  .post-links{
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }
