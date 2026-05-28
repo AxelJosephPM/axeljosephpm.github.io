@@ -116,7 +116,7 @@ $$
 \{e_a\}_{a=0}^{3}
 $$
 
-tal que, para cada punto $p\in U$, el conjunto $\{e_a|_p\}$ forma una base de $T_pM$.
+tal que, para cada punto $p\in U$, el conjunto $\{(e_a)_p\}_{a=0}^{3}$ forma una base de $T_pM$.
 
 A cada marco local se le asocia un co-marco dual
 
