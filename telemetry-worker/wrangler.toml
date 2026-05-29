@@ -1,0 +1,8 @@
+name = "site-telemetry"
+main = "src/index.js"
+compatibility_date = "2026-05-29"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "site-telemetry"
+database_id = "9709ba05-5dde-4ce0-a684-240d2d7b6fa9"

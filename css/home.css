@@ -127,6 +127,87 @@ body.home-page{
   line-height: 1.6;
 }
 
+/* =========================
+   SITE TELEMETRY WIDGET
+   ========================= */
+.home-telemetry-section{
+  margin-top: 14px;
+  max-width: 360px;
+}
+
+.home-telemetry{
+  background: rgba(255,255,255,0.70);
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: var(--radius);
+  padding: 14px 16px 12px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  backdrop-filter: blur(4px);
+}
+
+.tele-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.tele-title{
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.48);
+}
+
+.tele-dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.28);
+  animation: tele-pulse 3s ease-in-out infinite;
+}
+
+@keyframes tele-pulse{
+  0%, 100%{ opacity: 0.28; }
+  50%     { opacity: 0.70; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tele-dot{ animation: none; }
+}
+
+.tele-metrics{
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tele-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.tele-key{
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.44);
+  flex-shrink: 0;
+}
+
+.tele-val{
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(0,0,0,0.70);
+  font-family: monospace;
+  margin: 0;
+}
+
 /* Responsive */
 @media (max-width: 860px){
   .home-title{ font-size: 44px; }
@@ -136,5 +217,9 @@ body.home-page{
   .home-actions{
     grid-template-columns: 1fr;
     max-width: 520px;
+  }
+
+  .home-telemetry-section{
+    max-width: 100%;
   }
 }

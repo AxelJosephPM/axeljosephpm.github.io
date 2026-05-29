@@ -75,6 +75,32 @@
           </a>
         </nav>
       </section>
+
+      <!-- Site telemetry widget -->
+      <section class="home-telemetry-section" aria-label="Site telemetry">
+        <div class="home-telemetry">
+          <div class="tele-header">
+            <span class="tele-title">SITE TELEMETRY</span>
+            <span class="tele-dot" aria-hidden="true"></span>
+          </div>
+          <dl class="tele-metrics">
+            <div class="tele-row">
+              <dt class="tele-key">TOTAL VIEWS</dt>
+              <dd class="tele-val" id="tele-pageviews">—</dd>
+            </div>
+            <div class="tele-row">
+              <dt class="tele-key">UNIQUE VISITORS</dt>
+              <dd class="tele-val" id="tele-visitors">—</dd>
+            </div>
+            <div class="tele-row">
+              <dt class="tele-key">ONLINE NOW</dt>
+              <dd class="tele-val" id="tele-online">—</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
     </main>
+
+    {% include site-telemetry.html %}
   </body>
 </html>
