@@ -112,3 +112,89 @@ body.projects-page{
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   UNDER-DEVELOPMENT NOTICE
+   ========================= */
+.dev-notice{
+  margin-top: 36px;
+  max-width: 640px;
+}
+
+.dev-notice-label{
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.42);
+  margin-bottom: 18px;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,0.14);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.dev-notice-head{
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ink, rgba(0,0,0,0.86));
+  margin: 0 0 20px;
+  font-weight: normal;
+}
+
+.dev-notice-body{
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(0,0,0,0.62);
+  margin: 0 0 16px;
+  max-width: 60ch;
+}
+
+.dev-notice-card{
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 24px 0;
+  background: rgba(0,0,0,0.015);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dev-fact{
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.dev-fact-key{
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.42);
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+.dev-fact-val{
+  font-size: 13px;
+  color: rgba(0,0,0,0.72);
+}
+
+.dev-notice-footer{
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: rgba(0,0,0,0.40);
+  margin: 0;
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding-top: 16px;
+}
+
+@media (max-width: 540px){
+  .dev-fact{
+    flex-direction: column;
+    gap: 2px;
+  }
+  .dev-fact-key{
+    min-width: unset;
+  }
+}

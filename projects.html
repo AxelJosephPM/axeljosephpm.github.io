@@ -24,18 +24,57 @@ layout: null
       <header class="blog-hero projects-hero">
         <div class="hero-kicker">PORTFOLIO</div>
         <h1 class="hero-title">{{ page.title | default: "Projects" }}</h1>
-
-        <p class="blog-quote-text">
-          A curated list of missions, simulations, and tools. Minimal, documented, and continuously improved.
-        </p>
-
-        <div class="hero-actions">
-          <a class="hero-action" href="#tags">Tags</a>
-          <a class="hero-action" href="#projects">Projects</a>
-        </div>
-
         <div class="hero-rule"></div>
       </header>
+
+      <!-- ── Under-development placeholder ───────────────────────────── -->
+      <section class="dev-notice">
+        <div class="dev-notice-label">Status</div>
+
+        <p class="dev-notice-head">This section is currently under development.</p>
+
+        <p class="dev-notice-body">
+          I am currently rebuilding this page into a more complete technical archive of my engineering,
+          aerospace, simulation, and software projects. The goal is to present each project with proper
+          documentation, design context, technical milestones, and development history.
+        </p>
+
+        <p class="dev-notice-body">
+          The first project page being redesigned is S-ART, the Student Astronomical Radio Telescope,
+          a student CubeSat mission concept focused on solar radio observations and hands-on satellite
+          engineering.
+        </p>
+
+        <div class="dev-notice-card">
+          <div class="dev-fact">
+            <span class="dev-fact-key">Status</span>
+            <span class="dev-fact-val">In development</span>
+          </div>
+          <div class="dev-fact">
+            <span class="dev-fact-key">Focus</span>
+            <span class="dev-fact-val">Project archive and technical documentation</span>
+          </div>
+          <div class="dev-fact">
+            <span class="dev-fact-key">First page under redesign</span>
+            <span class="dev-fact-val">S-ART</span>
+          </div>
+          <div class="dev-fact">
+            <span class="dev-fact-key">Expected content</span>
+            <span class="dev-fact-val">CubeSat systems, simulations, software tools, aerospace notes, and engineering reports</span>
+          </div>
+        </div>
+
+        <p class="dev-notice-footer">
+          More project pages will be published here as the structure becomes stable.
+        </p>
+      </section>
+      <!-- ── End placeholder ──────────────────────────────────────────── -->
+
+      {% if false %}
+      ════════════════════════════════════════════════════════════════
+      PROJECTS GRID — preserved, not active
+      Restore by removing the if false / endif wrapper.
+      ════════════════════════════════════════════════════════════════
 
       {% assign projects = site.data.projects %}
       {% if projects == nil %}
@@ -181,12 +220,18 @@ layout: null
         {% endif %}
       </section>
 
+      ════════════════════════════════════════════════════════════════
+      END PROJECTS GRID
+      ════════════════════════════════════════════════════════════════
+      {% endif %}
+
       <footer class="blog-footer">
         <div class="footer-rule"></div>
         <div class="footer-text">Last updated: {{ "now" | date: "%Y-%m-%d" }}</div>
       </footer>
     </main>
 
+    {% comment %} Grid filter script — preserved with grid above {% endcomment %}
     <script>
       (function () {
         const tagCloud = document.getElementById("tagCloud");
