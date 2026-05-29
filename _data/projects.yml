@@ -4,10 +4,11 @@
   status: "ACTIVE"
   year: 2026
   category: "CUBESAT"
-  role: "Systems / EPS / OBC"
+  role: "Systems Engineering / EPS / OBC"
   summary: "Student CubeSat mission concept focused on solar radio observations and hands-on satellite engineering."
-  tags: ["CubeSat", "EPS", "OBC", "Systems", "Python"]
+  tags: ["CubeSat", "EPS", "OBC", "Systems", "Python", "Radio Astronomy", "Mission Analysis", "ESA"]
   featured: true
+  recognition_hint: "ESA Design Booster participant"
   links:
     - label: "GitHub"
       url: "https://github.com/AxelJosephPM"

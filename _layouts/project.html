@@ -34,13 +34,13 @@
         {% if page.tags %}
           <div class="chips">
             {% for t in page.tags %}
-              <a class="chip chip-link" href="/proyectos/#tag-{{ t | slugify }}">{{ t }}</a>
+              <a class="chip chip-link" href="/projects/#tag-{{ t | slugify }}">{{ t }}</a>
             {% endfor %}
           </div>
         {% endif %}
 
         <div class="hero-actions">
-          <a class="hero-action" href="/proyectos/">← Back to Projects</a>
+          <a class="hero-action" href="/projects/">← Back to Projects</a>
           {% if page.repo_url %}
             <a class="hero-action" href="{{ page.repo_url }}">GitHub</a>
           {% endif %}

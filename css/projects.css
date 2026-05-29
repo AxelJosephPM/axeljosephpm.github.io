@@ -81,6 +81,17 @@ body.projects-page{
   max-width: 72ch;
 }
 
+.project-recognition{
+  display: inline-flex;
+  margin: 0 0 12px;
+  border-left: 2px solid rgba(0,0,0,0.22);
+  padding-left: 9px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.58);
+}
+
 /* Active pill state like blog (important for filter UX) */
 .tag-pill.is-active{
   background: rgba(0,0,0,0.06);

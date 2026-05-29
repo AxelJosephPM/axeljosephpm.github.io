@@ -117,11 +117,16 @@ layout: null
               {% assign tags_attr = "" %}
               {% if p.tags %}
                 {% for t in p.tags %}
-                  {% assign tags_attr = tags_attr | append: (t | slugify) | append: "|" %}
+                  {% assign tag_slug = t | slugify %}
+                  {% assign tags_attr = tags_attr | append: tag_slug | append: "|" %}
                 {% endfor %}
               {% endif %}
 
-              {% assign project_url = p.url | default: "/projects/" | append: p.slug | append: "/" %}
+              {% if p.url %}
+                {% assign project_url = p.url %}
+              {% else %}
+                {% assign project_url = "/projects/" | append: p.slug | append: "/" %}
+              {% endif %}
 
               <article class="project-card" data-tags="{{ tags_attr }}" data-url="{{ project_url | relative_url }}">
                 <div class="project-meta">
@@ -140,6 +145,10 @@ layout: null
 
                 {% if p.summary %}
                   <p class="project-summary">{{ p.summary }}</p>
+                {% endif %}
+
+                {% if p.recognition_hint %}
+                  <div class="project-recognition">{{ p.recognition_hint }}</div>
                 {% endif %}
 
                 {% if p.tags %}
@@ -314,7 +323,7 @@ layout: null
         // init
         clearSelection();
 
-        // Optional: support deep-link from project page: /proyectos/#tag-cfd
+        // Optional: support deep-link from project page: /projects/#tag-cfd
         if (location.hash && location.hash.startsWith("#tag-")) {
           const tag = location.hash.replace("#tag-", "").trim();
           if (tag) {
