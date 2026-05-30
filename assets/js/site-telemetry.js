@@ -9,6 +9,11 @@
  * totals. The visual widget (TOTAL VIEWS / UNIQUE VISITORS / ONLINE NOW)
  * exists only on the home page. On all other pages the script runs silently.
  *
+ * The pageview POST and the metrics GET are fully independent: the GET fires
+ * immediately without waiting for the POST to complete or succeed. A timeout
+ * (AbortController) guards both requests so a hanging mobile connection cannot
+ * block the widget indefinitely.
+ *
  * PRIVACY MODEL
  * - An anonymous visitor id is generated client-side with crypto.randomUUID()
  *   and stored in localStorage as { id, createdAt }. It identifies a browser,
@@ -89,9 +94,9 @@
 
   // ── Debug panel ────────────────────────────────────────────────────────────
 
-  var _panel    = null;
+  var _panel     = null;
   var _panelBody = null;
-  var _rows     = {};
+  var _rows      = {};
 
   function createDebugPanel() {
     if (!DEBUG_TELEMETRY) return;
@@ -110,8 +115,10 @@
       'margin-top:18px',
       'max-width:100%',
       'box-sizing:border-box',
-      'overflow-x:auto',
-      'word-break:break-all',
+      // No max-height, no overflow:hidden — rows appended after async ops must
+      // remain visible even if they arrive long after the panel is first shown.
+      'overflow:visible',
+      'word-break:break-word',
     ].join(';');
 
     var hdr = document.createElement('div');
@@ -139,7 +146,7 @@
       document.body.appendChild(panel);
     }
 
-    _panel    = panel;
+    _panel     = panel;
     _panelBody = body;
   }
 
@@ -164,12 +171,13 @@
       row.style.cssText = 'display:flex;gap:10px;margin-bottom:2px;align-items:baseline';
 
       var k = document.createElement('span');
-      k.style.cssText = 'color:#555;width:148px;min-width:148px;font-size:10px';
+      k.style.cssText = 'color:#555;width:148px;min-width:148px;font-size:10px;flex-shrink:0';
       k.textContent = key;
 
       var v = document.createElement('span');
       v.setAttribute('data-val', '');
-      v.style.cssText = 'color:#e2e2e2;flex:1;white-space:pre-wrap';
+      // overflow-wrap:anywhere lets long URLs and UUIDs break on any character.
+      v.style.cssText = 'color:#e2e2e2;flex:1;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word';
       v.textContent = text;
 
       row.appendChild(k);
@@ -257,53 +265,98 @@
     els.onlineNow.textContent      = formatMetric(metrics.onlineNow);
   }
 
-  // ── Page-view tracking (every page) ───────────────────────────────────────
+  // ── Timeout-guarded fetch ─────────────────────────────────────────────────
+  //
+  // Wraps fetch with an AbortController timeout so a hanging mobile connection
+  // cannot block the widget indefinitely. Falls back to plain fetch when
+  // AbortController is unavailable (very old browsers).
+  //
+  function fetchWithTimeout(url, options, timeoutMs) {
+    if (typeof AbortController === 'undefined') {
+      return fetch(url, options);
+    }
 
-  async function sendPageView(visitorId, sessionId) {
-    // Fires on every page load across the entire site.
-    // keepalive: true ensures the request completes even if the user
-    // navigates away immediately. mode/credentials/cache are explicit for
-    // cross-origin correctness on mobile browsers.
+    var controller = new AbortController();
+    var timer = window.setTimeout(function () {
+      controller.abort();
+    }, timeoutMs);
+
+    return fetch(url, Object.assign({}, options, { signal: controller.signal }))
+      .finally(function () {
+        window.clearTimeout(timer);
+      });
+  }
+
+  // ── Page-view tracking (every page) ───────────────────────────────────────
+  //
+  // Returns a Promise so callers can attach .catch() handlers, but init()
+  // never awaits it — the POST is fire-and-forget relative to the GET.
+  //
+  function sendPageView(visitorId, sessionId) {
     debug('POST /pageview', 'pending…');
-    var r = await fetch(TELEMETRY_ENDPOINT + '/pageview', {
-      method:      'POST',
-      mode:        'cors',
-      credentials: 'omit',
-      cache:       'no-store',
-      keepalive:   true,
-      headers:     { 'Content-Type': 'application/json' },
-      body:        JSON.stringify({ path: pagePath, visitorId: visitorId, sessionId: sessionId }),
+    return fetchWithTimeout(
+      TELEMETRY_ENDPOINT + '/pageview',
+      {
+        method:      'POST',
+        mode:        'cors',
+        credentials: 'omit',
+        cache:       'no-store',
+        keepalive:   true,
+        headers:     { 'Content-Type': 'application/json' },
+        body:        JSON.stringify({ path: pagePath, visitorId: visitorId, sessionId: sessionId }),
+      },
+      4000
+    ).then(function (response) {
+      debug('POST /pageview status', response.status);
+      return response;
     });
-    debug('POST /pageview', r.status + ' ' + r.statusText);
   }
 
   // ── Global metrics fetch (home widget only) ───────────────────────────────
-
-  async function fetchGlobalTelemetry() {
-    // Returns site-wide aggregate metrics: { totalViews, uniqueVisitors, onlineNow }
-    // mode/credentials/cache are explicit for cross-origin correctness on mobile.
+  //
+  // Returns a Promise resolving to { totalViews, uniqueVisitors, onlineNow }.
+  // Logs response status and raw JSON to the debug panel.
+  //
+  function fetchGlobalTelemetry() {
     debug('GET /telemetry', 'pending…');
-    var r = await fetch(TELEMETRY_ENDPOINT + '/telemetry', {
-      method:      'GET',
-      mode:        'cors',
-      credentials: 'omit',
-      cache:       'no-store',
-    });
-    debug('GET /telemetry', r.status + ' ' + r.statusText);
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + r.statusText);
-    var data = await r.json();
-    debug('response', JSON.stringify(data));
-    return data;
+    return fetchWithTimeout(
+      TELEMETRY_ENDPOINT + '/telemetry',
+      {
+        method:      'GET',
+        mode:        'cors',
+        credentials: 'omit',
+        cache:       'no-store',
+      },
+      6000
+    )
+      .then(function (response) {
+        debug('GET /telemetry status', response.status);
+        if (!response.ok) {
+          throw new Error('GET /telemetry failed with status ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function (json) {
+        debug('raw telemetry JSON', JSON.stringify(json));
+        return {
+          totalViews:     json.totalViews,
+          uniqueVisitors: json.uniqueVisitors,
+          onlineNow:      json.onlineNow,
+        };
+      });
   }
 
   // ── Initialisation ────────────────────────────────────────────────────────
-
-  async function init() {
+  //
+  // sendPageView and fetchGlobalTelemetry run independently — neither awaits
+  // the other. A slow or failing POST never blocks the widget from rendering.
+  //
+  function init() {
     // Panel is created first so every subsequent debug() call updates it.
     createDebugPanel();
 
-    debug('endpoint', TELEMETRY_ENDPOINT);
-    debug('path',     pagePath);
+    debug('endpoint',  TELEMETRY_ENDPOINT);
+    debug('path',      pagePath);
     debug('hasWidget', String(hasWidget));
 
     if (!isConfigured) {
@@ -317,25 +370,32 @@
     var visitorId = getVisitorId();
     var sessionId = getSessionId();
 
-    // sendPageView is decoupled: its failure (network error or HTTP error)
-    // is caught and logged here so the GET /telemetry call always runs.
-    await sendPageView(visitorId, sessionId).catch(function (err) {
-      debug('POST /pageview', 'ERROR: ' + (err && err.message ? err.message : String(err)));
-    });
+    // Fire the pageview POST and forget it — result does not gate metric fetch.
+    sendPageView(visitorId, sessionId)
+      .then(function () {
+        debug('pageview complete', 'ok');
+      })
+      .catch(function (err) {
+        debug('pageview failed', err && err.message ? err.message : String(err));
+      });
 
-    // Metric fetch and render runs only on the home page where the widget exists.
-    if (!hasWidget) return;
-
-    try {
-      var metrics = await fetchGlobalTelemetry();
-      render(metrics);
-      debug('render', 'success — totalViews=' + metrics.totalViews
-        + ' uniqueVisitors=' + metrics.uniqueVisitors
-        + ' onlineNow=' + metrics.onlineNow);
-    } catch (err) {
-      debug('render', 'failed — ' + (err && err.message ? err.message : String(err)));
-      render({ totalViews: null, uniqueVisitors: null, onlineNow: null });
+    // Metric fetch and render run only on the home page where the widget exists.
+    if (!hasWidget) {
+      debug('no widget', 'skipping metrics fetch');
+      return;
     }
+
+    fetchGlobalTelemetry()
+      .then(function (metrics) {
+        render(metrics);
+        debug('render success', 'totalViews=' + metrics.totalViews
+          + ' uniqueVisitors=' + metrics.uniqueVisitors
+          + ' onlineNow=' + metrics.onlineNow);
+      })
+      .catch(function (err) {
+        debug('metrics fetch failed', err && err.message ? err.message : String(err));
+        render({ totalViews: null, uniqueVisitors: null, onlineNow: null });
+      });
   }
 
   init();
