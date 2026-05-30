@@ -2,6 +2,7 @@
  * Cloudflare Worker — Site Stats Backend
  *
  * Routes
+ *   GET  /health      Liveness check — no D1, open CORS, useful for mobile diagnostics
  *   OPTIONS *         CORS preflight
  *   POST /hit         Record a page view; return current global metrics  (primary)
  *   GET  /stats       Return current global metrics                       (primary)
@@ -33,16 +34,10 @@ const ALLOWED_ORIGINS = [
 const ONLINE_WINDOW_S = 90;
 
 // Cleanup thresholds.
-// online_sessions rows older than this are stale and can be deleted.
-const SESSION_MAX_AGE_S  = 24 * 3600;              // 24 hours
-// unique_visitors rows whose last_seen is older than this are deleted.
-const VISITOR_MAX_AGE_S  = 25 * 30 * 24 * 3600;   // ~25 months
+const SESSION_MAX_AGE_S = 24 * 3600;            // 24 hours
+const VISITOR_MAX_AGE_S = 25 * 30 * 24 * 3600; // ~25 months
 
 // Probability that any given POST request triggers cleanup.
-// At 1 % the cleanup runs roughly once every 100 requests — frequent enough
-// to keep the tables bounded, infrequent enough to avoid adding latency on
-// most requests. Cleanup always runs via ctx.waitUntil so it does not block
-// the response.
 const CLEANUP_PROBABILITY = 0.01;
 
 // ── CORS helpers ───────────────────────────────────────────────────────────────
@@ -53,6 +48,9 @@ function corsHeaders(origin) {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age':       '86400',
+    // Vary: Origin tells caches that the response differs by Origin so a
+    // cached CORS-approved response is not served to a different origin.
+    'Vary': 'Origin',
   };
 }
 
@@ -89,7 +87,6 @@ async function incrementPathCounter(db, path) {
 }
 
 async function upsertVisitor(db, visitorId, now) {
-  // Inserts on first visit; updates last_seen on subsequent visits.
   await db
     .prepare(
       `INSERT INTO unique_visitors (visitor_id, first_seen, last_seen) VALUES (?, ?, ?)
@@ -100,8 +97,6 @@ async function upsertVisitor(db, visitorId, now) {
 }
 
 async function upsertSession(db, sessionId, visitorId, path, now) {
-  // Inserts on first request in the session; updates path and last_seen
-  // on subsequent requests, keeping the session "alive" in the window.
   await db
     .prepare(
       `INSERT INTO online_sessions (session_id, visitor_id, path, last_seen)
@@ -123,21 +118,14 @@ async function getGlobalMetrics(db, now) {
   ]);
 
   return {
-    totalViews:     viewsRow     ? viewsRow.value    : 0,
-    uniqueVisitors: visitorsRow  ? visitorsRow.cnt   : 0,
-    onlineNow:      onlineRow    ? onlineRow.cnt     : 0,
+    totalViews:     viewsRow    ? viewsRow.value   : 0,
+    uniqueVisitors: visitorsRow ? visitorsRow.cnt  : 0,
+    onlineNow:      onlineRow   ? onlineRow.cnt    : 0,
   };
 }
 
 // ── Cleanup ────────────────────────────────────────────────────────────────────
-//
-// Deletes rows that are no longer useful:
-//   - online_sessions older than 24 hours (well past the 90-second online window)
-//   - unique_visitors whose last_seen is older than ~25 months
-//
-// Called via ctx.waitUntil so it runs after the response is returned to the
-// client and does not add latency to the POST routes.
-//
+
 async function runCleanup(db, now) {
   const sessionCutoff = now - SESSION_MAX_AGE_S;
   const visitorCutoff = now - VISITOR_MAX_AGE_S;
@@ -149,11 +137,7 @@ async function runCleanup(db, now) {
 }
 
 // ── Normalise path ─────────────────────────────────────────────────────────────
-//
-// Strips query strings and fragments, enforces a leading slash, and collapses
-// multiple leading slashes. This keeps path_counters consistent regardless of
-// how the browser sends the path.
-//
+
 function normalizePath(raw) {
   const stripped = raw
     .split('?')[0]
@@ -163,6 +147,24 @@ function normalizePath(raw) {
 }
 
 // ── Route handlers ─────────────────────────────────────────────────────────────
+
+function handleHealth() {
+  // Open to any origin — no sensitive data, no D1.
+  // Wildcard CORS here is intentional: /health is a pure liveness probe used
+  // by the debug panel to test Worker reachability from mobile without needing
+  // an approved origin.
+  return new Response(
+    JSON.stringify({ ok: true, service: 'site-stats', time: Math.floor(Date.now() / 1000) }),
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Vary': 'Origin',
+      },
+    }
+  );
+}
 
 async function handleHit(request, env, origin, ctx) {
   let body;
@@ -188,7 +190,6 @@ async function handleHit(request, env, origin, ctx) {
   const now       = Math.floor(Date.now() / 1000);
   const db        = env.DB;
 
-  // Run all writes concurrently — D1 handles the serialisation.
   await Promise.all([
     incrementCounter(db, 'total_views'),
     incrementPathCounter(db, cleanPath),
@@ -196,9 +197,6 @@ async function handleHit(request, env, origin, ctx) {
     upsertSession(db, sessionId, visitorId, cleanPath, now),
   ]);
 
-  // Schedule lightweight cleanup on ~1 % of requests.
-  // ctx.waitUntil runs the promise after the response is returned so cleanup
-  // never adds latency to the client-facing POST.
   if (Math.random() < CLEANUP_PROBABILITY) {
     ctx.waitUntil(runCleanup(db, now));
   }
@@ -221,7 +219,26 @@ export default {
     const method = request.method.toUpperCase();
     const url    = new URL(request.url);
 
-    // CORS preflight — respond to any origin but only grant headers to allowed ones.
+    // Health check is open to all origins — handle before the origin guard.
+    if (method === 'GET' && url.pathname === '/health') {
+      return handleHealth();
+    }
+
+    // Health preflight (browsers may send OPTIONS before GET /health even though
+    // the response uses wildcard CORS — handle it gracefully).
+    if (method === 'OPTIONS' && url.pathname === '/health') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin':  '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Max-Age':       '86400',
+        },
+      });
+    }
+
+    // CORS preflight for protected routes.
     if (method === 'OPTIONS') {
       if (ALLOWED_ORIGINS.includes(origin)) {
         return new Response(null, { status: 204, headers: corsHeaders(origin) });
@@ -233,7 +250,10 @@ export default {
     if (!ALLOWED_ORIGINS.includes(origin)) {
       return new Response(JSON.stringify({ error: 'Forbidden' }), {
         status: 403,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Vary': 'Origin',
+        },
       });
     }
 
@@ -246,8 +266,7 @@ export default {
       return handleGetStats(env, origin);
     }
 
-    // Backwards-compatible aliases — kept so any cached or queued requests
-    // from the old frontend continue to work during the transition.
+    // Backwards-compatible aliases.
     if (method === 'POST' && url.pathname === '/pageview') {
       return handleHit(request, env, origin, ctx);
     }

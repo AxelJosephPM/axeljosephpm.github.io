@@ -4,27 +4,20 @@
  * GLOBAL TRACKING SCRIPT — loaded on every page of the site.
  *
  * BEHAVIOUR
- * This script runs on every page. On every page load it records a hit to the
- * Cloudflare Worker backend, contributing to the site-wide totals. The visual
- * widget (TOTAL VIEWS / UNIQUE VISITORS / ONLINE NOW) exists only on the home
- * page. On all other pages the script runs silently.
+ * Fires on every page load. Records a hit to the Cloudflare Worker backend.
+ * The visual widget (TOTAL VIEWS / UNIQUE VISITORS / ONLINE NOW) exists only
+ * on the home page. On all other pages the script runs silently.
  *
- * The hit POST and the stats GET are fully independent: the GET fires
- * immediately without waiting for the POST to complete or succeed. A timeout
- * (AbortController) guards both requests so a hanging mobile connection cannot
- * block the widget indefinitely.
+ * The hit POST and the stats GET are fully independent — neither blocks the
+ * other. Timeouts (AbortController) guard every request so a hanging mobile
+ * connection cannot block the widget indefinitely.
  *
  * PRIVACY MODEL
- * - An anonymous visitor id is generated client-side with crypto.randomUUID()
- *   and stored in localStorage as { id, createdAt }. It identifies a browser,
- *   not a person, and is automatically regenerated after ~13 months.
- * - An anonymous session id is generated client-side with crypto.randomUUID()
- *   and stored in sessionStorage. It expires when the tab closes.
- * - Only the page path, visitor id, session id, and a server-side timestamp
- *   are sent to the backend. No IP address, user agent, or personal data.
- * - Unique visitor counts are approximate and anonymous.
- * - Online session counts are approximate and time-bounded (90-second window).
- * - No secrets or credentials are stored in this file.
+ * - Anonymous visitor id: crypto.randomUUID() stored in localStorage as
+ *   { id, createdAt }. Regenerated after ~13 months. Identifies a browser,
+ *   not a person. No IP, UA, email, or name is collected.
+ * - Anonymous session id: crypto.randomUUID() stored in sessionStorage.
+ *   Expires when the tab closes.
  *
  * BACKEND API
  * POST ${STATS_ENDPOINT}/hit
@@ -34,30 +27,21 @@
  * GET ${STATS_ENDPOINT}/stats
  *   Response: { "totalViews": number, "uniqueVisitors": number, "onlineNow": number }
  *
- * CONFIGURATION
- * Set STATS_ENDPOINT to your deployed Cloudflare Worker URL.
- * While the placeholder value is present, no network requests are made and
- * the widget displays "—".
+ * GET ${STATS_ENDPOINT}/health   (open CORS, no D1 — liveness probe)
+ *   Response: { "ok": true, "service": "site-stats", "time": number }
  *
  * DEBUG
- * Append ?telemetry_debug=1 or ?stats_debug=1 to any page URL to activate
- * the in-page diagnostics panel. Useful on mobile where the browser console
- * is not easily accessible.
+ * Append ?stats_debug=1 or ?telemetry_debug=1 to any URL to show the
+ * in-page diagnostics panel. Useful on mobile where the console is hidden.
  */
 
 (function () {
   "use strict";
 
   // ── Configuration ──────────────────────────────────────────────────────────
-  //
-  // Replace with your deployed Cloudflare Worker URL after running:
-  //   npx wrangler deploy
-  //
-  // Example: 'https://site-stats.your-account.workers.dev'
-  //
+
   const STATS_ENDPOINT = 'https://site-stats.axeljosephpm.workers.dev';
 
-  // Guard: no network calls while the placeholder value is present.
   const isConfigured = (
     typeof STATS_ENDPOINT === 'string' &&
     STATS_ENDPOINT.length > 0 &&
@@ -65,28 +49,20 @@
   );
 
   // ── Debug mode ─────────────────────────────────────────────────────────────
-  //
-  // Activated by visiting any page with ?telemetry_debug=1 or ?stats_debug=1
-  // in the URL. Adds an in-page diagnostics panel and mirrors all events to
-  // console.debug.
-  //
+
   const DEBUG_STATS = (function () {
     try {
-      var params = new URLSearchParams(window.location.search);
-      return params.has('telemetry_debug') || params.has('stats_debug');
-    } catch (_) {
-      return false;
-    }
+      var p = new URLSearchParams(window.location.search);
+      return p.has('stats_debug') || p.has('telemetry_debug');
+    } catch (_) { return false; }
   }());
 
-  // ── Current page path ──────────────────────────────────────────────────────
+  // ── Page path ──────────────────────────────────────────────────────────────
+
   const pagePath = window.location.pathname;
 
   // ── Widget elements (home page only) ──────────────────────────────────────
-  //
-  // These elements exist only in _layouts/inicio.html.
-  // On every other page all three will be null and hasWidget will be false.
-  //
+
   const els = {
     totalViews:     document.getElementById('tele-pageviews'),
     uniqueVisitors: document.getElementById('tele-visitors'),
@@ -96,7 +72,6 @@
 
   // ── Debug panel ────────────────────────────────────────────────────────────
 
-  var _panel     = null;
   var _panelBody = null;
   var _rows      = {};
 
@@ -135,10 +110,22 @@
     ].join(';');
     panel.appendChild(hdr);
 
+    // Clickable link to the health endpoint — lets the user tap to test Worker
+    // reachability directly from a mobile browser.
+    var healthLink = document.createElement('div');
+    healthLink.style.cssText = 'margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)';
+    var a = document.createElement('a');
+    a.href = STATS_ENDPOINT + '/health';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = 'Tap to test Worker reachability: /health';
+    a.style.cssText = 'color:#5af;font-size:10px;word-break:break-all';
+    healthLink.appendChild(a);
+    panel.appendChild(healthLink);
+
     var body = document.createElement('div');
     panel.appendChild(body);
 
-    // Insert after .home-telemetry-section if present, else append to <body>.
     var anchor = document.querySelector('.home-telemetry-section');
     if (anchor && anchor.parentNode) {
       anchor.parentNode.insertBefore(panel, anchor.nextSibling);
@@ -146,7 +133,6 @@
       document.body.appendChild(panel);
     }
 
-    _panel     = panel;
     _panelBody = body;
   }
 
@@ -154,11 +140,9 @@
     if (!DEBUG_STATS) return;
 
     var text = value === undefined ? ''
-      : (value instanceof Error)
-        ? 'Error: ' + value.message
-        : (typeof value === 'object' && value !== null)
-          ? JSON.stringify(value)
-          : String(value);
+      : (value instanceof Error)  ? 'ERR: ' + value.message
+      : (typeof value === 'object' && value !== null) ? JSON.stringify(value)
+      : String(value);
 
     console.debug('[stats-debug]', key, '→', value);
 
@@ -188,13 +172,9 @@
 
   // ── Anonymous identity ─────────────────────────────────────────────────────
 
-  // Visitor id lifetime: ~13 months in milliseconds.
   var VISITOR_ID_TTL_MS = 13 * 30 * 24 * 60 * 60 * 1000;
 
   function getVisitorId() {
-    // Stored in localStorage as JSON: { id: string, createdAt: number }.
-    // Regenerated automatically when the record is older than VISITOR_ID_TTL_MS.
-    // Returns an ephemeral in-memory id if localStorage is blocked.
     try {
       var raw = localStorage.getItem('_tele_vid');
       if (raw) {
@@ -213,15 +193,12 @@
       return id;
     } catch (err) {
       var ephemeral = crypto.randomUUID();
-      debug('visitorId', ephemeral.slice(0, 8) + '… (ephemeral — localStorage blocked: ' + (err && err.message) + ')');
+      debug('visitorId', ephemeral.slice(0, 8) + '… (ephemeral: ' + (err && err.message) + ')');
       return ephemeral;
     }
   }
 
   function getSessionId() {
-    // Stored as a plain string in sessionStorage.
-    // Expires naturally when the tab or browser window closes.
-    // Returns an ephemeral in-memory id if sessionStorage is blocked.
     try {
       var id = sessionStorage.getItem('_tele_sid');
       if (!id) {
@@ -234,44 +211,50 @@
       return id;
     } catch (err) {
       var ephemeral = crypto.randomUUID();
-      debug('sessionId', ephemeral.slice(0, 8) + '… (ephemeral — sessionStorage blocked: ' + (err && err.message) + ')');
+      debug('sessionId', ephemeral.slice(0, 8) + '… (ephemeral: ' + (err && err.message) + ')');
       return ephemeral;
     }
   }
 
   function probeStorage(storage, label) {
-    try {
-      storage.getItem('_tele_probe');
-      debug(label, 'available');
-    } catch (_) {
-      debug(label, 'blocked');
-    }
+    try { storage.getItem('_tele_probe'); debug(label, 'available'); }
+    catch (_) { debug(label, 'blocked'); }
   }
 
   // ── Formatting ────────────────────────────────────────────────────────────
 
   function formatMetric(value) {
-    if (value === null || value === undefined) return '—';
+    if (typeof value !== 'number') return '—';
     return new Intl.NumberFormat().format(value);
   }
 
-  // ── Rendering (home page only) ────────────────────────────────────────────
+  // ── Rendering ────────────────────────────────────────────────────────────
 
   function render(metrics) {
     if (!hasWidget) return;
-    els.totalViews.textContent     = formatMetric(metrics.totalViews);
-    els.uniqueVisitors.textContent = formatMetric(metrics.uniqueVisitors);
-    els.onlineNow.textContent      = formatMetric(metrics.onlineNow);
+
+    // Validate shape — 0 is a valid count, so use typeof, not truthiness.
+    var tv  = typeof metrics.totalViews     === 'number' ? metrics.totalViews     : null;
+    var uv  = typeof metrics.uniqueVisitors === 'number' ? metrics.uniqueVisitors : null;
+    var on  = typeof metrics.onlineNow      === 'number' ? metrics.onlineNow      : null;
+
+    if (tv === null || uv === null || on === null) {
+      debug('render warning', 'unexpected shape: ' + JSON.stringify(metrics));
+    }
+
+    els.totalViews.textContent     = formatMetric(tv);
+    els.uniqueVisitors.textContent = formatMetric(uv);
+    els.onlineNow.textContent      = formatMetric(on);
   }
 
   // ── Timeout-guarded fetch ─────────────────────────────────────────────────
   //
-  // Wraps fetch with an AbortController timeout so a hanging mobile connection
-  // cannot block the widget indefinitely. Falls back to plain fetch when
-  // AbortController is unavailable (very old browsers).
+  // Uses AbortController with a manual then/catch cleanup instead of .finally()
+  // for maximum compatibility with older mobile WebViews.
   //
   function fetchWithTimeout(url, options, timeoutMs) {
     if (typeof AbortController === 'undefined') {
+      debug('timeout', 'AbortController unavailable — no timeout');
       return fetch(url, options);
     }
 
@@ -280,80 +263,104 @@
       controller.abort();
     }, timeoutMs);
 
+    var clearTimer = function () { window.clearTimeout(timer); };
+
     return fetch(url, Object.assign({}, options, { signal: controller.signal }))
-      .finally(function () {
-        window.clearTimeout(timer);
+      .then(
+        function (r) { clearTimer(); return r; },
+        function (e) { clearTimer(); throw e; }
+      );
+  }
+
+  // ── Health check (debug only) ─────────────────────────────────────────────
+
+  function checkHealth() {
+    if (!DEBUG_STATS) return;
+
+    debug('GET /health', 'start…');
+    fetchWithTimeout(
+      STATS_ENDPOINT + '/health',
+      { method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store' },
+      4000
+    )
+      .then(function (r) {
+        debug('GET /health status', r.status);
+        return r.json();
+      })
+      .then(function (json) {
+        debug('GET /health body', JSON.stringify(json));
+      })
+      .catch(function (err) {
+        debug('GET /health error', err && err.name === 'AbortError'
+          ? 'timeout after 4000ms'
+          : (err && err.message ? err.message : String(err)));
       });
   }
 
-  // ── Hit recording (every page) ────────────────────────────────────────────
-  //
-  // Returns a Promise so callers can attach .catch() handlers, but init()
-  // never awaits it — the POST is fire-and-forget relative to the GET.
-  //
-  function recordHit(visitorId, sessionId) {
-    debug('POST /hit', 'pending…');
-    return fetchWithTimeout(
+  // ── Stats fetch ───────────────────────────────────────────────────────────
+
+  function fetchAndRenderStats() {
+    debug('GET /stats', 'start…');
+    fetchWithTimeout(
+      STATS_ENDPOINT + '/stats',
+      { method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store' },
+      6000
+    )
+      .then(function (r) {
+        debug('GET /stats status', r.status);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (json) {
+        debug('raw stats JSON', JSON.stringify(json));
+        debug('render', 'start');
+        render(json);
+        debug('render', 'success');
+      })
+      .catch(function (err) {
+        var msg = err && err.name === 'AbortError'
+          ? 'timeout after 6000ms'
+          : (err && err.message ? err.message : String(err));
+        debug('GET /stats error', msg);
+        render({ totalViews: null, uniqueVisitors: null, onlineNow: null });
+      });
+  }
+
+  // ── Hit recording ─────────────────────────────────────────────────────────
+
+  function sendHit(visitorId, sessionId) {
+    debug('POST /hit', 'start…');
+    fetchWithTimeout(
       STATS_ENDPOINT + '/hit',
       {
         method:      'POST',
         mode:        'cors',
         credentials: 'omit',
         cache:       'no-store',
-        keepalive:   true,
+        // keepalive intentionally omitted — some mobile browsers behave
+        // unexpectedly when keepalive is combined with CORS + JSON bodies.
         headers:     { 'Content-Type': 'application/json' },
         body:        JSON.stringify({ path: pagePath, visitorId: visitorId, sessionId: sessionId }),
       },
       4000
-    ).then(function (response) {
-      debug('POST /hit status', response.status);
-      return response;
-    });
-  }
-
-  // ── Global stats fetch (home widget only) ─────────────────────────────────
-  //
-  // Returns a Promise resolving to { totalViews, uniqueVisitors, onlineNow }.
-  // Logs response status and raw JSON to the debug panel.
-  //
-  function fetchStats() {
-    debug('GET /stats', 'pending…');
-    return fetchWithTimeout(
-      STATS_ENDPOINT + '/stats',
-      {
-        method:      'GET',
-        mode:        'cors',
-        credentials: 'omit',
-        cache:       'no-store',
-      },
-      6000
     )
-      .then(function (response) {
-        debug('GET /stats status', response.status);
-        if (!response.ok) {
-          throw new Error('GET /stats failed with status ' + response.status);
-        }
-        return response.json();
+      .then(function (r) {
+        debug('POST /hit status', r.status);
       })
-      .then(function (json) {
-        debug('raw stats JSON', JSON.stringify(json));
-        return {
-          totalViews:     json.totalViews,
-          uniqueVisitors: json.uniqueVisitors,
-          onlineNow:      json.onlineNow,
-        };
+      .catch(function (err) {
+        debug('POST /hit error', err && err.name === 'AbortError'
+          ? 'timeout after 4000ms'
+          : (err && err.message ? err.message : String(err)));
       });
   }
 
   // ── Initialisation ────────────────────────────────────────────────────────
-  //
-  // recordHit and fetchStats run independently — neither awaits the other.
-  // A slow or failing POST never blocks the widget from rendering.
-  //
+
   function init() {
-    // Panel is created first so every subsequent debug() call updates it.
     createDebugPanel();
 
+    debug('script', 'loaded');
+    debug('readyState', document.readyState);
     debug('endpoint',  STATS_ENDPOINT);
     debug('path',      pagePath);
     debug('hasWidget', String(hasWidget));
@@ -369,32 +376,19 @@
     var visitorId = getVisitorId();
     var sessionId = getSessionId();
 
-    // Fire the hit POST and forget it — result does not gate stats fetch.
-    recordHit(visitorId, sessionId)
-      .then(function () {
-        debug('hit complete', 'ok');
-      })
-      .catch(function (err) {
-        debug('hit failed', err && err.message ? err.message : String(err));
-      });
+    // Health check runs in debug mode only — independent of all other requests.
+    checkHealth();
 
-    // Stats fetch and render run only on the home page where the widget exists.
-    if (!hasWidget) {
+    // Stats fetch and render — only on home page where the widget exists.
+    // Runs independently of the hit POST.
+    if (hasWidget) {
+      fetchAndRenderStats();
+    } else {
       debug('no widget', 'skipping stats fetch');
-      return;
     }
 
-    fetchStats()
-      .then(function (metrics) {
-        render(metrics);
-        debug('render success', 'totalViews=' + metrics.totalViews
-          + ' uniqueVisitors=' + metrics.uniqueVisitors
-          + ' onlineNow=' + metrics.onlineNow);
-      })
-      .catch(function (err) {
-        debug('stats fetch failed', err && err.message ? err.message : String(err));
-        render({ totalViews: null, uniqueVisitors: null, onlineNow: null });
-      });
+    // Hit POST — fire and forget, never blocks stats fetch.
+    sendHit(visitorId, sessionId);
   }
 
   init();
