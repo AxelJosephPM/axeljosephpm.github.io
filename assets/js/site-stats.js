@@ -1,15 +1,15 @@
 /**
- * site-telemetry.js
+ * site-stats.js
  *
  * GLOBAL TRACKING SCRIPT — loaded on every page of the site.
  *
  * BEHAVIOUR
- * This script runs on every page. On every page load it fires a pageview
- * event to the Cloudflare Worker backend, contributing to the site-wide
- * totals. The visual widget (TOTAL VIEWS / UNIQUE VISITORS / ONLINE NOW)
- * exists only on the home page. On all other pages the script runs silently.
+ * This script runs on every page. On every page load it records a hit to the
+ * Cloudflare Worker backend, contributing to the site-wide totals. The visual
+ * widget (TOTAL VIEWS / UNIQUE VISITORS / ONLINE NOW) exists only on the home
+ * page. On all other pages the script runs silently.
  *
- * The pageview POST and the metrics GET are fully independent: the GET fires
+ * The hit POST and the stats GET are fully independent: the GET fires
  * immediately without waiting for the POST to complete or succeed. A timeout
  * (AbortController) guards both requests so a hanging mobile connection cannot
  * block the widget indefinitely.
@@ -27,22 +27,22 @@
  * - No secrets or credentials are stored in this file.
  *
  * BACKEND API
- * POST ${TELEMETRY_ENDPOINT}/pageview
+ * POST ${STATS_ENDPOINT}/hit
  *   Body:     { "path": string, "visitorId": string, "sessionId": string }
  *   Response: { "totalViews": number, "uniqueVisitors": number, "onlineNow": number }
  *
- * GET ${TELEMETRY_ENDPOINT}/telemetry
+ * GET ${STATS_ENDPOINT}/stats
  *   Response: { "totalViews": number, "uniqueVisitors": number, "onlineNow": number }
  *
  * CONFIGURATION
- * Set TELEMETRY_ENDPOINT to your deployed Cloudflare Worker URL.
+ * Set STATS_ENDPOINT to your deployed Cloudflare Worker URL.
  * While the placeholder value is present, no network requests are made and
  * the widget displays "—".
  *
  * DEBUG
- * Append ?telemetry_debug=1 to any page URL to activate the in-page
- * diagnostics panel. Useful on mobile where the browser console is not
- * easily accessible.
+ * Append ?telemetry_debug=1 or ?stats_debug=1 to any page URL to activate
+ * the in-page diagnostics panel. Useful on mobile where the browser console
+ * is not easily accessible.
  */
 
 (function () {
@@ -53,25 +53,27 @@
   // Replace with your deployed Cloudflare Worker URL after running:
   //   npx wrangler deploy
   //
-  // Example: 'https://site-telemetry.your-account.workers.dev'
+  // Example: 'https://site-stats.your-account.workers.dev'
   //
-  const TELEMETRY_ENDPOINT = 'https://site-telemetry.axeljosephpm.workers.dev';
+  const STATS_ENDPOINT = 'https://site-stats.axeljosephpm.workers.dev';
 
   // Guard: no network calls while the placeholder value is present.
   const isConfigured = (
-    typeof TELEMETRY_ENDPOINT === 'string' &&
-    TELEMETRY_ENDPOINT.length > 0 &&
-    !TELEMETRY_ENDPOINT.startsWith('PASTE_')
+    typeof STATS_ENDPOINT === 'string' &&
+    STATS_ENDPOINT.length > 0 &&
+    !STATS_ENDPOINT.startsWith('PASTE_')
   );
 
   // ── Debug mode ─────────────────────────────────────────────────────────────
   //
-  // Activated by visiting any page with ?telemetry_debug=1 in the URL.
-  // Adds an in-page diagnostics panel and mirrors all events to console.debug.
+  // Activated by visiting any page with ?telemetry_debug=1 or ?stats_debug=1
+  // in the URL. Adds an in-page diagnostics panel and mirrors all events to
+  // console.debug.
   //
-  const DEBUG_TELEMETRY = (function () {
+  const DEBUG_STATS = (function () {
     try {
-      return new URLSearchParams(window.location.search).has('telemetry_debug');
+      var params = new URLSearchParams(window.location.search);
+      return params.has('telemetry_debug') || params.has('stats_debug');
     } catch (_) {
       return false;
     }
@@ -99,7 +101,7 @@
   var _rows      = {};
 
   function createDebugPanel() {
-    if (!DEBUG_TELEMETRY) return;
+    if (!DEBUG_STATS) return;
 
     var panel = document.createElement('div');
     panel.id = 'tele-debug-panel';
@@ -115,14 +117,12 @@
       'margin-top:18px',
       'max-width:100%',
       'box-sizing:border-box',
-      // No max-height, no overflow:hidden — rows appended after async ops must
-      // remain visible even if they arrive long after the panel is first shown.
       'overflow:visible',
       'word-break:break-word',
     ].join(';');
 
     var hdr = document.createElement('div');
-    hdr.textContent = 'TELEMETRY DEBUG';
+    hdr.textContent = 'SITE STATS DEBUG';
     hdr.style.cssText = [
       'font-size:10px',
       'letter-spacing:0.2em',
@@ -151,7 +151,7 @@
   }
 
   function debug(key, value) {
-    if (!DEBUG_TELEMETRY) return;
+    if (!DEBUG_STATS) return;
 
     var text = value === undefined ? ''
       : (value instanceof Error)
@@ -160,7 +160,7 @@
           ? JSON.stringify(value)
           : String(value);
 
-    console.debug('[tele-debug]', key, '→', value);
+    console.debug('[stats-debug]', key, '→', value);
 
     if (!_panelBody) return;
 
@@ -176,7 +176,6 @@
 
       var v = document.createElement('span');
       v.setAttribute('data-val', '');
-      // overflow-wrap:anywhere lets long URLs and UUIDs break on any character.
       v.style.cssText = 'color:#e2e2e2;flex:1;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word';
       v.textContent = text;
 
@@ -287,15 +286,15 @@
       });
   }
 
-  // ── Page-view tracking (every page) ───────────────────────────────────────
+  // ── Hit recording (every page) ────────────────────────────────────────────
   //
   // Returns a Promise so callers can attach .catch() handlers, but init()
   // never awaits it — the POST is fire-and-forget relative to the GET.
   //
-  function sendPageView(visitorId, sessionId) {
-    debug('POST /pageview', 'pending…');
+  function recordHit(visitorId, sessionId) {
+    debug('POST /hit', 'pending…');
     return fetchWithTimeout(
-      TELEMETRY_ENDPOINT + '/pageview',
+      STATS_ENDPOINT + '/hit',
       {
         method:      'POST',
         mode:        'cors',
@@ -307,20 +306,20 @@
       },
       4000
     ).then(function (response) {
-      debug('POST /pageview status', response.status);
+      debug('POST /hit status', response.status);
       return response;
     });
   }
 
-  // ── Global metrics fetch (home widget only) ───────────────────────────────
+  // ── Global stats fetch (home widget only) ─────────────────────────────────
   //
   // Returns a Promise resolving to { totalViews, uniqueVisitors, onlineNow }.
   // Logs response status and raw JSON to the debug panel.
   //
-  function fetchGlobalTelemetry() {
-    debug('GET /telemetry', 'pending…');
+  function fetchStats() {
+    debug('GET /stats', 'pending…');
     return fetchWithTimeout(
-      TELEMETRY_ENDPOINT + '/telemetry',
+      STATS_ENDPOINT + '/stats',
       {
         method:      'GET',
         mode:        'cors',
@@ -330,14 +329,14 @@
       6000
     )
       .then(function (response) {
-        debug('GET /telemetry status', response.status);
+        debug('GET /stats status', response.status);
         if (!response.ok) {
-          throw new Error('GET /telemetry failed with status ' + response.status);
+          throw new Error('GET /stats failed with status ' + response.status);
         }
         return response.json();
       })
       .then(function (json) {
-        debug('raw telemetry JSON', JSON.stringify(json));
+        debug('raw stats JSON', JSON.stringify(json));
         return {
           totalViews:     json.totalViews,
           uniqueVisitors: json.uniqueVisitors,
@@ -348,14 +347,14 @@
 
   // ── Initialisation ────────────────────────────────────────────────────────
   //
-  // sendPageView and fetchGlobalTelemetry run independently — neither awaits
-  // the other. A slow or failing POST never blocks the widget from rendering.
+  // recordHit and fetchStats run independently — neither awaits the other.
+  // A slow or failing POST never blocks the widget from rendering.
   //
   function init() {
     // Panel is created first so every subsequent debug() call updates it.
     createDebugPanel();
 
-    debug('endpoint',  TELEMETRY_ENDPOINT);
+    debug('endpoint',  STATS_ENDPOINT);
     debug('path',      pagePath);
     debug('hasWidget', String(hasWidget));
 
@@ -370,22 +369,22 @@
     var visitorId = getVisitorId();
     var sessionId = getSessionId();
 
-    // Fire the pageview POST and forget it — result does not gate metric fetch.
-    sendPageView(visitorId, sessionId)
+    // Fire the hit POST and forget it — result does not gate stats fetch.
+    recordHit(visitorId, sessionId)
       .then(function () {
-        debug('pageview complete', 'ok');
+        debug('hit complete', 'ok');
       })
       .catch(function (err) {
-        debug('pageview failed', err && err.message ? err.message : String(err));
+        debug('hit failed', err && err.message ? err.message : String(err));
       });
 
-    // Metric fetch and render run only on the home page where the widget exists.
+    // Stats fetch and render run only on the home page where the widget exists.
     if (!hasWidget) {
-      debug('no widget', 'skipping metrics fetch');
+      debug('no widget', 'skipping stats fetch');
       return;
     }
 
-    fetchGlobalTelemetry()
+    fetchStats()
       .then(function (metrics) {
         render(metrics);
         debug('render success', 'totalViews=' + metrics.totalViews
@@ -393,7 +392,7 @@
           + ' onlineNow=' + metrics.onlineNow);
       })
       .catch(function (err) {
-        debug('metrics fetch failed', err && err.message ? err.message : String(err));
+        debug('stats fetch failed', err && err.message ? err.message : String(err));
         render({ totalViews: null, uniqueVisitors: null, onlineNow: null });
       });
   }

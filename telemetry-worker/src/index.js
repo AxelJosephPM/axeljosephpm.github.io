@@ -1,10 +1,12 @@
 /**
- * Cloudflare Worker — Site Telemetry Backend
+ * Cloudflare Worker — Site Stats Backend
  *
  * Routes
  *   OPTIONS *         CORS preflight
- *   POST /pageview    Record a page view; return current global metrics
- *   GET  /telemetry   Return current global metrics
+ *   POST /hit         Record a page view; return current global metrics  (primary)
+ *   GET  /stats       Return current global metrics                       (primary)
+ *   POST /pageview    Alias for POST /hit  (backwards-compatible)
+ *   GET  /telemetry   Alias for GET /stats (backwards-compatible)
  *
  * D1 binding: env.DB  (configure in wrangler.toml)
  *
@@ -19,14 +21,12 @@
  */
 
 // ── Configuration ──────────────────────────────────────────────────────────────
-//
-// Replace the placeholder strings with your actual domains before deploying.
-//
+
 const ALLOWED_ORIGINS = [
-  'http://localhost:4000',       // Jekyll dev server
-  'http://127.0.0.1:4000',      // Jekyll dev server (alternate)
-  'https://axeljosephpm.github.io',  // e.g. https://axeljosephpm.github.io
-  'https://axeljoseph.es',        // e.g. https://axeljoseph.dev
+  'http://localhost:4000',
+  'http://127.0.0.1:4000',
+  'https://axeljosephpm.github.io',
+  'https://axeljoseph.es',
 ];
 
 // Sessions with last_seen within this many seconds are counted as "online now".
@@ -38,7 +38,7 @@ const SESSION_MAX_AGE_S  = 24 * 3600;              // 24 hours
 // unique_visitors rows whose last_seen is older than this are deleted.
 const VISITOR_MAX_AGE_S  = 25 * 30 * 24 * 3600;   // ~25 months
 
-// Probability that any given POST /pageview request triggers cleanup.
+// Probability that any given POST request triggers cleanup.
 // At 1 % the cleanup runs roughly once every 100 requests — frequent enough
 // to keep the tables bounded, infrequent enough to avoid adding latency on
 // most requests. Cleanup always runs via ctx.waitUntil so it does not block
@@ -136,7 +136,7 @@ async function getGlobalMetrics(db, now) {
 //   - unique_visitors whose last_seen is older than ~25 months
 //
 // Called via ctx.waitUntil so it runs after the response is returned to the
-// client and does not add latency to the POST /pageview route.
+// client and does not add latency to the POST routes.
 //
 async function runCleanup(db, now) {
   const sessionCutoff = now - SESSION_MAX_AGE_S;
@@ -164,7 +164,7 @@ function normalizePath(raw) {
 
 // ── Route handlers ─────────────────────────────────────────────────────────────
 
-async function handlePageView(request, env, origin, ctx) {
+async function handleHit(request, env, origin, ctx) {
   let body;
   try {
     body = await request.json();
@@ -207,7 +207,7 @@ async function handlePageView(request, env, origin, ctx) {
   return jsonResponse(origin, metrics);
 }
 
-async function handleGetTelemetry(env, origin) {
+async function handleGetStats(env, origin) {
   const now     = Math.floor(Date.now() / 1000);
   const metrics = await getGlobalMetrics(env.DB, now);
   return jsonResponse(origin, metrics);
@@ -237,12 +237,23 @@ export default {
       });
     }
 
+    // Primary routes.
+    if (method === 'POST' && url.pathname === '/hit') {
+      return handleHit(request, env, origin, ctx);
+    }
+
+    if (method === 'GET' && url.pathname === '/stats') {
+      return handleGetStats(env, origin);
+    }
+
+    // Backwards-compatible aliases — kept so any cached or queued requests
+    // from the old frontend continue to work during the transition.
     if (method === 'POST' && url.pathname === '/pageview') {
-      return handlePageView(request, env, origin, ctx);
+      return handleHit(request, env, origin, ctx);
     }
 
     if (method === 'GET' && url.pathname === '/telemetry') {
-      return handleGetTelemetry(env, origin);
+      return handleGetStats(env, origin);
     }
 
     return jsonResponse(origin, { error: 'Not found' }, 404);
